@@ -6,11 +6,11 @@ import Title from '@src/components/landing-page/Title'
 const LandingPage = () => {
   return (
     <div 
-      className="bg-cover bg-center h-screen" 
+      className="bg-cover bg-center h-screen flex flex-col items-center justify-start " 
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
-        <NavBar />
         <Title />
+        
     </div>
   )
 }

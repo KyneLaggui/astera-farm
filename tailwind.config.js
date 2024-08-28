@@ -10,6 +10,7 @@ export default {
         bakbak: ['Bakbak One', 'sans-serif'],
         gothic: ['League Gothic', 'sans-serif'],
         spartan: ['League Spartan', 'sans-serif'],
+        galindo: ['Galindo', 'sans-serif'],
       },
       colors: {
         yellow: {
