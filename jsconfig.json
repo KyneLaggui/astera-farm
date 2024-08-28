@@ -1,0 +1,12 @@
+{
+	"compilerOptions": {
+		"module": "ES6",
+		"moduleResolution": "Bundler",
+		"baseUrl": ".",
+		"paths": {
+			"@src/pages/*" : ["src/pages/*"],
+			"@src/assets/*" : ["src/assets/*"],
+			"@src/components/*" : ["src/components/*"],
+		}
+	}
+}
