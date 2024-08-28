@@ -8,6 +8,7 @@
 			"@src/assets/*" : ["src/assets/*"],
 			"@src/components/*" : ["src/components/*"],
             "@src/layouts/*" : ["src/layouts/*"],
+            "@src/supabase/*" : ["src/supabase/*"],
 		}
 	}
 }
