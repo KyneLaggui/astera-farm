@@ -1,6 +1,5 @@
 import { Route, Routes } from 'react-router-dom'
-import './App.css'
-
+import './index.css'
 import Pages from '@src/pages/pages'
 
 function App() {
@@ -8,6 +7,7 @@ function App() {
     <Routes>
       <Route index path="*" element={<Pages.NotFound />} />
       <Route index path="/" element={<Pages.LandingPage />} />
+      <Route index path="/produce" element={<Pages.Produce />} />
     </Routes>
   )
 }
