@@ -1,3 +1,28 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+.text-stroke {
+    -webkit-text-stroke: 3px #e39a1f;
+    text-stroke: 3px #e39a1f;
+    paint-order: stroke fill;
+}
+
+.navbar-spacing {
+    margin-top: 4.5rem;
+}
+
+@screen sm {
+    .text-stroke {
+        -webkit-text-stroke: 6px #e39a1f;
+        text-stroke: 6px #e39a1f;
+    }
+}
+
+@screen md {
+    .text-stroke {
+        -webkit-text-stroke: 10px #e39a1f;
+        text-stroke: 10px #e39a1f;
+    }
+}

@@ -1,8 +1,6 @@
-// Navbar.js
 import { CircleUserRound, ShoppingCart } from 'lucide-react';
 import { useState } from 'react';
 import MainLogo from "@src/assets/images/main-logo.png";
-
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -14,7 +12,7 @@ const Navbar = () => {
   return (
     <div>
       {/* Navbar */}
-      <nav className="bg-black text-yellow flex items-center justify-between md:justify-around p-4">
+      <nav className="bg-black text-yellow flex items-center justify-between md:justify-around p-4 fixed top-0 left-0 w-full z-50">
         <div className="flex items-center space-x-4">
           <img src={MainLogo} alt="Logo" className="h-12" />
         </div>
@@ -30,16 +28,14 @@ const Navbar = () => {
           <ShoppingCart className="h-6 cursor-pointer text-yellow"/>
           <CircleUserRound className="h-6 cursor-pointer text-yellow" />
           <button
-          className="md:hidden flex items-center"
-          onClick={toggleMobileMenu}
-        >
-          <svg className="w-6 h-6 text-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
-          </svg>
-        </button>
+            className="md:hidden flex items-center"
+            onClick={toggleMobileMenu}
+          >
+            <svg className="w-6 h-6 text-yellow" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+          </button>
         </div>
-
-        
       </nav>
 
       {/* Mobile Menu */}
@@ -55,10 +51,10 @@ const Navbar = () => {
           </svg>
         </button>
         <div className="flex flex-col items-center mt-16 font-bakbak">
-          <a href="#produce" className="py-2 px-4 text-lg  hover:bg-gray-700">Produce</a>
-          <a href="#tracking" className="py-2 px-4 text-lg  hover:bg-gray-700">Tracking</a>
-          <a href="#about-us" className="py-2 px-4 text-lg  hover:bg-gray-700">About Us</a>
-          <a href="#recommendations" className="py-2 px-4 text-lg  hover:bg-gray-700">Recommendations</a>
+          <a href="#produce" className="py-2 px-4 text-lg hover:bg-gray-700">Produce</a>
+          <a href="#tracking" className="py-2 px-4 text-lg hover:bg-gray-700">Tracking</a>
+          <a href="#about-us" className="py-2 px-4 text-lg hover:bg-gray-700">About Us</a>
+          <a href="#recommendations" className="py-2 px-4 text-lg hover:bg-gray-700">Recommendations</a>
         </div>
       </div>
     </div>
