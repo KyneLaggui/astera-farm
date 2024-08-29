@@ -8,12 +8,15 @@ import OrderProcess from '@src/components/landing-page/OrderProcess'
 const LandingPage = () => {
   return (
     <div 
-      className="bg-cover bg-center h-screen flex flex-col items-center justify-start navbar-spacing w-full" 
+      className="bg-cover bg-center bg-black h-full flex flex-col items-center navbar-spacing w-full " 
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
+      <div className='max-w-[1200px]'>
         <Title />
         <OrderProcess />
-        <Footer />
+        
+      </div>
+      <Footer />
     </div>
   )
 }
