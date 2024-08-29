@@ -1,6 +1,6 @@
 import { supabase } from "./config";
 
-export async function signUpWithEmailAndPassword(
+export const signUpWithEmailAndPassword = async (
     email,
     password,
     confirmPassword,
@@ -8,7 +8,7 @@ export async function signUpWithEmailAndPassword(
     middleName,
     lastName,
     phoneNumber
-  ) {
+  ) => {
 
     if (password !== confirmPassword) {
       return null
@@ -30,3 +30,16 @@ export async function signUpWithEmailAndPassword(
 
     return data;
 }
+
+export const signInWithEmailAndPassword = async (email, password) => {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password,
+  });
+
+  return data
+};
+
+export const signOut = async () => {
+  await supabase.auth.signOut();
+};
