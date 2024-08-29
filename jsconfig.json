@@ -8,6 +8,9 @@
 			"@src/assets/*" : ["src/assets/*"],
 			"@src/components/*" : ["src/components/*"],
             "@src/layouts/*" : ["src/layouts/*"],
+            "@src/supabase/*" : ["src/supabase/*"],
+            "@src/custom_hooks/*" : ["src/custom_hooks/*"],
+            "@src/redux/*" : ["src/redux/*"],
 		}
 	}
 }
