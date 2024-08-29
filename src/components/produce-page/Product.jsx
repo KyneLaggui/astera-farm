@@ -1,18 +1,22 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import Vegetable1 from '@src/assets/images/Vegetable-1.png'
 import Vegetable2 from '@src/assets/images/Vegetable-2.png'
 import Vegetable3 from '@src/assets/images/Vegetable-3.png'
 import Vegetable4 from '@src/assets/images/Vegetable-4.png'
 import Vegetable5 from '@src/assets/images/Vegetable-5.png'
 import Vegetable6 from '@src/assets/images/Vegetable-6.png'
-import Drawer from '@src/components/ui/drawer' // Make sure the path is correct
+import ProduceView from '@src/components/produce-page/ProductView'
+
 
 const productData = [
   {
     id: 1,
     name: 'Lalique Lettuce',
     image: Vegetable1,
+    description: "Sandwiches, burgers, salads, wraps and more! Our Crispy Lalique Lettuce has a subtle sweetness that makes it a refreshing choice for any occasion.",
     weight: '250g',
+    price: '149',
+    categories: ['LOCAL PRODUCE', 'HYDROPONICALLY GROWN', 'NON-GMO', 'PESTICIDE FREE'],
   },
   {
     id: 2,
@@ -86,7 +90,7 @@ const Product = () => {
         </div>
       ))}
       {selectedProduct && (
-        <Drawer isOpen={isDrawerOpen} onClose={closeDrawer} product={selectedProduct} />
+        <ProduceView isOpen={isDrawerOpen} onClose={closeDrawer} product={selectedProduct} />
       )}
     </div>
   );
