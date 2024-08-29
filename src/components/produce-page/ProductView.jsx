@@ -3,9 +3,9 @@ import { Drawer, DrawerContent } from '@src/components/ui/drawer' // Ensure this
 import { CircleX } from 'lucide-react'
 import Background from "@src/assets/images/BG-Products.png"
 
-const ProductView = ({ isOpen, product }) => {
+const ProductView = ({ isOpen, onClose, product }) => {
   return (
-    <Drawer open={isOpen} size="md" >
+    <Drawer open={isOpen} onClose={onClose} size="md" >
         <DrawerContent className="p-6 bg-cover bg-center" style={{ backgroundImage: `url(${Background})` }}>
             <div >
                 {/* <CircleX onClick={onClose} /> */}
