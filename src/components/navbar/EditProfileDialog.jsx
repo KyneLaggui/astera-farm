@@ -42,10 +42,10 @@ const EditProfileDialog = ({ isOpen, onClose }) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-[400px] p-4">
+      <DialogContent className="w-[400px] p-4 flex flex-col gap-4" onOpenAutoFocus={(e) => e.preventDefault()}>
         <DialogTitle>My Profile</DialogTitle>
         <DialogDescription>View and update your personal details here.</DialogDescription>
-        <div className="space-y-4">
+        <div className="flex flex-col gap-4">
           <div className="space-y-1">
             <Label htmlFor="username">Username</Label>
             <div className="flex items-center space-x-2">
@@ -58,7 +58,7 @@ const EditProfileDialog = ({ isOpen, onClose }) => {
                 className={getInputClass(editableFields.username)}
               />
               <Button onClick={() => handleEditClick('username')}>
-                {editableFields.username ? <Check /> : <Pencil />}
+                {editableFields.username ? <Check size={16} /> : <Pencil size={16} />}
               </Button>
             </div>
           </div>
@@ -95,11 +95,11 @@ const EditProfileDialog = ({ isOpen, onClose }) => {
                     )}
                 </div>
               <Button onClick={() => handleEditClick('password')}>
-                {editableFields.password ? <Check /> : <Pencil />}
+                {editableFields.password ? <Check size={16} /> : <Pencil size={16} />}
               </Button>
             </div>
           </div>
-          <Button type="submit" onClick={onClose}>Save Changes</Button>
+          <Button type="submit" className="w-full" onClick={onClose}>Save Changes</Button>
         </div>
       </DialogContent>
     </Dialog>
