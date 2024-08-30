@@ -32,10 +32,11 @@ import LoginForm from '@src/components/navbar/LoginForm';
 import SignUpForm from '@src/components/navbar/SignUpForm';
 import MobileMenu from '@src/components/navbar/MobileMenu';
 import EditProfileDialog from '@src/components/navbar/EditProfileDialog';
+import { useEffect } from 'react';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const toggleMobileMenu = () => {
@@ -44,21 +45,6 @@ const Navbar = () => {
 
   const dispatch = useDispatch()
 
-  // This for listening to supabase auth state changes
-  supabase.auth.onAuthStateChange((_event, session) => {
-    if (session) {
-        dispatch(
-            SET_ACTIVE_USER({
-                email: session.user.email,
-                userId: session.user.id,                 
-            })
-        );
-                                     
-    } else {
-        dispatch(REMOVE_ACTIVE_USER());
-    }
-  })
-
   const handleDialogOpen = () => {
     setIsDialogOpen(true);
   };
@@ -66,6 +52,23 @@ const Navbar = () => {
   const handleDialogClose = () => {
     setIsDialogOpen(false);
   };
+
+  useEffect(() => {
+    // This for listening to supabase auth state changes
+    supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+          dispatch(
+              SET_ACTIVE_USER({
+                  email: session.user.email,
+                  userId: session.user.id,                 
+              })
+          );
+                                      
+      } else {
+          dispatch(REMOVE_ACTIVE_USER());
+      }
+   })
+  }, [dispatch])
 
   return (
     <div>
