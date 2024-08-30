@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import 'geist-ui/dist/geist-ui.css';
 
 @layer base {
   :root {
@@ -67,6 +68,10 @@
 
 .navbar-spacing {
   margin-top: 4.5rem;
+}
+
+body {
+  font-family: 'Geist', sans-serif;
 }
 
 @screen sm {
