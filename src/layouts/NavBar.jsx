@@ -2,6 +2,10 @@ import { CircleUserRound, LogOut, ShoppingCart, UserPen } from 'lucide-react';
 import { useState } from 'react';
 import MainLogo from "@src/assets/images/main-logo.png";
 
+import { supabase } from "@src/supabase/config";
+import { REMOVE_ACTIVE_USER, SET_ACTIVE_USER } from '@src/redux/slice/authSlice'
+import { useDispatch } from 'react-redux'
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -37,6 +41,23 @@ const Navbar = () => {
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
+
+  const dispatch = useDispatch()
+
+  // This for listening to supabase auth state changes
+  supabase.auth.onAuthStateChange((_event, session) => {
+    if (session) {
+        dispatch(
+            SET_ACTIVE_USER({
+                email: session.user.email,
+                userId: session.user.id,                 
+            })
+        );
+                                     
+    } else {
+        dispatch(REMOVE_ACTIVE_USER());
+    }
+  })
 
   const handleDialogOpen = () => {
     setIsDialogOpen(true);
