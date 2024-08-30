@@ -13,8 +13,9 @@ import { DropdownMenuGroup, DropdownMenuItem } from '@radix-ui/react-dropdown-me
 
 import {
   Dialog,
-  DialogContent,
   DialogTrigger,
+  DialogContent,
+  DialogTitle,
 } from "@src/components/ui/dialog"
 
 import {
@@ -27,13 +28,23 @@ import {
 import LoginForm from '@src/components/navbar/LoginForm';
 import SignUpForm from '@src/components/navbar/SignUpForm';
 import MobileMenu from '@src/components/navbar/MobileMenu';
+import EditProfileDialog from '@src/components/navbar/EditProfileDialog';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const handleDialogOpen = () => {
+    setIsDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setIsDialogOpen(false);
   };
 
   return (
@@ -63,7 +74,7 @@ const Navbar = () => {
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup className="flex flex-col gap-2">
-                    <DropdownMenuItem className="flex items-center">
+                    <DropdownMenuItem className="flex items-center" onClick={handleDialogOpen}>
                       <UserPen className="mr-2 h-4 w-4" />
                       <span>Edit Profile</span>
                     </DropdownMenuItem>
@@ -109,6 +120,9 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       <MobileMenu isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu} />
+
+      {/* Edit Profile Dialog */}
+      <EditProfileDialog isOpen={isDialogOpen} onClose={handleDialogClose} />
     </div>
   );
 };
