@@ -36,7 +36,7 @@ const EditProfileDialog = ({ isOpen, onClose }) => {
 
   const getInputClass = (isEditable) => {
     return isEditable 
-      ? "border p-2 bg-white focus:outline-none"
+      ? "border p-2 focus:outline-none"
       : "border-none p-2 bg-transparent focus:outline-none focus-visible:ring-transparent cursor-text"; 
   };
 
@@ -87,7 +87,7 @@ const EditProfileDialog = ({ isOpen, onClose }) => {
                     {editableFields.password && (
                         <button 
                         type="button" 
-                        className="absolute inset-y-0 right-1 flex items-center text-gray-500"
+                        className="absolute inset-y-0 right-1 flex items-center"
                         onClick={() => setShowPassword(!showPassword)}
                         >
                         {showPassword ? <EyeOffIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
