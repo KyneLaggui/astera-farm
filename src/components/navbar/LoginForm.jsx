@@ -5,11 +5,25 @@ import { Button } from '@src/components/ui/button';
 import { Eye, EyeOff } from 'lucide-react';
 import { DialogHeader, DialogDescription, DialogTitle, Dialog, DialogContent } from '@src/components/ui/dialog';
 import { Form } from '../ui/form';
+import { signInWithEmailAndPassword } from '@src/supabase/actions';
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
   const [forgotEmail, setForgotEmail] = useState('');
+
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+  });
+
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [id]: value,
+    }));
+  };
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -29,6 +43,12 @@ const LoginForm = () => {
     closeForgotPasswordDialog();
   };
 
+  const handleLogin = async () => {
+    const { email, password } = formData;
+    const result = await signInWithEmailAndPassword(email, password);
+    console.log(result);
+  };
+
   return (
     <div className="flex flex-col gap-4 py-4">
       <DialogHeader>
@@ -40,12 +60,12 @@ const LoginForm = () => {
       <div className="space-y-2">
         <div className="space-y-1">
           <Label htmlFor="email">Email</Label>
-          <Input id="email" />
+          <Input id="email" value={formData.email} onChange={handleChange} />
         </div>
         <div className="space-y-1">
           <Label htmlFor="password">Password</Label>
           <div className="relative">
-            <Input id="password" type={showPassword ? 'text' : 'password'} />
+            <Input id="password" type={showPassword ? 'text' : 'password'} value={formData.password} onChange={handleChange} />
             <button
               type="button"
               className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
@@ -57,7 +77,7 @@ const LoginForm = () => {
         </div>
       </div>
       <div className="flex justify-between items-center">
-        <Button>Login</Button>
+        <Button onClick={handleLogin}>Login</Button>
         <a
           className="text-sm text-yellow hover:underline cursor-pointer"
           onClick={openForgotPasswordDialog}

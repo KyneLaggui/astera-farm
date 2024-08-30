@@ -3,8 +3,9 @@ import { useState } from 'react';
 import MainLogo from "@src/assets/images/main-logo.png";
 
 import { supabase } from "@src/supabase/config";
-import { REMOVE_ACTIVE_USER, SET_ACTIVE_USER } from '@src/redux/slice/authSlice'
-import { useDispatch } from 'react-redux'
+import { signOut } from '@src/supabase/actions';
+import { REMOVE_ACTIVE_USER, SET_ACTIVE_USER, selectIsLoggedIn } from '@src/redux/slice/authSlice'
+import { useDispatch, useSelector } from 'react-redux'
 
 import {
   DropdownMenu,
@@ -32,32 +33,20 @@ import LoginForm from '@src/components/navbar/LoginForm';
 import SignUpForm from '@src/components/navbar/SignUpForm';
 import MobileMenu from '@src/components/navbar/MobileMenu';
 import EditProfileDialog from '@src/components/navbar/EditProfileDialog';
+import { useEffect } from 'react';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const isLoggedInRedux = useSelector(selectIsLoggedIn);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
   const dispatch = useDispatch()
-
-  // This for listening to supabase auth state changes
-  supabase.auth.onAuthStateChange((_event, session) => {
-    if (session) {
-        dispatch(
-            SET_ACTIVE_USER({
-                email: session.user.email,
-                userId: session.user.id,                 
-            })
-        );
-                                     
-    } else {
-        dispatch(REMOVE_ACTIVE_USER());
-    }
-  })
 
   const handleDialogOpen = () => {
     setIsDialogOpen(true);
@@ -66,6 +55,27 @@ const Navbar = () => {
   const handleDialogClose = () => {
     setIsDialogOpen(false);
   };
+
+  useEffect(() => {
+    // This for listening to supabase auth state changes
+    supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+          dispatch(
+              SET_ACTIVE_USER({
+                  email: session.user.email,
+                  userId: session.user.id,                 
+              })
+          );
+                                      
+      } else {
+          dispatch(REMOVE_ACTIVE_USER());
+      }
+   })
+  }, [dispatch])
+
+  useEffect(() => {
+    setIsLoggedIn(isLoggedInRedux)
+  }, [isLoggedInRedux])
 
   return (
     <div>
@@ -98,7 +108,7 @@ const Navbar = () => {
                       <UserPen className="mr-2 h-4 w-4" />
                       <span>Edit Profile</span>
                     </DropdownMenuItem>
-                    <DropdownMenuItem className="flex items-center">
+                    <DropdownMenuItem className="flex items-center" onClick={signOut}>
                       <LogOut className="mr-2 h-4 w-4" />
                       <span>Logout</span>
                     </DropdownMenuItem>

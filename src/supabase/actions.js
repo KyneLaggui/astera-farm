@@ -4,10 +4,7 @@ export const signUpWithEmailAndPassword = async (
     email,
     password,
     confirmPassword,
-    firstName,
-    middleName,
-    lastName,
-    phoneNumber
+    username
   ) => {
 
     if (password !== confirmPassword) {
@@ -19,10 +16,7 @@ export const signUpWithEmailAndPassword = async (
           password: password,
           options: {
             data: {
-              first_name: firstName,
-              middle_name: middleName,
-              last_name: lastName,
-              phone_number: phoneNumber
+              username: username
             }
           }
         }
@@ -36,6 +30,10 @@ export const signInWithEmailAndPassword = async (email, password) => {
     email,
     password,
   });
+
+  if (error) {
+    return null
+  }
 
   return data
 };

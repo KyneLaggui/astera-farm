@@ -4,8 +4,15 @@ import { Label } from '@src/components/ui/label';
 import { Button } from '@src/components/ui/button';
 import { Eye, EyeOff } from 'lucide-react';
 import { DialogHeader, DialogDescription, DialogTitle } from '@src/components/ui/dialog';
+import { signUpWithEmailAndPassword } from '@src/supabase/actions';
 
 const SignUpForm = () => {
+  const [formData, setFormData] = useState({
+    email: '',
+    username: '',
+    password: '',
+    confirmPassword: '',
+  });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -15,6 +22,20 @@ const SignUpForm = () => {
 
   const toggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
+  };
+
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [id]: value,
+    }));
+  };
+
+  const handleRegister = async () => {
+    const { email, password, confirmPassword, username } = formData;
+    const result = await signUpWithEmailAndPassword(email, password, confirmPassword, username);
+    console.log(result);
   };
 
   return (
@@ -28,16 +49,21 @@ const SignUpForm = () => {
       <div className="space-y-2">
         <div className="space-y-1">
           <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" />
+          <Input id="email" type="email" value={formData.email} onChange={handleChange} />
         </div>
         <div className="space-y-1">
           <Label htmlFor="username">Username</Label>
-          <Input id="username" type="text" />
+          <Input id="username" type="text" value={formData.username} onChange={handleChange} />
         </div>
         <div className="space-y-1">
           <Label htmlFor="password">Password</Label>
           <div className="relative">
-            <Input id="password" type={showPassword ? 'text' : 'password'} />
+            <Input
+              id="password"
+              type={showPassword ? 'text' : 'password'}
+              value={formData.password}
+              onChange={handleChange}
+            />
             <button
               type="button"
               className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
@@ -50,7 +76,12 @@ const SignUpForm = () => {
         <div className="space-y-1">
           <Label htmlFor="confirm-password">Confirm password</Label>
           <div className="relative">
-            <Input id="confirm-password" type={showConfirmPassword ? 'text' : 'password'} />
+            <Input
+              id="confirmPassword"
+              type={showConfirmPassword ? 'text' : 'password'}
+              value={formData.confirmPassword}
+              onChange={handleChange}
+            />
             <button
               type="button"
               className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
@@ -61,7 +92,7 @@ const SignUpForm = () => {
           </div>
         </div>
       </div>
-      <Button>Create Account</Button>
+      <Button onClick={handleRegister}>Create Account</Button>
     </div>
   );
 };
