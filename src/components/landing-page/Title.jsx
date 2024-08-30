@@ -6,7 +6,7 @@ import TitleImg from '@src/assets/images/Title.png'
 const Title = () => {
   return (
     <div
-      className='mt-4 bg-cover bg-center py-5 px-7 w-full max-w-[1200px] mx-2 flex flex-col lg:flex-row items-center justify-start relative rounded-[55px]'
+      className='bg-cover bg-center py-5 px-7 w-full max-w-[1200px] flex flex-col lg:flex-row items-center justify-start relative rounded-[55px]'
       style={{ backgroundImage: `url(${Background})` }}
     >
       {/* Title and Description */}
