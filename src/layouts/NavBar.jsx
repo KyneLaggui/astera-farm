@@ -9,12 +9,12 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@src/components/ui/dropdown-menu"
-import { DropdownMenuGroup, DropdownMenuItem } from '@radix-ui/react-dropdown-menu';
+import { DropdownMenuGroup, DropdownMenuItem } from '@src/components/ui/dropdown-menu';
 
 import {
   Dialog,
-  DialogContent,
   DialogTrigger,
+  DialogContent,
 } from "@src/components/ui/dialog"
 
 import {
@@ -27,13 +27,23 @@ import {
 import LoginForm from '@src/components/navbar/LoginForm';
 import SignUpForm from '@src/components/navbar/SignUpForm';
 import MobileMenu from '@src/components/navbar/MobileMenu';
+import EditProfileDialog from '@src/components/navbar/EditProfileDialog';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
+  };
+
+  const handleDialogOpen = () => {
+    setIsDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setIsDialogOpen(false);
   };
 
   return (
@@ -45,13 +55,13 @@ const Navbar = () => {
         </div>
 
         <div className="hidden md:flex md:space-x-8 font-bakbak tracking-wider">
-          <a href="#produce" className="hover:text-gray-400">Produce</a>
-          <a href="#tracking" className="hover:text-gray-400">Tracking</a>
-          <a href="#about-us" className="hover:text-gray-400">About Us</a>
-          <a href="#recommendations" className="hover:text-gray-400">Recommendations</a>
+          <a href="#produce" className="hover:text-white">Produce</a>
+          <a href="#tracking" className="hover:text-white">Tracking</a>
+          <a href="#about-us" className="hover:text-white">About Us</a>
+          <a href="#recommendations" className="hover:text-white">Recommendations</a>
         </div>
 
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center gap-4">
           <ShoppingCart className="h-6 cursor-pointer text-yellow"/>
 
           {isLoggedIn ? (
@@ -59,11 +69,11 @@ const Navbar = () => {
                 <DropdownMenuTrigger asChild>
                   <CircleUserRound className="h-6 cursor-pointer text-yellow" />
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56">
+                <DropdownMenuContent className="w-56 ">
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
-                  <DropdownMenuGroup className="flex flex-col gap-2">
-                    <DropdownMenuItem className="flex items-center">
+                  <DropdownMenuGroup >
+                    <DropdownMenuItem onClick={handleDialogOpen}>
                       <UserPen className="mr-2 h-4 w-4" />
                       <span>Edit Profile</span>
                     </DropdownMenuItem>
@@ -73,7 +83,7 @@ const Navbar = () => {
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
                 </DropdownMenuContent>
-              </DropdownMenu>
+            </DropdownMenu>
             ) : (
               <Dialog>
                 <DialogTrigger asChild>
@@ -109,6 +119,9 @@ const Navbar = () => {
 
       {/* Mobile Menu */}
       <MobileMenu isMobileMenuOpen={isMobileMenuOpen} toggleMobileMenu={toggleMobileMenu} />
+
+      {/* Edit Profile Dialog */}
+      <EditProfileDialog isOpen={isDialogOpen} onClose={handleDialogClose} />
     </div>
   );
 };
