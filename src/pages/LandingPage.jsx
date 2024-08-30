@@ -8,15 +8,15 @@ import OrderProcess from '@src/components/landing-page/OrderProcess'
 const LandingPage = () => {
   return (
     <div 
-      className="bg-cover bg-center bg-black h-full flex flex-col items-center navbar-spacing w-full " 
+      className="bg-cover bg-center min-h-screen h-full flex flex-col items-center navbar-spacing w-full " 
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
-      <div className='max-w-[1200px]'>
+      <div className='max-w-[1200px] flex flex-col gap-20'>
         <Title />
         <OrderProcess />
         
       </div>
-      <Footer />
+      
     </div>
   )
 }

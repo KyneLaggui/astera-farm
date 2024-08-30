@@ -1,7 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import 'geist-ui/dist/geist-ui.css';
+
 
 
 @layer base {
@@ -69,7 +69,8 @@
 }
 
 .navbar-spacing {
-  margin-top: 4.5rem;
+  padding-block: 6rem;
+  padding-inline: 1rem;
 }
 
 body {

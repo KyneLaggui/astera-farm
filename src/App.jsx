@@ -1,7 +1,8 @@
 import { Route, Routes } from 'react-router-dom'
 import './index.css'
 import Pages from '@src/pages/pages'
-import Navbar from './layouts/NavBar'
+import Navbar from '@src/layouts/NavBar'
+import Footer from '@src/layouts/Footer'
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Route path="products" element={<Pages.AdminProducts />} />
       </Route>
     </Routes>
+    <Footer />
     </>
   )
 }
