@@ -3,6 +3,7 @@ import { Input } from '@src/components/ui/input';
 import { Label } from '@src/components/ui/label';
 import { Button } from '@src/components/ui/button';
 import { Eye, EyeOff } from 'lucide-react';
+import { DialogHeader, DialogDescription, DialogTitle } from '@src/components/ui/dialog';
 
 const SignUpForm = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -17,8 +18,13 @@ const SignUpForm = () => {
   };
 
   return (
-    <div className="space-y-4">
-      <h2 className="text-lg font-semibold">SignUp</h2>
+    <div className="flex flex-col gap-4 py-4 min-h-[460px]">
+      <DialogHeader>
+        <DialogTitle>SignUp</DialogTitle>
+        <DialogDescription>
+          Create a new account by providing your details.
+        </DialogDescription>
+      </DialogHeader>
       <div className="space-y-2">
         <div className="space-y-1">
           <Label htmlFor="email">Email</Label>
