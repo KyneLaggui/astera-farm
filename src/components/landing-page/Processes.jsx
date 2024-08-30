@@ -55,17 +55,17 @@ const Processes = () => {
   };
 
   return (
-    <div className='flex flex-col gap-4'>
+    <div className='flex flex-col gap-6'>
       {data.map((item) => (
         <div
           key={item.id}
-          className={`flex justify-between py-3 px-6 rounded-2xl text-white bg-opacity-80 ${getBackgroundColor(item.id)}`}
+          className={`flex justify-between gap-4 py-6 px-8 rounded-2xl text-white bg-opacity-80 ${getBackgroundColor(item.id)}`}
         >
           <div>
-            <h2 className='font-spartan font-extrabold text-6xl'>{item.title}</h2>
-            <p className='font-spartan text-2xl'>{parseDescription(item.description)}</p>
+            <h2 className='font-spartan font-extrabold text-4xl lg:text-6xl'>{item.title}</h2>
+            <p className='font-spartan text-lg md:text-xl lg:text-2xl'>{parseDescription(item.description)}</p>
           </div>
-          <div className='font-spartan font-extrabold text-8xl'>{item.id}</div>
+          <div className='font-spartan font-extrabold text-7xl lg:text-8xl'>{item.id}</div>
         </div>
       ))}
     </div>
