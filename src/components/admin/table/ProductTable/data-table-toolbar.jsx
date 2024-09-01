@@ -18,7 +18,7 @@ import { X, Plus, Trash2 } from "lucide-react";
 Modal.setAppElement("#root");
 
 function DataTableToolbar({ table, allData }) {
-  const [tableState, setTableState] = useState({});
+  const [newProduct, setNewProduct] = useState({});
   const [attributes, setAttributes] = useState([]);
   const [attributeInput, setAttributeInput] = useState("");
 
@@ -26,14 +26,14 @@ function DataTableToolbar({ table, allData }) {
 
   const onInputHandleChange = (event) => {
     const { name, value } = event.target;
-    setTableState((prevState) => ({
+    setNewProduct((prevState) => ({
       ...prevState,
       [name]: value,
     }));
   };
 
   const handleSubmit = () => {
-    // Handle the submit logic here
+    
   };
 
   const downloadCSV = () => {
@@ -83,112 +83,114 @@ function DataTableToolbar({ table, allData }) {
                 </div>
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px] overflow-y-auto max-h-[80vh]">
-            <DialogHeader>
-              <DialogTitle>Add New Product</DialogTitle>
-            </DialogHeader>
-            <form>
-              <div className="mb-4">
-                <label className="block text-primary mt-2 text-center cursor-pointer bg-secondary py-2 px-3 rounded-md" htmlFor="productIcon">Upload Product Icon</label>
-                <Input
-                  id="productIcon"
-                  type="file"
-                  name="productIcon"
-                  className="mt-2 text-center placeholder-gray-700 hidden"
-                  onChange={onInputHandleChange}
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block">Product Name</label>
-                <Input
-                  id="name"
-                  type="text"
-                  placeholder="e.g. Fresh Basil"
-                  name="name"
-                  className="mt-2"
-                  onChange={onInputHandleChange}
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block">Price (PHP)</label>
-                <Input
-                  id="price"
-                  type="number"
-                  placeholder="e.g. 12.99"
-                  name="price"
-                  className="mt-2"
-                  onChange={onInputHandleChange}
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block">Description</label>
-                <textarea
-                  id="description"
-                  placeholder="e.g. This product is..."
-                  name="description"
-                  className="mt-2 p-2 w-full border rounded resize-none text-black"
-                  onChange={onInputHandleChange}
-                  rows="4"
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block">Sell Method</label>
-                <Input
-                  id="sellMethod"
-                  type="text"
-                  placeholder="e.g. Sold per 250g"
-                  name="sellMethod"
-                  className="mt-2"
-                  onChange={onInputHandleChange}
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block">Attributes</label>
-                <div className="flex gap-2">
+            <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>Add New Product</DialogTitle>
+              </DialogHeader>
+              <form>
+                <div className="mb-4">
+                  <label className="block text-primary mt-2 text-center cursor-pointer bg-secondary py-2 px-3 rounded-md" htmlFor="productIcon">
+                    Upload Product Icon
+                  </label>
                   <Input
-                    id="attributeInput"
-                    type="text"
-                    placeholder="e.g. Organic, Fresh"
-                    value={attributeInput}
-                    className="mt-2"
-                    onChange={(e) => setAttributeInput(e.target.value)}
+                    id="productIcon"
+                    type="file"
+                    name="productIcon"
+                    className="mt-2 text-center placeholder-gray-700 hidden"
+                    onChange={onInputHandleChange}
                   />
-                  <Button
-                    variant="default"
-                    className="mt-2"
-                    onClick={handleAttributeAdd}
-                    type="button"
-                  >
-                    Add
-                  </Button>
                 </div>
-                <ul className="mt-2 list-disc list-inside">
-                  {attributes.map((attribute, index) => (
-                    <li key={index} className="flex items-center justify-between px-4">
-                      &bull; {attribute}
-                      <button
-                        type="button"
-                        className="text-red-500 ml-2"
-                        onClick={() => handleAttributeDelete(index)}
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </form>
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button variant="tertiary">
-                  Cancel
+                <div className="mb-4">
+                  <label className="block">Product Name</label>
+                  <Input
+                    id="name"
+                    type="text"
+                    placeholder="e.g. Fresh Basil"
+                    name="name"
+                    className="mt-2"
+                    onChange={onInputHandleChange}
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block">Price (PHP)</label>
+                  <Input
+                    id="price"
+                    type="number"
+                    placeholder="e.g. 12.99"
+                    name="price"
+                    className="mt-2"
+                    onChange={onInputHandleChange}
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block">Description</label>
+                  <textarea
+                    id="description"
+                    placeholder="e.g. This product is..."
+                    name="description"
+                    className="mt-2 p-2 w-full border rounded resize-none text-black"
+                    onChange={onInputHandleChange}
+                    rows="4"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block">Sell Method</label>
+                  <Input
+                    id="sellMethod"
+                    type="text"
+                    placeholder="e.g. Sold per 250g"
+                    name="sellMethod"
+                    className="mt-2"
+                    onChange={onInputHandleChange}
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block">Attributes</label>
+                  <div className="flex gap-2">
+                    <Input
+                      id="attributeInput"
+                      type="text"
+                      placeholder="e.g. Organic, Fresh"
+                      value={attributeInput}
+                      className="mt-2"
+                      onChange={(e) => setAttributeInput(e.target.value)}
+                    />
+                    <Button
+                      variant="default"
+                      className="mt-2"
+                      onClick={handleAttributeAdd}
+                      type="button"
+                    >
+                      Add
+                    </Button>
+                  </div>
+                  <ul className="mt-2 list-disc list-inside">
+                    {attributes.map((attribute, index) => (
+                      <li key={index} className="flex items-center justify-between px-4">
+                        &bull; {attribute}
+                        <button
+                          type="button"
+                          className="text-red-500 ml-2"
+                          onClick={() => handleAttributeDelete(index)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </form>
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button variant="tertiary">
+                    Cancel
+                  </Button>
+                </DialogClose>
+                <Button variant="default" className="ml-2" onClick={handleSubmit}>
+                  Save
                 </Button>
-              </DialogClose>
-              <Button variant="default" className="ml-2" onClick={handleSubmit}>
-                Save
-              </Button>
-            </DialogFooter>
-           </DialogContent>
+              </DialogFooter>
+            </DialogContent>
           </Dialog>
           <Button variant="green" size="sm" className="ml-auto" onClick={downloadCSV}>
             <div className="flex items-center gap-2">
