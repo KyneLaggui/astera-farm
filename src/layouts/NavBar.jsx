@@ -1,4 +1,4 @@
-import { CircleUserRound, LogOut, ShoppingCart, UserPen } from 'lucide-react';
+import { CircleMinus, CircleUserRound, CircleX, LogOut, Minus, Plus, ShoppingCart, UserPen } from 'lucide-react';
 import { useState } from 'react';
 import MainLogo from "@src/assets/images/main-logo.png";
 
@@ -34,6 +34,11 @@ import SignUpForm from '@src/components/navbar/SignUpForm';
 import MobileMenu from '@src/components/navbar/MobileMenu';
 import EditProfileDialog from '@src/components/navbar/EditProfileDialog';
 import { useEffect } from 'react';
+import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from '@src/components/ui/sheet';
+import { Button } from '@src/components/ui/button';
+import CartProducts from '@src/components/order-components/CartProducts';
+import { ScrollArea } from '@src/components/ui/scroll-area';
+
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -93,7 +98,36 @@ const Navbar = () => {
         </div>
 
         <div className="flex items-center gap-4">
-          <ShoppingCart className="h-6 cursor-pointer text-yellow"/>
+          <Sheet>
+            <SheetTrigger asChild>
+              <ShoppingCart className="h-6 cursor-pointer text-yellow"/>
+            </SheetTrigger>
+            <SheetContent className="flex flex-col justify-between">
+              <SheetHeader>
+                <SheetTitle>Add to Cart</SheetTitle>
+                <SheetDescription>
+                  Add items to your cart with a click and review them before checkout.
+                </SheetDescription>
+              </SheetHeader>
+              <ScrollArea className="h-full">
+                <div className='flex flex-col gap-2'>
+                  <CartProducts />
+                  <CartProducts />   
+                  <CartProducts />   
+                  <CartProducts />   
+                  <CartProducts />   
+                </div>
+                           
+              </ScrollArea>          
+              <SheetFooter className="border-t pt-4">
+                <h1 className='text min-w-[100px] text-md font-medium'>Total Price <span className='text-yellow'>₱10,400</span></h1>
+                <SheetClose asChild>
+                  <Button type="submit" className="w-full">Checkout</Button>
+                </SheetClose>
+              </SheetFooter>
+            </SheetContent>
+          </Sheet>
+          
 
           {isLoggedIn ? (
               <DropdownMenu>
