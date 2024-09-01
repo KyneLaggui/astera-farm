@@ -77,14 +77,8 @@ export const columns = [
     header: ({ column }) => (
       <p
         className="flex items-center gap-1 cursor-pointer hover:text-red-500"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
-        Description
-        {column.getIsSorted() === "asc" ? (
-          <ArrowUp className="h-3 w-3" />
-        ) : (
-          <ArrowDown className="h-3 w-3" />
-        )}
+        Description      
       </p>
     ),
     cell: ({ row }) => <div>Description</div>,
@@ -94,14 +88,8 @@ export const columns = [
     header: ({ column }) => (
       <p
         className="flex items-center gap-1 cursor-pointer hover:text-red-500"
-        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
       >
         Sell Method
-        {column.getIsSorted() === "asc" ? (
-          <ArrowUp className="h-3 w-3" />
-        ) : (
-          <ArrowDown className="h-3 w-3" />
-        )}
       </p>
     ),
     cell: ({ row }) => <TableCell>{row.original.sell_method}</TableCell>,

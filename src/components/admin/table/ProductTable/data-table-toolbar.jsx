@@ -4,7 +4,7 @@ import { Input } from "@src/components/ui/input";
 import { Button } from "@src/components/ui/button";
 import { X, Plus } from "lucide-react";
 // import { signUpWithEmailAndPasswordOnly } from "@/utils/supabase/actions";
-// import FormsLabel from "@/app/custom_components/FormsLabel";
+import FormsLabel from "@src/components/FormsLabel";
 import {
   Select,
   SelectContent,
@@ -15,7 +15,6 @@ import {
 
 function DataTableToolbar({ table, allData }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [role, setRole] = useState(null);
   const [tableState, setTableState] = useState(null);
 
   const isFiltered = table.getState().columnFilters.length > 0;
@@ -44,12 +43,12 @@ function DataTableToolbar({ table, allData }) {
     <div className="flex items-center justify-between w-full">
       <div className="flex flex-1 items-center gap-2 w-full justify-between">
         <Input
-          placeholder="Search for first name..."
+          placeholder="Search for product name..."
           value={
-            (table.getColumn("first_name")?.getFilterValue()) ?? ""
+            (table.getColumn("name")?.getFilterValue()) ?? ""
           }
           onChange={(event) =>
-            table.getColumn("first_name")?.setFilterValue(event.target.value)
+            table.getColumn("name")?.setFilterValue(event.target.value)
           }
           className="h-8 w-[150px] lg:w-[250px]"
         />
@@ -73,14 +72,12 @@ function DataTableToolbar({ table, allData }) {
           </Button>
         )}
         <div className="flex gap-2">
-          {role === "admin" && (
-            <Button variant="default" size="sm" className="ml-auto" onClick={toggleModal}>
-              <div className="flex items-center gap-2">
-                Add account
-                <Plus className="h-4 w-4" />
-              </div>
-            </Button>
-          )}
+          <Button variant="yellowish" size="sm" className="ml-auto" onClick={toggleModal}>
+            <div className="flex items-center gap-2">
+              Add Product
+              <Plus className="h-4 w-4" />
+            </div>
+          </Button>
           <Button variant="green" size="sm" className="ml-auto" onClick={downloadCSV}>
             <div className="flex items-center gap-2">
               Export data to CSV
@@ -93,7 +90,7 @@ function DataTableToolbar({ table, allData }) {
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50 p-[20px]">
           <div className="bg-white p-6 rounded shadow-lg w-full max-w-xs">
-            <h2 className="text-xl font-bold mb-4">Add Account</h2>
+            <h2 className="text-xl font-bold mb-4 text-primary-foreground">Add Account</h2>
             <form>
               <div className="mb-4">
                 <label className="block text-gray-700">Email</label>
