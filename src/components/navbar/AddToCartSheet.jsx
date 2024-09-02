@@ -83,7 +83,7 @@ const AddToCartSheet = () => {
                 ))}
               </div>
             </ScrollArea>
-            <DrawerFooter className="border-t pt-4">
+            <DrawerFooter className="flex flex-row border-t pt-4">
               <h1 className='text min-w-[100px] text-md font-medium'>Total Price <span className='text-yellow'>₱10,400</span></h1>
               <DrawerClose asChild>
                 <Button type="submit" className="w-full">Checkout</Button>
