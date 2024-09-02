@@ -123,7 +123,7 @@ const Navbar = () => {
               <DialogTrigger asChild>
                 <CircleUserRound className="h-6 cursor-pointer text-yellow" />
               </DialogTrigger>
-              <DialogContent className="w-[400px]">
+              <DialogContent className="w-[400px]" onOpenAutoFocus={(e) => e.preventDefault()}>
                 <Tabs defaultValue="login">
                   <TabsList className="grid w-full grid-cols-2 mt-4">
                     <TabsTrigger value="login">Login</TabsTrigger>
