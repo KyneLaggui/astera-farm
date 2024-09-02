@@ -6,12 +6,13 @@ import CartProducts from '@src/components/order-components/CartProducts';
 import { ScrollArea } from '@src/components/ui/scroll-area';
 
 const AddToCartSheet = () => {
+
   return (
     <Sheet>
       <SheetTrigger asChild>
         <ShoppingCart className="h-6 cursor-pointer text-yellow" />
       </SheetTrigger>
-      <SheetContent className="flex flex-col justify-between">
+      <SheetContent className="flex flex-col justify-between" onOpenAutoFocus={(e) => e.preventDefault()}>
         <SheetHeader>
           <SheetTitle>Add to Cart</SheetTitle>
           <SheetDescription>
