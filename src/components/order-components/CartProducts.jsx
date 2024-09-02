@@ -8,7 +8,6 @@ const CartProducts = ({ image, title, amount, initialQuantity }) => {
   const [quantity, setQuantity] = useState(initialQuantity);
 
   useEffect(() => {
-    console.log('Initial Quantity:', initialQuantity);
     setQuantity(initialQuantity);
   }, [initialQuantity]);
 
