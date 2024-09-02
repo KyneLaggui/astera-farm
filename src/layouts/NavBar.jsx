@@ -1,11 +1,11 @@
-import { CircleUserRound, LogOut, ShoppingCart, UserPen } from 'lucide-react';
-import { useState } from 'react';
+import { CircleMinus, CircleUserRound, CircleX, LogOut, Minus, Plus, ShoppingCart, UserPen } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import MainLogo from "@src/assets/images/main-logo.png";
 
 import { supabase } from "@src/supabase/config";
 import { signOut } from '@src/supabase/actions';
-import { REMOVE_ACTIVE_USER, SET_ACTIVE_USER, selectIsLoggedIn } from '@src/redux/slice/authSlice'
-import { useDispatch, useSelector } from 'react-redux'
+import { REMOVE_ACTIVE_USER, SET_ACTIVE_USER, selectIsLoggedIn } from '@src/redux/slice/authSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 import {
   DropdownMenu,
@@ -13,27 +13,28 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@src/components/ui/dropdown-menu"
-import { DropdownMenuGroup, DropdownMenuItem } from '@src/components/ui/dropdown-menu';
+  DropdownMenuGroup,
+  DropdownMenuItem,
+} from "@src/components/ui/dropdown-menu";
 
 import {
   Dialog,
   DialogTrigger,
   DialogContent,
-} from "@src/components/ui/dialog"
+} from "@src/components/ui/dialog";
 
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@src/components/ui/tabs"
+} from "@src/components/ui/tabs";
 
 import LoginForm from '@src/components/navbar/LoginForm';
 import SignUpForm from '@src/components/navbar/SignUpForm';
 import MobileMenu from '@src/components/navbar/MobileMenu';
 import EditProfileDialog from '@src/components/navbar/EditProfileDialog';
-import { useEffect } from 'react';
+import AddToCartSheet from '@src/components/navbar/AddToCartSheet'; // Import the new component
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -46,7 +47,7 @@ const Navbar = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   const handleDialogOpen = () => {
     setIsDialogOpen(true);
@@ -60,22 +61,21 @@ const Navbar = () => {
     // This for listening to supabase auth state changes
     supabase.auth.onAuthStateChange((_event, session) => {
       if (session) {
-          dispatch(
-              SET_ACTIVE_USER({
-                  email: session.user.email,
-                  userId: session.user.id,                 
-              })
-          );
-                                      
+        dispatch(
+          SET_ACTIVE_USER({
+            email: session.user.email,
+            userId: session.user.id,
+          })
+        );
       } else {
-          dispatch(REMOVE_ACTIVE_USER());
+        dispatch(REMOVE_ACTIVE_USER());
       }
-   })
-  }, [dispatch])
+    });
+  }, [dispatch]);
 
   useEffect(() => {
-    setIsLoggedIn(isLoggedInRedux)
-  }, [isLoggedInRedux])
+    setIsLoggedIn(isLoggedInRedux);
+  }, [isLoggedInRedux]);
 
   return (
     <div>
@@ -93,50 +93,50 @@ const Navbar = () => {
         </div>
 
         <div className="flex items-center gap-4">
-          <ShoppingCart className="h-6 cursor-pointer text-yellow"/>
+          <AddToCartSheet /> {/* Use the new component */}
 
           {isLoggedIn ? (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <CircleUserRound className="h-6 cursor-pointer text-yellow" />
-                </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56 ">
-                  <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  <DropdownMenuGroup >
-                    <DropdownMenuItem onClick={handleDialogOpen}>
-                      <UserPen className="mr-2 h-4 w-4" />
-                      <span>Edit Profile</span>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem className="flex items-center" onClick={signOut}>
-                      <LogOut className="mr-2 h-4 w-4" />
-                      <span>Logout</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuGroup>
-                </DropdownMenuContent>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <CircleUserRound className="h-6 cursor-pointer text-yellow" />
+              </DropdownMenuTrigger>
+              <DropdownMenuContent className="w-56 ">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuGroup>
+                  <DropdownMenuItem onClick={handleDialogOpen}>
+                    <UserPen className="mr-2 h-4 w-4" />
+                    <span>Edit Profile</span>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem className="flex items-center" onClick={signOut}>
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Logout</span>
+                  </DropdownMenuItem>
+                </DropdownMenuGroup>
+              </DropdownMenuContent>
             </DropdownMenu>
-            ) : (
-              <Dialog>
-                <DialogTrigger asChild>
-                  <CircleUserRound className="h-6 cursor-pointer text-yellow" />
-                </DialogTrigger>
-                <DialogContent className="w-[400px]">
-                  <Tabs defaultValue="login">
-                    <TabsList className="grid w-full grid-cols-2 mt-4">
-                      <TabsTrigger value="login">Login</TabsTrigger>
-                      <TabsTrigger value="signup">SignUp</TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="login">
-                      <LoginForm />
-                    </TabsContent>
-                    <TabsContent value="signup">
-                      <SignUpForm />
-                    </TabsContent>
-                  </Tabs>
-                </DialogContent>
-              </Dialog>
-            )}
-          
+          ) : (
+            <Dialog>
+              <DialogTrigger asChild>
+                <CircleUserRound className="h-6 cursor-pointer text-yellow" />
+              </DialogTrigger>
+              <DialogContent className="w-[400px]">
+                <Tabs defaultValue="login">
+                  <TabsList className="grid w-full grid-cols-2 mt-4">
+                    <TabsTrigger value="login">Login</TabsTrigger>
+                    <TabsTrigger value="signup">SignUp</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="login">
+                    <LoginForm />
+                  </TabsContent>
+                  <TabsContent value="signup">
+                    <SignUpForm />
+                  </TabsContent>
+                </Tabs>
+              </DialogContent>
+            </Dialog>
+          )}
+
           <button
             className="md:hidden flex items-center"
             onClick={toggleMobileMenu}
