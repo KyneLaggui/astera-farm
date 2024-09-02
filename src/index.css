@@ -73,6 +73,18 @@
   padding-inline: 1rem;
 }
 
+.line-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.text-container {
+  word-break: break-word; 
+  overflow-wrap: break-word;
+}
+
 body {
   font-family: 'Geist', sans-serif;
 }
