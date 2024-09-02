@@ -13,11 +13,11 @@ const MobileMenu = ({ isMobileMenuOpen, toggleMobileMenu }) => {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
         </svg>
       </button>
-      <div className="flex flex-col items-center mt-16 font-bakbak">
-        <a href="/produce" className="py-2 px-4 text-lg">Produce</a>
-        <a href="/tracking" className="py-2 px-4 text-lg">Tracking</a>
-        <a href="/about-us" className="py-2 px-4 text-lg">About Us</a>
-        <a href="/recommendations" className="py-2 px-4 text-lg">Recommendations</a>
+      <div className="flex flex-col items-center gap-4 mt-24 font-bakbak py-2 px-4 text-lg sm:text-xl">
+        <a href="/produce">Produce</a>
+        <a href="/tracking">Tracking</a>
+        <a href="/about-us">About Us</a>
+        <a href="/recommendations">Recommendations</a>
       </div>
     </div>
   );

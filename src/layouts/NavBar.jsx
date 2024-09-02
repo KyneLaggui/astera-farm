@@ -88,7 +88,7 @@ const Navbar = () => {
           
         </div>
 
-        <div className="hidden md:flex md:space-x-8 font-bakbak text-lg tracking-wider">
+        <div className="hidden md:flex md:space-x-8 font-bakbak lg:text-lg text-md tracking-wider">
           <a href="/produce" className="hover:text-white">Produce</a>
           <a href="/tracking" className="hover:text-white">Tracking</a>
           <a href="/about-us" className="hover:text-white">About Us</a>
