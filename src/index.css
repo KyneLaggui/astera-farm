@@ -80,6 +80,11 @@
   overflow: hidden;
 }
 
+.text-container {
+  word-break: break-word; 
+  overflow-wrap: break-word;
+}
+
 body {
   font-family: 'Geist', sans-serif;
 }
