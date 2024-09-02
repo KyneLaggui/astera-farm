@@ -34,7 +34,7 @@ import LoginForm from '@src/components/navbar/LoginForm';
 import SignUpForm from '@src/components/navbar/SignUpForm';
 import MobileMenu from '@src/components/navbar/MobileMenu';
 import EditProfileDialog from '@src/components/navbar/EditProfileDialog';
-import AddToCartSheet from '@src/components/navbar/AddToCartSheet'; // Import the new component
+import AddToCartSheet from '@src/components/navbar/AddToCartSheet';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -82,18 +82,21 @@ const Navbar = () => {
       {/* Navbar */}
       <nav className="bg-black text-yellow flex items-center justify-between md:justify-around p-4 fixed top-0 left-0 w-full z-50">
         <div className="flex items-center space-x-4">
-          <img src={MainLogo} alt="Logo" className="h-12" />
+          <a href="/">
+            <img src={MainLogo} alt="Logo" className="h-12"/>
+          </a>
+          
         </div>
 
         <div className="hidden md:flex md:space-x-8 font-bakbak text-lg tracking-wider">
-          <a href="#produce" className="hover:text-white">Produce</a>
-          <a href="#tracking" className="hover:text-white">Tracking</a>
-          <a href="#about-us" className="hover:text-white">About Us</a>
-          <a href="#recommendations" className="hover:text-white">Recommendations</a>
+          <a href="/produce" className="hover:text-white">Produce</a>
+          <a href="/tracking" className="hover:text-white">Tracking</a>
+          <a href="/about-us" className="hover:text-white">About Us</a>
+          <a href="/recommendations" className="hover:text-white">Recommendations</a>
         </div>
 
         <div className="flex items-center gap-4">
-          <AddToCartSheet /> {/* Use the new component */}
+          <AddToCartSheet />
 
           {isLoggedIn ? (
             <DropdownMenu>

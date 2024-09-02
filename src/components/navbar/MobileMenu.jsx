@@ -14,10 +14,10 @@ const MobileMenu = ({ isMobileMenuOpen, toggleMobileMenu }) => {
         </svg>
       </button>
       <div className="flex flex-col items-center mt-16 font-bakbak">
-        <a href="#produce" className="py-2 px-4 text-lg">Produce</a>
-        <a href="#tracking" className="py-2 px-4 text-lg">Tracking</a>
-        <a href="#about-us" className="py-2 px-4 text-lg">About Us</a>
-        <a href="#recommendations" className="py-2 px-4 text-lg">Recommendations</a>
+        <a href="/produce" className="py-2 px-4 text-lg">Produce</a>
+        <a href="/tracking" className="py-2 px-4 text-lg">Tracking</a>
+        <a href="/about-us" className="py-2 px-4 text-lg">About Us</a>
+        <a href="/recommendations" className="py-2 px-4 text-lg">Recommendations</a>
       </div>
     </div>
   );
