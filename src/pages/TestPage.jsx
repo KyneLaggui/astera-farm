@@ -41,7 +41,6 @@ const TestPage = () => {
     const { logo, ...productData } = product;
 
     const logoFileExt = logo.name.split('.').pop();
-    const user = { id: 'user_id' };
 
     const productInsertion = await supabase
       .from('product')
