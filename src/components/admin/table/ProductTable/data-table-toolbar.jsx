@@ -15,6 +15,7 @@ import {
 } from "@src/components/ui/dialog";
 import { X, Plus, Trash2 } from "lucide-react";
 import { supabase } from "@src/supabase/config";
+import { z } from "zod";
 
 Modal.setAppElement("#root");
 
@@ -23,21 +24,19 @@ function DataTableToolbar({ table, allData }) {
   const [attributes, setAttributes] = useState([]);
   const [attributeInput, setAttributeInput] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
+  const [errors, setErrors] = useState({}); // State to track errors
 
   const isFiltered = table.getState().columnFilters.length > 0;
 
   const onInputHandleChange = (event) => {
     const { name, type, value, files } = event.target;
-  
+
     setNewProduct((prevState) => {
-      // If the input is of type "file", handle the file input separately
       if (type === "file") {
         const selectedFile = files[0];
-
-        // Create a URL for the image preview
         const previewUrl = URL.createObjectURL(selectedFile);
         setImagePreview(previewUrl);
-  
+
         return {
           ...prevState,
           [name]: selectedFile,
@@ -50,35 +49,52 @@ function DataTableToolbar({ table, allData }) {
       };
     });
   };
-  
 
-  const handleSubmit = async() => {
+  const productSchema = z.object({
+    name: z.string().nonempty("Product name is required"),
+    price: z.string().nonempty("Price is required"),
+    description: z.string().nonempty("Description is required"),
+    sellMethod: z.string().nonempty("Sell method is required"),
+    productIcon: z.any().refine((file) => file instanceof File, {
+      message: "Product icon is required",
+    }),
+  });
+
+  const handleSubmit = async () => {
+    const validationResult = productSchema.safeParse(newProduct);
+
+    if (!validationResult.success) {
+      const fieldErrors = validationResult.error.formErrors.fieldErrors;
+      setErrors(fieldErrors);
+      return;
+    }
+
     const insertResult = await supabase
-    .from('product')
-    .insert({
+      .from("product")
+      .insert({
         name: newProduct.name,
         description: newProduct.description,
         price: newProduct.price,
         sell_method: newProduct.sellMethod,
-        attributes: attributes
-    })
-    .select()
-    .single()
+        attributes: attributes,
+      })
+      .select()
+      .single();
 
     if (insertResult.error) {
-        console.error('Error inserting new product:', insertResult.error.message)
-        return null
+      console.error("Error inserting new product:", insertResult.error.message);
+      return null;
     } else {
-      console.log(newProduct)
-      const logo  = newProduct.productIcon;
-      const logoFileExt = logo.name.split('.').pop();
+      console.log(newProduct);
+      const logo = newProduct.productIcon;
+      const logoFileExt = logo.name.split(".").pop();
 
       const iconUpload = await supabase.storage
-      .from("products")
-      .upload(`public/${insertResult.data.id}.${logoFileExt}`, logo, {
-        cacheControl: "3600",
-        upsert: true,
-      });
+        .from("products")
+        .upload(`public/${insertResult.data.id}.${logoFileExt}`, logo, {
+          cacheControl: "3600",
+          upsert: true,
+        });
     }
   };
 
@@ -142,7 +158,10 @@ function DataTableToolbar({ table, allData }) {
                       className="mb-4 w-full h-auto rounded-md object-cover"
                     />
                   )}
-                  <label className="block text-primary mt-2 text-center cursor-pointer bg-secondary py-2 px-3 rounded-md" htmlFor="productIcon">
+                  <label
+                    className="block text-primary mt-2 text-center cursor-pointer bg-secondary py-2 px-3 rounded-md"
+                    htmlFor="productIcon"
+                  >
                     Upload Product Icon
                   </label>
                   <Input
@@ -152,6 +171,9 @@ function DataTableToolbar({ table, allData }) {
                     className="mt-2 text-center placeholder-gray-700 hidden"
                     onChange={onInputHandleChange}
                   />
+                  {errors.productIcon && (
+                    <p className="text-red-500 text-sm">{errors.productIcon}</p>
+                  )}
                 </div>
                 <div className="mb-4">
                   <label className="block">Product Name</label>
@@ -163,6 +185,9 @@ function DataTableToolbar({ table, allData }) {
                     className="mt-2"
                     onChange={onInputHandleChange}
                   />
+                  {errors.name && (
+                    <p className="text-red-500 text-sm">{errors.name}</p>
+                  )}
                 </div>
                 <div className="mb-4">
                   <label className="block">Price (PHP)</label>
@@ -174,6 +199,9 @@ function DataTableToolbar({ table, allData }) {
                     className="mt-2"
                     onChange={onInputHandleChange}
                   />
+                  {errors.price && (
+                    <p className="text-red-500 text-sm">{errors.price}</p>
+                  )}
                 </div>
                 <div className="mb-4">
                   <label className="block">Description</label>
@@ -185,6 +213,9 @@ function DataTableToolbar({ table, allData }) {
                     onChange={onInputHandleChange}
                     rows="4"
                   />
+                  {errors.description && (
+                    <p className="text-red-500 text-sm">{errors.description}</p>
+                  )}
                 </div>
                 <div className="mb-4">
                   <label className="block">Sell Method</label>
@@ -196,6 +227,9 @@ function DataTableToolbar({ table, allData }) {
                     className="mt-2"
                     onChange={onInputHandleChange}
                   />
+                  {errors.sellMethod && (
+                    <p className="text-red-500 text-sm">{errors.sellMethod}</p>
+                  )}
                 </div>
                 <div className="mb-4">
                   <label className="block">Attributes</label>
@@ -219,7 +253,10 @@ function DataTableToolbar({ table, allData }) {
                   </div>
                   <ul className="mt-2 list-disc list-inside">
                     {attributes.map((attribute, index) => (
-                      <li key={index} className="flex items-center justify-between px-4">
+                      <li
+                        key={index}
+                        className="flex items-center justify-between px-4"
+                      >
                         &bull; {attribute}
                         <button
                           type="button"
@@ -235,21 +272,25 @@ function DataTableToolbar({ table, allData }) {
               </form>
               <DialogFooter>
                 <DialogClose asChild>
-                  <Button variant="tertiary">
-                    Cancel
-                  </Button>
+                  <Button variant="tertiary">Cancel</Button>
                 </DialogClose>
-                <Button variant="default" className="ml-2" onClick={handleSubmit}>
+                <Button
+                  variant="default"
+                  className="ml-2"
+                  onClick={handleSubmit}
+                >
                   Save
                 </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>
-          <Button variant="green" size="sm" className="ml-auto" onClick={downloadCSV}>
-            <div className="flex items-center gap-2">
-              Export data to CSV
-              <Plus className="h-4 w-4" />
-            </div>
+          <Button
+            variant="green"
+            size="sm"
+            onClick={downloadCSV}
+            className="whitespace-nowrap"
+          >
+            Download CSV
           </Button>
         </div>
       </div>
