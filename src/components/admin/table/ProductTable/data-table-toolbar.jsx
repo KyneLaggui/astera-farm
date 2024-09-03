@@ -14,6 +14,7 @@ import {
   DialogClose,
 } from "@src/components/ui/dialog";
 import { X, Plus, Trash2 } from "lucide-react";
+import { supabase } from "@src/supabase/config";
 
 Modal.setAppElement("#root");
 
@@ -21,19 +22,64 @@ function DataTableToolbar({ table, allData }) {
   const [newProduct, setNewProduct] = useState({});
   const [attributes, setAttributes] = useState([]);
   const [attributeInput, setAttributeInput] = useState("");
+  const [imagePreview, setImagePreview] = useState(null);
 
   const isFiltered = table.getState().columnFilters.length > 0;
 
   const onInputHandleChange = (event) => {
-    const { name, value } = event.target;
-    setNewProduct((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
+    const { name, type, value, files } = event.target;
+  
+    setNewProduct((prevState) => {
+      // If the input is of type "file", handle the file input separately
+      if (type === "file") {
+        const selectedFile = files[0];
 
-  const handleSubmit = () => {
-    
+        // Create a URL for the image preview
+        const previewUrl = URL.createObjectURL(selectedFile);
+        setImagePreview(previewUrl);
+  
+        return {
+          ...prevState,
+          [name]: selectedFile,
+        };
+      }
+
+      return {
+        ...prevState,
+        [name]: value,
+      };
+    });
+  };
+  
+
+  const handleSubmit = async() => {
+    const insertResult = await supabase
+    .from('product')
+    .insert({
+        name: newProduct.name,
+        description: newProduct.description,
+        price: newProduct.price,
+        sell_method: newProduct.sellMethod,
+        attributes: attributes
+    })
+    .select()
+    .single()
+
+    if (insertResult.error) {
+        console.error('Error inserting new product:', insertResult.error.message)
+        return null
+    } else {
+      console.log(newProduct)
+      const logo  = newProduct.productIcon;
+      const logoFileExt = logo.name.split('.').pop();
+
+      const iconUpload = await supabase.storage
+      .from("products")
+      .upload(`public/${insertResult.data.id}.${logoFileExt}`, logo, {
+        cacheControl: "3600",
+        upsert: true,
+      });
+    }
   };
 
   const downloadCSV = () => {
@@ -89,6 +135,13 @@ function DataTableToolbar({ table, allData }) {
               </DialogHeader>
               <form>
                 <div className="mb-4">
+                  {imagePreview && (
+                    <img
+                      src={imagePreview}
+                      alt="Product Icon Preview"
+                      className="mb-4 w-full h-auto rounded-md object-cover"
+                    />
+                  )}
                   <label className="block text-primary mt-2 text-center cursor-pointer bg-secondary py-2 px-3 rounded-md" htmlFor="productIcon">
                     Upload Product Icon
                   </label>
