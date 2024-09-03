@@ -29,7 +29,7 @@ const AddAddressDialog = ({ open, onClose }) => {
       
       <DialogContent>
         <DialogTitle>Add New Address</DialogTitle>
-        <ScrollArea className="space-y-2 p-0 max-h-[350px]">
+        <ScrollArea className="space-y-2 max-h-[350px] sm:max-h-full">
           <div className="px-1">
             <div className="space-y-1">
               <Label htmlFor="name">Recepient Name</Label>
