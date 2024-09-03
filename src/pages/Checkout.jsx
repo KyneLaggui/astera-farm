@@ -11,36 +11,35 @@ const Checkout = () => {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-
-  const addressData = [
+  const [addressData, setAddressData] = useState([
     {
-        id: 1,
-        name: "Carlos Santos",
-        phone: "09178889900",
-        street: "789 P. Santos Street",
-        baranggay: "Barangay San Antonio",
-        postal_code: "1605",
-        city: "Pasig City",
-      },
-      {
-        id: 2,
-        name: "Andrea Reyes",
-        phone: "09223334455",
-        street: "123 C. Raymundo Avenue",
-        baranggay: "Barangay Rosario",
-        postal_code: "1609",
-        city: "Pasig City",
-      },
-      {
-        id: 3,
-        name: "Luis Gonzales",
-        phone: "09336667788",
-        street: "456 General Luna Street",
-        baranggay: "Barangay Ususan",
-        postal_code: "1630",
-        city: "Taguig City",
-      },
-  ];
+      id: 1,
+      name: "Carlos Santos",
+      phone: "09178889900",
+      street: "789 P. Santos Street",
+      baranggay: "Barangay San Antonio",
+      postal_code: "1605",
+      city: "Pasig City",
+    },
+    {
+      id: 2,
+      name: "Andrea Reyes",
+      phone: "09223334455",
+      street: "123 C. Raymundo Avenue",
+      baranggay: "Barangay Rosario",
+      postal_code: "1609",
+      city: "Pasig City",
+    },
+    {
+      id: 3,
+      name: "Luis Gonzales",
+      phone: "09336667788",
+      street: "456 General Luna Street",
+      baranggay: "Barangay Ususan",
+      postal_code: "1630",
+      city: "Taguig City",
+    },
+  ]);
 
   const productData = [
     {
@@ -71,6 +70,10 @@ const Checkout = () => {
 
   const handleAddClick = (e) => {
     e.stopPropagation();
+    if (addressData.length >= 3) {
+      alert("Account is up to 3 addresses only, please delete an existing address to add a new one.");
+      return;
+    }
     setIsAddDialogOpen(true);
   };
 
