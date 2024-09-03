@@ -5,13 +5,17 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Checkbox } from "@src/components/ui/checkbox";
 import EditAddressDialog from "@src/components/checkout/EditAddressDialog";
 import AddAddressDialog from "@src/components/checkout/AddAddressDialog";
-import { Pencil, Plus } from "lucide-react";
+import { Pencil, Plus, Trash } from "lucide-react";
+import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogAction, AlertDialogCancel } from "@src/components/ui/alert-dialog";
 
 const Checkout = () => {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [addressData, setAddressData] = useState([
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [addressToDelete, setAddressToDelete] = useState(null);
+
+  const initialAddressData = [
     {
       id: 1,
       name: "Carlos Santos",
@@ -39,7 +43,9 @@ const Checkout = () => {
       postal_code: "1630",
       city: "Taguig City",
     },
-  ]);
+  ];
+
+  const [addressData, setAddressData] = useState(initialAddressData);
 
   const productData = [
     {
@@ -71,10 +77,22 @@ const Checkout = () => {
   const handleAddClick = (e) => {
     e.stopPropagation();
     if (addressData.length >= 3) {
-      alert("Account is up to 3 addresses only, please delete an existing address to add a new one.");
+      alert("Account is up to 3 addresses only, please delete an address first.");
       return;
     }
     setIsAddDialogOpen(true);
+  };
+
+  const handleDeleteClick = (e, addressId) => {
+    e.stopPropagation();
+    setAddressToDelete(addressId);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    setAddressData((prev) => prev.filter((address) => address.id !== addressToDelete));
+    setSelectedAddress(null);
+    setIsDeleteDialogOpen(false);
   };
 
   const formatAddress = (address) => {
@@ -121,11 +139,18 @@ const Checkout = () => {
                     </p>
                     <p className="font-light text-sm text-muted-foreground">{address.phone}</p>
                   </div>
-                  <Pencil
-                    size={16}
-                    onClick={(e) => handleEditClick(e, address.id)}
-                    className={selectedAddress !== address.id ? "text-gray-400 cursor-not-allowed" : "cursor-pointer"}
-                  />
+                  <div className="flex gap-2">
+                    <Pencil
+                      size={16}
+                      onClick={(e) => handleEditClick(e, address.id)}
+                      className={selectedAddress !== address.id ? "text-gray-400 cursor-not-allowed" : "cursor-pointer"}
+                    />
+                    <Trash
+                      size={16}
+                      onClick={(e) => handleDeleteClick(e, address.id)}
+                      className="text-red-500 cursor-pointer"
+                    />
+                  </div>
                 </div>
               </Card>
             ))}
@@ -162,6 +187,24 @@ const Checkout = () => {
         open={isAddDialogOpen}
         onClose={() => setIsAddDialogOpen(false)}
       />
+      
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialogContent onOpenAutoFocus={(e) => e.preventDefault()}>
+          <AlertDialogHeader>
+            <h1 className="text-xl font-semibold">Delete Address</h1>
+            <p>Are you sure you want to delete this address? This action cannot be undone.</p>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setIsDeleteDialogOpen(false)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteConfirm} className="bg-red-500 text-white">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
