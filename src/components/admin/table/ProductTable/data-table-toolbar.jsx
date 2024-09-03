@@ -1,66 +1,113 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import Modal from "react-modal";
 import { Input } from "@src/components/ui/input";
-// import { DataTableFacetedFilter } from "./data-table-faceted-filter";
 import { Button } from "@src/components/ui/button";
-import { X, Plus } from "lucide-react";
-// import { signUpWithEmailAndPasswordOnly } from "@/utils/supabase/actions";
-// import FormsLabel from "@/app/custom_components/FormsLabel";
+import { Label } from "@src/components/ui/label";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@src/components/ui/select";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+} from "@src/components/ui/dialog";
+import { X, Plus, Trash2 } from "lucide-react";
+import { supabase } from "@src/supabase/config";
+
+Modal.setAppElement("#root");
 
 function DataTableToolbar({ table, allData }) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [role, setRole] = useState(null);
-  const [tableState, setTableState] = useState(null);
+  const [newProduct, setNewProduct] = useState({});
+  const [attributes, setAttributes] = useState([]);
+  const [attributeInput, setAttributeInput] = useState("");
+  const [imagePreview, setImagePreview] = useState(null);
 
   const isFiltered = table.getState().columnFilters.length > 0;
 
-  const toggleModal = () => {
-    setIsModalOpen(!isModalOpen);
-  };
-
   const onInputHandleChange = (event) => {
-    const { name, value } = event.target;
-    setTableState((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
-  };
+    const { name, type, value, files } = event.target;
+  
+    setNewProduct((prevState) => {
+      // If the input is of type "file", handle the file input separately
+      if (type === "file") {
+        const selectedFile = files[0];
 
-  const handleSubmit = () => {
-    // Handle the submit logic here
+        // Create a URL for the image preview
+        const previewUrl = URL.createObjectURL(selectedFile);
+        setImagePreview(previewUrl);
+  
+        return {
+          ...prevState,
+          [name]: selectedFile,
+        };
+      }
+
+      return {
+        ...prevState,
+        [name]: value,
+      };
+    });
+  };
+  
+
+  const handleSubmit = async() => {
+    const insertResult = await supabase
+    .from('product')
+    .insert({
+        name: newProduct.name,
+        description: newProduct.description,
+        price: newProduct.price,
+        sell_method: newProduct.sellMethod,
+        attributes: attributes
+    })
+    .select()
+    .single()
+
+    if (insertResult.error) {
+        console.error('Error inserting new product:', insertResult.error.message)
+        return null
+    } else {
+      console.log(newProduct)
+      const logo  = newProduct.productIcon;
+      const logoFileExt = logo.name.split('.').pop();
+
+      const iconUpload = await supabase.storage
+      .from("products")
+      .upload(`public/${insertResult.data.id}.${logoFileExt}`, logo, {
+        cacheControl: "3600",
+        upsert: true,
+      });
+    }
   };
 
   const downloadCSV = () => {
     // Logic to download data as CSV
   };
 
+  const handleAttributeAdd = () => {
+    if (attributeInput.trim() !== "") {
+      setAttributes([...attributes, attributeInput]);
+      setAttributeInput("");
+    }
+  };
+
+  const handleAttributeDelete = (index) => {
+    setAttributes(attributes.filter((_, i) => i !== index));
+  };
+
   return (
     <div className="flex items-center justify-between w-full">
       <div className="flex flex-1 items-center gap-2 w-full justify-between">
         <Input
-          placeholder="Search for first name..."
-          value={
-            (table.getColumn("first_name")?.getFilterValue()) ?? ""
-          }
+          placeholder="Search for product name..."
+          value={table.getColumn("name")?.getFilterValue() ?? ""}
           onChange={(event) =>
-            table.getColumn("first_name")?.setFilterValue(event.target.value)
+            table.getColumn("name")?.setFilterValue(event.target.value)
           }
           className="h-8 w-[150px] lg:w-[250px]"
         />
-{/* 
-        {table.getColumn("role") && (
-          <DataTableFacetedFilter
-            column={table.getColumn("role")}
-            title="Role"
-            options={roles}
-          />
-        )} */}
 
         {isFiltered && (
           <Button
@@ -73,14 +120,131 @@ function DataTableToolbar({ table, allData }) {
           </Button>
         )}
         <div className="flex gap-2">
-          {role === "admin" && (
-            <Button variant="default" size="sm" className="ml-auto" onClick={toggleModal}>
-              <div className="flex items-center gap-2">
-                Add account
-                <Plus className="h-4 w-4" />
-              </div>
-            </Button>
-          )}
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="yellowish" size="sm" className="ml-auto">
+                <div className="flex items-center gap-2">
+                  Add Product
+                  <Plus className="h-4 w-4" />
+                </div>
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle>Add New Product</DialogTitle>
+              </DialogHeader>
+              <form>
+                <div className="mb-4">
+                  {imagePreview && (
+                    <img
+                      src={imagePreview}
+                      alt="Product Icon Preview"
+                      className="mb-4 w-full h-auto rounded-md object-cover"
+                    />
+                  )}
+                  <label className="block text-primary mt-2 text-center cursor-pointer bg-secondary py-2 px-3 rounded-md" htmlFor="productIcon">
+                    Upload Product Icon
+                  </label>
+                  <Input
+                    id="productIcon"
+                    type="file"
+                    name="productIcon"
+                    className="mt-2 text-center placeholder-gray-700 hidden"
+                    onChange={onInputHandleChange}
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block">Product Name</label>
+                  <Input
+                    id="name"
+                    type="text"
+                    placeholder="e.g. Fresh Basil"
+                    name="name"
+                    className="mt-2"
+                    onChange={onInputHandleChange}
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block">Price (PHP)</label>
+                  <Input
+                    id="price"
+                    type="number"
+                    placeholder="e.g. 12.99"
+                    name="price"
+                    className="mt-2"
+                    onChange={onInputHandleChange}
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block">Description</label>
+                  <textarea
+                    id="description"
+                    placeholder="e.g. This product is..."
+                    name="description"
+                    className="mt-2 p-2 w-full border rounded resize-none text-black"
+                    onChange={onInputHandleChange}
+                    rows="4"
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block">Sell Method</label>
+                  <Input
+                    id="sellMethod"
+                    type="text"
+                    placeholder="e.g. Sold per 250g"
+                    name="sellMethod"
+                    className="mt-2"
+                    onChange={onInputHandleChange}
+                  />
+                </div>
+                <div className="mb-4">
+                  <label className="block">Attributes</label>
+                  <div className="flex gap-2">
+                    <Input
+                      id="attributeInput"
+                      type="text"
+                      placeholder="e.g. Organic, Fresh"
+                      value={attributeInput}
+                      className="mt-2"
+                      onChange={(e) => setAttributeInput(e.target.value)}
+                    />
+                    <Button
+                      variant="default"
+                      className="mt-2"
+                      onClick={handleAttributeAdd}
+                      type="button"
+                    >
+                      Add
+                    </Button>
+                  </div>
+                  <ul className="mt-2 list-disc list-inside">
+                    {attributes.map((attribute, index) => (
+                      <li key={index} className="flex items-center justify-between px-4">
+                        &bull; {attribute}
+                        <button
+                          type="button"
+                          className="text-red-500 ml-2"
+                          onClick={() => handleAttributeDelete(index)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </form>
+              <DialogFooter>
+                <DialogClose asChild>
+                  <Button variant="tertiary">
+                    Cancel
+                  </Button>
+                </DialogClose>
+                <Button variant="default" className="ml-2" onClick={handleSubmit}>
+                  Save
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
           <Button variant="green" size="sm" className="ml-auto" onClick={downloadCSV}>
             <div className="flex items-center gap-2">
               Export data to CSV
@@ -89,65 +253,6 @@ function DataTableToolbar({ table, allData }) {
           </Button>
         </div>
       </div>
-      Modal
-      {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center z-50 p-[20px]">
-          <div className="bg-white p-6 rounded shadow-lg w-full max-w-xs">
-            <h2 className="text-xl font-bold mb-4">Add Account</h2>
-            <form>
-              <div className="mb-4">
-                <label className="block text-gray-700">Email</label>
-                <Input
-                  id="email"
-                  type="email"
-                  placeholder="e.g. johndoe@email.com"
-                  name="email"
-                  className="mt-2"
-                  onChange={onInputHandleChange}
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700">Password</label>
-                <Input
-                  id="password"
-                  type="text"
-                  placeholder="********"
-                  name="password"
-                  className="mt-2"
-                  onChange={onInputHandleChange}
-                />
-              </div>
-              <div className="mb-4">
-                <FormsLabel text="Role" label="role" />
-                <Select
-                  id="role"
-                  name="role"
-                  onValueChange={(value) => {
-                    onInputHandleChange({ target: { name: "role", value } });
-                  }}
-                  defaultValue={tableState?.role || ""}
-                >
-                  <SelectTrigger className="mt-1">
-                    <SelectValue placeholder="Please select..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="applicant">Applicant</SelectItem>
-                    <SelectItem value="faculty">Faculty</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex justify-end">
-                <Button variant="tertiary" onClick={toggleModal}>
-                  Cancel
-                </Button>
-                <Button variant="default" className="ml-2" onClick={handleSubmit}>
-                  Save
-                </Button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
