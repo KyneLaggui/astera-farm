@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Modal from "react-modal";
 import { Input } from "@src/components/ui/input";
 import { Button } from "@src/components/ui/button";
 import { Label } from "@src/components/ui/label";
@@ -15,8 +14,6 @@ import {
 } from "@src/components/ui/dialog";
 import { X, Plus, Trash2 } from "lucide-react";
 import { supabase } from "@src/supabase/config";
-
-Modal.setAppElement("#root");
 
 function DataTableToolbar({ table, allData }) {
   const [newProduct, setNewProduct] = useState({});
