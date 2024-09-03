@@ -5,28 +5,47 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Checkbox } from "@src/components/ui/checkbox";
 import EditAddressDialog from "@src/components/checkout/EditAddressDialog";
 import AddAddressDialog from "@src/components/checkout/AddAddressDialog";
-import { Pencil, Plus } from "lucide-react";
+import { Pencil, Plus, Trash } from "lucide-react";
+import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogAction, AlertDialogCancel } from "@src/components/ui/alert-dialog";
 
 const Checkout = () => {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [addressToDelete, setAddressToDelete] = useState(null);
 
-  const addressData = [
+  const initialAddressData = [
     {
       id: 1,
-      name: "Juan Dela Cruz",
-      address: "123 Balagbag Street Rizal",
-      phone: "09123456789",
+      name: "Carlos Santos",
+      phone: "09178889900",
+      street: "789 P. Santos Street",
+      baranggay: "Barangay San Antonio",
+      postal_code: "1605",
+      city: "Pasig City",
     },
     {
       id: 2,
-      name: "Maria Clara",
-      address: "456 Makati Avenue, Metro Manila",
-      phone: "09876543210",
+      name: "Andrea Reyes",
+      phone: "09223334455",
+      street: "123 C. Raymundo Avenue",
+      baranggay: "Barangay Rosario",
+      postal_code: "1609",
+      city: "Pasig City",
     },
-    // Add more addresses here if needed
+    {
+      id: 3,
+      name: "Luis Gonzales",
+      phone: "09336667788",
+      street: "456 General Luna Street",
+      baranggay: "Barangay Ususan",
+      postal_code: "1630",
+      city: "Taguig City",
+    },
   ];
+
+  const [addressData, setAddressData] = useState(initialAddressData);
 
   const productData = [
     {
@@ -57,7 +76,31 @@ const Checkout = () => {
 
   const handleAddClick = (e) => {
     e.stopPropagation();
+    if (addressData.length >= 3) {
+      alert("Account is up to 3 addresses only, please delete an address first.");
+      return;
+    }
     setIsAddDialogOpen(true);
+  };
+
+  const handleDeleteClick = (e, addressId) => {
+    e.stopPropagation();
+    setAddressToDelete(addressId);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const handleDeleteConfirm = () => {
+    setAddressData((prev) => prev.filter((address) => address.id !== addressToDelete));
+    setSelectedAddress(null);
+    setIsDeleteDialogOpen(false);
+  };
+
+  const formatAddress = (address) => {
+    const fullAddress = `${address.street}, ${address.baranggay}, ${address.postal_code}, ${address.city}`;
+    const maxLength = 30; 
+    return fullAddress.length > maxLength
+      ? `${fullAddress.slice(0, maxLength)}...`
+      : fullAddress;
   };
 
   return (
@@ -91,14 +134,23 @@ const Checkout = () => {
                 <div className="flex justify-between w-full">
                   <div>
                     <h1 className="font-semibold text-lg">{address.name}</h1>
-                    <p className="font-light text-sm text-muted-foreground">{address.address}</p>
+                    <p className="font-light text-sm text-muted-foreground truncate">
+                        {formatAddress(address)}
+                    </p>
                     <p className="font-light text-sm text-muted-foreground">{address.phone}</p>
                   </div>
-                  <Pencil
-                    size={16}
-                    onClick={(e) => handleEditClick(e, address.id)}
-                    className={selectedAddress !== address.id ? "text-gray-400 cursor-not-allowed" : "cursor-pointer"}
-                  />
+                  <div className="flex gap-2">
+                    <Pencil
+                      size={16}
+                      onClick={(e) => handleEditClick(e, address.id)}
+                      className={selectedAddress !== address.id ? "text-gray-400 cursor-not-allowed" : "cursor-pointer"}
+                    />
+                    <Trash
+                      size={16}
+                      onClick={(e) => handleDeleteClick(e, address.id)}
+                      className="text-red-500 cursor-pointer"
+                    />
+                  </div>
                 </div>
               </Card>
             ))}
@@ -135,6 +187,24 @@ const Checkout = () => {
         open={isAddDialogOpen}
         onClose={() => setIsAddDialogOpen(false)}
       />
+      
+      {/* Delete Confirmation Dialog */}
+      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+        <AlertDialogContent onOpenAutoFocus={(e) => e.preventDefault()}>
+          <AlertDialogHeader>
+            <h1 className="text-xl font-semibold">Delete Address</h1>
+            <p>Are you sure you want to delete this address? This action cannot be undone.</p>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => setIsDeleteDialogOpen(false)}>
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleDeleteConfirm} className="bg-red-500 text-white">
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };
