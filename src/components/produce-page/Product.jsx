@@ -88,7 +88,7 @@ const Product = () => {
             <h1 className='font-gothic text-4xl sm:text-5xl text-white uppercase tracking-wide text-center'>{product.name}</h1>
             <p className='font-spartan text-xl sm:text-2xl text-white font-bold tracking-wider'>SOLD PER {product.weight}</p>
             <button
-              className='bg-yellow font-bakbak uppercase text-xl text-green-950 rounded-full px-3 py-2'
+              className='bg-yellow font-bakbak uppercase text-xl text-green-950 rounded-full px-3 py-2 hover:text-yellow hover:bg-green'
               onClick={() => openDrawer(product)}
             >
               Quick View
