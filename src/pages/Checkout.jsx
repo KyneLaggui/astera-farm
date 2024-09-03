@@ -14,18 +14,32 @@ const Checkout = () => {
 
   const addressData = [
     {
-      id: 1,
-      name: "Juan Dela Cruz",
-      address: "123 Balagbag Street Rizal",
-      phone: "09123456789",
-    },
-    {
-      id: 2,
-      name: "Maria Clara",
-      address: "456 Makati Avenue, Metro Manila",
-      phone: "09876543210",
-    },
-    // Add more addresses here if needed
+        id: 1,
+        name: "Carlos Santos",
+        phone: "09178889900",
+        street: "789 P. Santos Street",
+        baranggay: "Barangay San Antonio",
+        postal_code: "1605",
+        city: "Pasig City",
+      },
+      {
+        id: 2,
+        name: "Andrea Reyes",
+        phone: "09223334455",
+        street: "123 C. Raymundo Avenue",
+        baranggay: "Barangay Rosario",
+        postal_code: "1609",
+        city: "Pasig City",
+      },
+      {
+        id: 3,
+        name: "Luis Gonzales",
+        phone: "09336667788",
+        street: "456 General Luna Street",
+        baranggay: "Barangay Ususan",
+        postal_code: "1630",
+        city: "Taguig City",
+      },
   ];
 
   const productData = [
@@ -60,6 +74,14 @@ const Checkout = () => {
     setIsAddDialogOpen(true);
   };
 
+  const formatAddress = (address) => {
+    const fullAddress = `${address.street}, ${address.baranggay}, ${address.postal_code}, ${address.city}`;
+    const maxLength = 30; 
+    return fullAddress.length > maxLength
+      ? `${fullAddress.slice(0, maxLength)}...`
+      : fullAddress;
+  };
+
   return (
     <div
       className="bg-cover bg-center min-h-screen h-full flex flex-col items-center navbar-spacing w-full"
@@ -91,7 +113,9 @@ const Checkout = () => {
                 <div className="flex justify-between w-full">
                   <div>
                     <h1 className="font-semibold text-lg">{address.name}</h1>
-                    <p className="font-light text-sm text-muted-foreground">{address.address}</p>
+                    <p className="font-light text-sm text-muted-foreground truncate">
+                        {formatAddress(address)}
+                    </p>
                     <p className="font-light text-sm text-muted-foreground">{address.phone}</p>
                   </div>
                   <Pencil
