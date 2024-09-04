@@ -22,6 +22,7 @@ module.exports = {
         gothic: ['League Gothic', 'sans-serif'],
         spartan: ['League Spartan', 'sans-serif'],
         galindo: ['Galindo', 'sans-serif'],
+        lato: ['Lato', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
