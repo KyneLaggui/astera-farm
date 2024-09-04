@@ -7,6 +7,9 @@ import Checkout from '@src/pages/Checkout';
 import Tracking from "@src/pages/Tracking";
 import AboutUs from "@src/pages/AboutUs";
 import Recommendations from "@src/pages/Recommendations";
+import Health from "@src/pages/recommendations/Health";
+import CallUs from "@src/pages/recommendations/CallUs";
+import Recipes from "@src/pages/recommendations/Recipes";
 
 export const Pages = {
     LandingPage,
@@ -18,6 +21,9 @@ export const Pages = {
     Tracking,
     AboutUs,
     Recommendations,
+    Health,
+    CallUs,
+    Recipes,
 }
 
 export default Pages;
