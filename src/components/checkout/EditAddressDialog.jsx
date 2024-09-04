@@ -48,7 +48,7 @@ const EditAddressDialog = ({ open, onClose, address, onSave }) => {
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent onOpenAutoFocus={(e) => e.preventDefault()} className="">
-        <DialogTitle className="mb-2">Edit Details</DialogTitle>
+        <DialogTitle>Edit Details</DialogTitle>
         <DialogDescription>Update your address information to ensure accurate delivery and communication.</DialogDescription>
         <ScrollArea className="flex flex-col gap-4 overflow-y-auto max-h-[400px]">
             <div className="px-1">
