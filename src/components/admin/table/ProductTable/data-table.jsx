@@ -49,7 +49,7 @@ function DataTable({ columns, data }) {
   }, [data]);
 
   return (
-    <div className="flex flex-col gap-4 max-w-3xl">
+    <div className="flex flex-col gap-4 max-w-5xl">
       <DataTableToolbar table={table} allData={allData} />
       <div className="rounded-md border">
         <Table>
@@ -99,7 +99,7 @@ function DataTable({ columns, data }) {
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} />
+      {/* <DataTablePagination table={table} /> */}
     </div>
   );
 }
