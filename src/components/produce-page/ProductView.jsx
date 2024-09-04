@@ -11,16 +11,16 @@ const ProductView = ({ isOpen, onClose, product }) => {
             <DrawerTitle></DrawerTitle>
             <DrawerDescription></DrawerDescription>
         </VisuallyHidden>
-        <DrawerContent className="p-6 pb-0 bg-cover bg-center bg-white max-h-[90vh] lg:min-h-[95vh]" style={{ backgroundImage: `url(${Background})` }}>
+        <DrawerContent className="p-6 pb-0 bg-cover bg-center bg-white max-h-[90vh] lg:min-h-[90vh]" style={{ backgroundImage: `url(${Background})` }}>
             <ScrollArea className="overflow-y-auto flex-grow">
                 {/* <CircleX onClick={onClose} /> */}
                 {product && (
-                <div className='flex flex-col lg:flex-row justify-center items-center gap-4 lg:gap-12 px-5 py-4'>    
+                <div className='flex flex-col lg:flex-row justify-center items-center gap-4 lg:gap-12 px-5 py-4 '>    
                     <img src={product.image} alt={product.name} className="w-full max-w-[250px] md:max-w-[300px] lg:max-w-[500px] xl:max-w-[600px] object-contain" />
                     <div className='text-[#293400] flex flex-col gap-5 lg:items-start'>
                       <h1 className="font-gothic text-center sm:text-start lg:text-start text-5xl md:text-7xl lg:text-8xl xl:text-9xl uppercase tracking-wide ">{product.name}</h1>
-                      <p className='font-spartan text-center sm:text-start text-xl md:text-2xl xl:text-3xl font-medium'>{product.description}</p>  
-                      <ul className="list-disc p-0 flex flex-col flex-wrap gap-4">
+                      <p className='font-spartan text-center sm:text-start text-xl md:text-2xl xl:text-3xl font-medium xl:max-w-[800px]'>{product.description}</p>  
+                      <ul className="list-disc p-0 flex flex-col flex-wrap gap-4 ml-5">
                         {product.categories.map((category, index) => (
                           <li key={index} className="font-spartan font-extrabold text-xl md:text-2xl xl:text-3xl uppercase">
                             {category}
@@ -28,7 +28,7 @@ const ProductView = ({ isOpen, onClose, product }) => {
                         ))}
                       </ul>
                       <div className='flex justify-between items-center flex-wrap gap-4 lg:items-start lg:flex-col'>
-                        <p className="font-spartan text-xl lg:text-2xl font-medium tracking-wider">Price is per {product.weight}</p>
+                        <p className="font-spartan sm:text-xl text-lg lg:text-2xl font-medium tracking-wider">Price is per {product.weight}</p>
                         <h1 className="font-spartan font-bold text-4xl md:text-5xl xl:text-6xl uppercase tracking-wide ">₱{product.price}</h1>
                       </div>
                       
