@@ -4,6 +4,7 @@ import Produce from "@src/pages/Produce";
 import TestPage from "@src/pages/TestPage";
 import AdminProducts from "@src/pages/admin/Products";
 import Checkout from '@src/pages/Checkout';
+import Tracking from "@src/pages/Tracking";
 
 export const Pages = {
     LandingPage,
@@ -12,6 +13,7 @@ export const Pages = {
     TestPage,
     AdminProducts,
     Checkout,
+    Tracking,
 }
 
 export default Pages;
