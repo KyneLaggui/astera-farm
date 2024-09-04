@@ -69,7 +69,8 @@
 }
 
 .navbar-spacing {
-  padding-block: 6rem;
+  padding-top: 6rem;
+  padding-bottom: 2rem;
   padding-inline: 1rem;
 }
 

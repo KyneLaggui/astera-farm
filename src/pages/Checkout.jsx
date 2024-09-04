@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import backgroundImage from "@src/assets/images/background-image.png";
 import { Button } from "@src/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@src/components/ui/card";
@@ -6,7 +6,7 @@ import { Checkbox } from "@src/components/ui/checkbox";
 import EditAddressDialog from "@src/components/checkout/EditAddressDialog";
 import AddAddressDialog from "@src/components/checkout/AddAddressDialog";
 import { Pencil, Plus, Trash } from "lucide-react";
-import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogAction, AlertDialogCancel } from "@src/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogAction, AlertDialogCancel, AlertDialogTitle, AlertDialogDescription } from "@src/components/ui/alert-dialog";
 
 const Checkout = () => {
   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -192,8 +192,8 @@ const Checkout = () => {
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent onOpenAutoFocus={(e) => e.preventDefault()}>
           <AlertDialogHeader>
-            <h1 className="text-xl font-semibold">Delete Address</h1>
-            <p>Are you sure you want to delete this address? This action cannot be undone.</p>
+            <AlertDialogTitle className="text-xl font-semibold">Delete Address</AlertDialogTitle>
+            <AlertDialogDescription>Are you sure you want to delete this address? This action cannot be undone.</AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel onClick={() => setIsDeleteDialogOpen(false)}>
