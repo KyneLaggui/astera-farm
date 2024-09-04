@@ -19,7 +19,7 @@ const Title = () => {
           Inspired by one of the largest stars in the universe, "Betelgeuse," our fusion blend surely packs big in flavor while maintaining a low sodium and MSG-FREE mixture.
         </p>
 
-        <div className='flex items-center py-2 sm:py-3 lg:py-3 px-4 sm:px-5 lg:px-5 justify-center text-yellow gap-2 sm:gap-3 lg:gap-3 rounded-full bg-green-800 w-max font-spartan font-bold text-xl md:text-2xl xl:text-3xl'>
+        <div className='flex items-center py-2 sm:py-3 lg:py-3 px-4 sm:px-5 lg:px-5 justify-center text-yellow gap-2 sm:gap-3 lg:gap-3 rounded-full bg-green-800 w-max font-spartan font-bold text-xl md:text-2xl xl:text-3xl hover:text-green hover:bg-yellow cursor-pointer'>
           <button className='mt-1'>Shop Now</button>
           <CircleChevronRight size={25} className='md:hidden' />
           <CircleChevronRight size={30} className='hidden md:block lg:hidden' />
