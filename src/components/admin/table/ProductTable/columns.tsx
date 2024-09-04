@@ -84,7 +84,7 @@ export const columns = [
     cell: ({ row }) => <div>Description</div>,
   },
   {
-    accessorKey: "sell_method",
+    accessorKey: "sellMethod",
     header: ({ column }) => (
       <p
         className="flex items-center gap-1 cursor-pointer hover:text-red-500"
@@ -92,7 +92,7 @@ export const columns = [
         Sell Method
       </p>
     ),
-    cell: ({ row }) => <TableCell>{row.original.sell_method}</TableCell>,
+    cell: ({ row }) => <TableCell>{row.original.sellMethod}</TableCell>,
   },
   {
     accessorKey: "attributes",

@@ -15,6 +15,7 @@ import {
 import { X, Plus, Trash2 } from "lucide-react";
 import { supabase } from "@src/supabase/config";
 import { z } from "zod";
+import { ScrollArea } from "@src/components/ui/scroll-area";
 
 function DataTableToolbar({ table, allData }) {
   const [newProduct, setNewProduct] = useState({});
@@ -48,10 +49,10 @@ function DataTableToolbar({ table, allData }) {
   };
 
   const productSchema = z.object({
-    name: z.string().nonempty("Product name is required"),
-    price: z.string().nonempty("Price is required"),
-    description: z.string().nonempty("Description is required"),
-    sellMethod: z.string().nonempty("Sell method is required"),
+    name: z.string().min(1, "Product name is required"),
+    price: z.string().min(1, "Price is required"),
+    description: z.string().min(1, "Description is required"),
+    sellMethod: z.string().min(1, "Sell method is required"),
     productIcon: z.any().refine((file) => file instanceof File, {
       message: "Product icon is required",
     }),
@@ -72,7 +73,7 @@ function DataTableToolbar({ table, allData }) {
         name: newProduct.name,
         description: newProduct.description,
         price: newProduct.price,
-        sell_method: newProduct.sellMethod,
+        sellMethod: newProduct.sellMethod,
         attributes: attributes,
       })
       .select()
@@ -142,7 +143,9 @@ function DataTableToolbar({ table, allData }) {
                 </div>
               </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-y-auto">
+            <DialogContent className="max-w-md p-0">     
+              <ScrollArea className="max-h-[80vh] w-full p-6">
+              <div className="p-1">
               <DialogHeader>
                 <DialogTitle>Add New Product</DialogTitle>
               </DialogHeader>
@@ -169,7 +172,7 @@ function DataTableToolbar({ table, allData }) {
                     onChange={onInputHandleChange}
                   />
                   {errors.productIcon && (
-                    <p className="text-red-500 text-sm">{errors.productIcon}</p>
+                    <p className="text-red-500 text-sm mt-2">{errors.productIcon}</p>
                   )}
                 </div>
                 <div className="mb-4">
@@ -183,7 +186,7 @@ function DataTableToolbar({ table, allData }) {
                     onChange={onInputHandleChange}
                   />
                   {errors.name && (
-                    <p className="text-red-500 text-sm">{errors.name}</p>
+                    <p className="text-red-500 text-sm mt-2">{errors.name}</p>
                   )}
                 </div>
                 <div className="mb-4">
@@ -197,7 +200,7 @@ function DataTableToolbar({ table, allData }) {
                     onChange={onInputHandleChange}
                   />
                   {errors.price && (
-                    <p className="text-red-500 text-sm">{errors.price}</p>
+                    <p className="text-red-500 text-sm mt-2">{errors.price}</p>
                   )}
                 </div>
                 <div className="mb-4">
@@ -211,7 +214,7 @@ function DataTableToolbar({ table, allData }) {
                     rows="4"
                   />
                   {errors.description && (
-                    <p className="text-red-500 text-sm">{errors.description}</p>
+                    <p className="text-red-500 text-sm mt-2">{errors.description}</p>
                   )}
                 </div>
                 <div className="mb-4">
@@ -225,7 +228,7 @@ function DataTableToolbar({ table, allData }) {
                     onChange={onInputHandleChange}
                   />
                   {errors.sellMethod && (
-                    <p className="text-red-500 text-sm">{errors.sellMethod}</p>
+                    <p className="text-red-500 text-sm mt-2">{errors.sellMethod}</p>
                   )}
                 </div>
                 <div className="mb-4">
@@ -279,6 +282,8 @@ function DataTableToolbar({ table, allData }) {
                   Save
                 </Button>
               </DialogFooter>
+              </div>              
+              </ScrollArea>         
             </DialogContent>
           </Dialog>
           <Button
