@@ -161,8 +161,8 @@ const Tracking = () => {
               </SelectContent>
             </Select>
           </div>
-          <ScrollArea className="overflow-y-auto max-h-[500px] p-2">
-            <div className="flex flex-col gap-4">
+          <ScrollArea>
+            <div className="flex flex-col gap-4 max-h-[500px]">
               {filteredProducts.length > 0 ? (
                 filteredProducts.map((product) => (
                   <Card key={product.id} className="flex justify-between items-start p-4">
