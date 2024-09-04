@@ -8,15 +8,16 @@ const FetchUserProfile = () => {
     useEffect(() => {
         setIsLoadingProfile(true)
         const getProfile = async() => {
-            const { data: { session } } = await supabase.auth.getUser();
+            const { data } = await supabase.auth.getUser();
 
-            if (session) {
+            if (data.user) {
                 let userData = await supabase.from("profile")
                 .select("*")
-                .eq('email', session.user.email)
+                .eq('email', data.user.email)
                 .single();                   
                 setUser(userData['data']);
-            }            
+            }           
+
             setIsLoadingProfile(false)
         }
 
