@@ -1,8 +1,5 @@
-import React from 'react'
 import backgroundImage from "@src/assets/images/background-image.png"
-import NavBar from '@src/layouts/NavBar'
 import Title from '@src/components/landing-page/Title'
-import Footer from '@src/layouts/Footer'
 import OrderProcess from '@src/components/landing-page/OrderProcess'
 
 const LandingPage = () => {

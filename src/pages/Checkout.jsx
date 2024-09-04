@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import backgroundImage from "@src/assets/images/background-image.png";
 import { Button } from "@src/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@src/components/ui/card";
