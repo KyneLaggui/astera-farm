@@ -16,6 +16,7 @@ function App() {
       <Route index path="/checkout" element={<Pages.Checkout />} />
       <Route index path="/tracking" element={<Pages.Tracking />} />
       <Route index path="/about-us" element={<Pages.AboutUs />} />
+      <Route index path="/recommendations" element={<Pages.Recommendations />} />
       <Route path="admin">
         <Route path="products" element={<Pages.AdminProducts />} />
       </Route>
