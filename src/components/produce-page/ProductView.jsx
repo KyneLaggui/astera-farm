@@ -1,11 +1,16 @@
-import { Drawer, DrawerContent } from '@src/components/ui/drawer'
+import { Drawer, DrawerContent, DrawerDescription, DrawerTitle } from '@src/components/ui/drawer'
 import Background from "@src/assets/images/BG-Products.png"
 import PropTypes from 'prop-types'
 import { ScrollArea } from '@src/components/ui/scroll-area'
+import { VisuallyHidden } from '@radix-ui/react-visually-hidden';
 
 const ProductView = ({ isOpen, onClose, product }) => {
   return (
     <Drawer open={isOpen} onClose={onClose}  >
+        <VisuallyHidden>
+            <DrawerTitle></DrawerTitle>
+            <DrawerDescription></DrawerDescription>
+        </VisuallyHidden>
         <DrawerContent className="p-6 pb-0 bg-cover bg-center bg-white max-h-[90vh] lg:min-h-[95vh]" style={{ backgroundImage: `url(${Background})` }}>
             <ScrollArea className="overflow-y-auto flex-grow">
                 {/* <CircleX onClick={onClose} /> */}

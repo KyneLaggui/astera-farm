@@ -4,6 +4,7 @@ import { Button } from "@src/components/ui/button";
 import { Label } from "@src/components/ui/label";
 import { Input } from "@src/components/ui/input";
 import { ScrollArea } from "@src/components/ui/scroll-area";
+import { DialogDescription } from "@radix-ui/react-dialog";
 
 const AddAddressDialog = ({ open, onClose }) => {
 
@@ -29,6 +30,7 @@ const AddAddressDialog = ({ open, onClose }) => {
       
       <DialogContent>
         <DialogTitle>Add New Address</DialogTitle>
+        <DialogDescription>Add a new address to keep your details up to date for seamless service.</DialogDescription>
         <ScrollArea className="space-y-2 max-h-[350px] sm:max-h-full">
           <div className="px-1">
             <div className="space-y-1">
