@@ -1,6 +1,6 @@
 import { useState } from "react";
 import backgroundImage from "@src/assets/images/background-image.png";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@src/components/ui/card";
+import { Card, CardContent, CardDescription, CardTitle } from "@src/components/ui/card";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Badge } from "@src/components/ui/badge";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@src/components/ui/select";
@@ -131,7 +131,7 @@ const Tracking = () => {
     >
       <div className="flex flex-col justify-center items-center">
         <h1 className="font-gothic text-7xl sm:text-9xl text-white text-center tracking-wide">TRACK & TRACE</h1>
-        <p className="font-spartan font-semibold text-white text-xs sm:text-base tracking-widest text-center">
+        <p className="font-spartan font-semibold text-white text-xs sm:text-base tracking-widest text-center max-w-[600px]">
           STAY IN TOUCH WITH YOUR PRODUCE FROM THE MOMENT IT GETS PICKED AND DELIVERED TO YOUR DOORSTEP
         </p>
       </div>
