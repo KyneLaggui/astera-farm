@@ -1,31 +1,20 @@
-import Logo from "@src/assets/images/main-logo-green.png";
-import Facebook from "@src/assets/images/Facebook.png";
-import Instagram from "@src/assets/images/Instagram.png";
-import { CircleChevronRight } from "lucide-react";
+import React from 'react'
+import Logo from '@src/assets/images/main-logo-green.png'
+import Facebook from '@src/assets/images/Facebook.png'
+import Instagram from '@src/assets/images/Instagram.png'
+import { CircleChevronRight } from 'lucide-react'
 
 const Footer = () => {
   return (
-    <div className="w-full bg-[#ffe500] bottom-0 flex flex-col gap-4 p-7 relative sm:p-5 items-center lg:flex-row lg:justify-around lg:items-stretch rounded-t-3xl z-30">
-      {/* Left Side */}
-      <div className="flex w-full sm:w-fit lg:justify-between sm:flex-col flex-between items-center lg:items-start justify-start gap-4 ">
-        <img
-          src={Logo}
-          alt="Logo"
-          className="w-[160px] sm:w-[200px] object-contain"
-        />
-        <div className="flex items-center justify-end sm:justify-center lg:justify-start gap-4 w-full">
-          <img
-            src={Facebook}
-            alt="Logo"
-            className="sm:w-[35px] w-[30px] object-contain"
-          />
-          <img
-            src={Instagram}
-            alt="Logo"
-            className="sm:w-[35px] w-[30px] object-contain"
-          />
+    <div className='w-full bg-[#ffe500] flex flex-col gap-4 p-7 relative sm:p-5 items-center lg:flex-row lg:justify-around lg:items-stretch rounded-t-3xl mt-3'>        
+        {/* Left Side */}
+        <div className='flex w-full sm:w-fit lg:justify-between sm:flex-col flex-between items-center lg:items-start justify-start gap-4 '>
+            <img src={Logo} alt='Logo' className='w-[160px] sm:w-[200px] object-contain'/>
+            <div className='flex items-center justify-end sm:justify-center lg:justify-start gap-4 w-full'>
+                <img src={Facebook} alt='Facebook Logo' className='sm:w-[35px] w-[30px] object-contain'/>
+                <img src={Instagram} alt='Instagram Logo' className='sm:w-[35px] w-[30px] object-contain'/>
+            </div>
         </div>
-      </div>
 
       {/* Right Side */}
       <div className="flex gap-4 w-full sm:w-fit items-center lg:items-start flex-col ">
@@ -64,3 +53,4 @@ const Footer = () => {
 };
 
 export default Footer;
+

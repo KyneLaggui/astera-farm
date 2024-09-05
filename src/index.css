@@ -58,6 +58,9 @@
     --chart-5: 340 75% 55%;
   }
 }
+body {
+  min-height: 100vh;
+}
 
 .text-stroke {
   -webkit-text-stroke: 3px #e39a1f;

@@ -13,6 +13,7 @@ const fetchAllProduct = () => {
             if (data) {
                 setProducts(data)
             } else {
+                console.log('okayy')
                 console.log(error)
             }
         }
