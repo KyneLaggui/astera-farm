@@ -12,7 +12,6 @@ const fetchAllProduct = () => {
 
             if (data) {
                 setProducts(data)
-                console.log(data)
             } else {
                 console.log(error)
             }

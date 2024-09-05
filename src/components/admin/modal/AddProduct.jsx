@@ -108,7 +108,13 @@ function AddProduct({ isAddDialogOpen, onDialogClose }) {
           }
         }));    
       
-      onDialogClose()
+        setNewProduct({});
+        setAttributes([]);
+        setAttributeInput("")
+        setImagePreview(null)
+        setErrors({})
+        
+        onDialogClose()
       }
     }
   ;

@@ -46,7 +46,6 @@ function DataTable({ columns }) {
   });
 
   useEffect(() => {
-    console.log(products)
     if (products) {      
       setAllData(products);
     }

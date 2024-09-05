@@ -1,8 +1,8 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
     products: []
-}
+};
 
 const productsSlice = createSlice({
     name: "products",
@@ -20,11 +20,15 @@ const productsSlice = createSlice({
             if (index !== -1) {
                 state.products[index] = updatedProduct;
             }
+        },
+        DELETE_PRODUCT: (state, action) => {
+            const idToDelete = action.payload.id;
+            state.products = state.products.filter(product => product.id !== idToDelete);
         }
     },
-})
+});
 
-export const { SET_PRODUCTS, UPDATE_PRODUCT, ADD_PRODUCT } = productsSlice.actions;
+export const { SET_PRODUCTS, ADD_PRODUCT, UPDATE_PRODUCT, DELETE_PRODUCT } = productsSlice.actions;
 
 export const selectProducts = (state) => state.products.products;
 
