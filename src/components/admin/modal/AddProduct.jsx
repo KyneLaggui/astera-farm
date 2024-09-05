@@ -6,13 +6,18 @@ import { ScrollArea } from "@src/components/ui/scroll-area";
 import { Plus, Trash2 } from "lucide-react";
 import { z } from "zod";
 import { supabase } from "@src/supabase/config";
+import { useDispatch } from 'react-redux';
+import { ADD_PRODUCT } from '@src/redux/slice/productsSlice';
 
-function AddProduct({ onProductAdded }) {
+
+function AddProduct({ isEditDialogOpen, onDialogClose }) {
   const [newProduct, setNewProduct] = useState({});
   const [attributes, setAttributes] = useState([]);
   const [attributeInput, setAttributeInput] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
   const [errors, setErrors] = useState({});
+
+  const dispatch = useDispatch();
 
   const onInputHandleChange = (event) => {
     const { name, type, value, files } = event.target;
@@ -27,34 +32,44 @@ function AddProduct({ onProductAdded }) {
           ...prevState,
           [name]: selectedFile,
         };
-      }
-
-      return {
-        ...prevState,
-        [name]: value,
-      };
+      } else if (type === "number") {
+        return {
+          ...prevState,
+          [name]: parseFloat(value),
+        };
+      } else {
+        return {
+          ...prevState,
+          [name]: value,
+        };
+      }     
     });
   };
 
   const productSchema = z.object({
     name: z.string().min(1, "Product name is required"),
-    price: z.string().min(1, "Price is required"),
+    price: z.number()
+      .min(0, { message: "Price must be a non-negative number" }), // Ensures price is >= 0
     description: z.string().min(1, "Description is required"),
     sellMethod: z.string().min(1, "Sell method is required"),
     productIcon: z.any().refine((file) => file instanceof File, {
       message: "Product icon is required",
     }),
+    attributes: z.array(z.string()).min(1, { message: "At least one attribute is required" }) // Ensures the array is not empty
   });
 
   const handleSubmit = async () => {
-    const validationResult = productSchema.safeParse(newProduct);
-
+    const validationResult = productSchema.safeParse({
+      ...newProduct,
+      attributes,
+    });
+  
     if (!validationResult.success) {
       const fieldErrors = validationResult.error.formErrors.fieldErrors;
       setErrors(fieldErrors);
       return;
     }
-
+  
     const insertResult = await supabase
       .from("product")
       .insert({
@@ -66,7 +81,7 @@ function AddProduct({ onProductAdded }) {
       })
       .select()
       .single();
-
+  
     if (insertResult.error) {
       console.error("Error inserting new product:", insertResult.error.message);
       return null;
@@ -74,17 +89,28 @@ function AddProduct({ onProductAdded }) {
       console.log(newProduct);
       const logo = newProduct.productIcon;
       const logoFileExt = logo.name.split(".").pop();
-
+  
       const iconUpload = await supabase.storage
         .from("products")
         .upload(`public/${insertResult.data.id}.${logoFileExt}`, logo, {
           cacheControl: "3600",
           upsert: true,
         });
-
-      onProductAdded();
+      
+      dispatch(ADD_PRODUCT({
+        product: {
+            id: insertResult.data.id,
+            name: insertResult.data.name,
+            description: insertResult.data.description,
+            sellMethod: insertResult.data.sell_method,
+            attributes: insertResult.data.attributes,
+            price: insertResult.data.price,  
+          }
+        }));        
+      }
     }
-  };
+  ;
+  
 
   const handleAttributeAdd = () => {
     if (attributeInput.trim() !== "") {
@@ -98,7 +124,7 @@ function AddProduct({ onProductAdded }) {
   };
 
   return (
-    <Dialog>
+    <Dialog open={isEditDialogOpen} onOpenChange={onDialogClose}>
       <DialogTrigger asChild>
         <Button variant="yellowish" size="sm" className="ml-auto">
           <div className="flex items-center gap-2">
@@ -215,6 +241,9 @@ function AddProduct({ onProductAdded }) {
                     Add
                   </Button>
                 </div>
+                {errors.attributes && (
+                  <p className="text-red-500 text-sm mt-2">{errors.attributes}</p>
+                )}
                 <ul className="mt-2 list-disc list-inside">
                   {attributes.map((attribute, index) => (
                     <li

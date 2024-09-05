@@ -15,6 +15,9 @@ import {
 import { X, Trash2 } from "lucide-react";
 import { supabase } from "@src/supabase/config";
 import { z } from "zod";
+import fetchProductUrl from "@src/custom-hooks/actions/fetchProductUrl";
+import { useDispatch } from "react-redux";
+import { UPDATE_PRODUCT } from "@src/redux/slice/productsSlice";
 
 function EditProductDialog({ product, onProductUpdated, isEditDialogOpen, onDialogClose }) {
   const [editProduct, setEditProduct] = useState({});
@@ -22,16 +25,22 @@ function EditProductDialog({ product, onProductUpdated, isEditDialogOpen, onDial
   const [attributeInput, setAttributeInput] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
   const [errors, setErrors] = useState({});
+  const dispatch = useDispatch(); 
 
   useEffect(() => {
     if (product) {
       setEditProduct(product);
       setAttributes(product.attributes || []);
-      if (product.productIconUrl) {
-        setImagePreview(product.productIconUrl);
+      
+      const fetchProductImage = async () => {
+        const imageUrl = await fetchProductUrl(product.id);
+        setImagePreview(imageUrl);
       }
+
+      fetchProductImage()
     }
   }, [product]);
+
 
   const onInputHandleChange = (event) => {
     const { name, type, value, files } = event.target;
@@ -46,64 +55,75 @@ function EditProductDialog({ product, onProductUpdated, isEditDialogOpen, onDial
           ...prevState,
           [name]: selectedFile,
         };
-      }
-
-      return {
-        ...prevState,
-        [name]: value,
-      };
+      } else if (type === "number") {
+        return {
+          ...prevState,
+          [name]: parseFloat(value),
+        };
+      } else {
+        return {
+          ...prevState,
+          [name]: value,
+        };
+      }     
     });
   };
 
   const productSchema = z.object({
     name: z.string().min(1, "Product name is required"),
-    price: z.string().min(1, "Price is required"),
+    price: z.number()
+      .min(0, { message: "Price must be a non-negative number" }), // Ensures price is >= 0
     description: z.string().min(1, "Description is required"),
     sellMethod: z.string().min(1, "Sell method is required"),
-    productIcon: z.any().refine((file) => !file || file instanceof File, {
-      message: "Product icon must be a valid file",
-    }),
   });
+  
+    const handleSubmit = async () => {
+      const validationResult = productSchema.safeParse(editProduct);
 
-  const handleSubmit = async () => {
-    const validationResult = productSchema.safeParse(editProduct);
+      if (!validationResult.success) {
+        const fieldErrors = validationResult.error.formErrors.fieldErrors;
+        setErrors(fieldErrors);
+        return;
+      }
 
-    if (!validationResult.success) {
-      const fieldErrors = validationResult.error.formErrors.fieldErrors;
-      setErrors(fieldErrors);
-      return;
-    }
+      const updateData = {
+        name: editProduct.name,
+        description: editProduct.description,
+        price: editProduct.price,
+        sell_method: editProduct.sellMethod,
+        attributes: attributes,
+      };
 
-    const updateData = {
-      name: editProduct.name,
-      description: editProduct.description,
-      price: editProduct.price,
-      sellMethod: editProduct.sellMethod,
-      attributes: attributes,
+      const updateResult = await supabase
+        .from("product")
+        .update(updateData)
+        .eq("id", product.id);
+
+      if (updateResult.error) {
+        console.error("Error updating product:", updateResult.error.message);
+        return null;
+      }
+
+      if (editProduct.productIcon) {
+        const logoFileExt = editProduct.productIcon.name.split(".").pop();
+        await supabase.storage
+          .from("products")
+          .upload(`public/${product.id}.${logoFileExt}`, editProduct.productIcon, {
+            cacheControl: "3600",
+            upsert: true,
+          });
+      }
+
+      // Dispatch the updated product to Redux
+      dispatch(UPDATE_PRODUCT({
+        id: product.id,
+        ...updateData,
+        sellMethod: updateData.sell_method,
+        productIcon: editProduct.productIcon ? editProduct.productIcon : product.productIcon,
+      }));
+
+      onProductUpdated();
     };
-
-    const updateResult = await supabase
-      .from("product")
-      .update(updateData)
-      .eq("id", product.id);
-
-    if (updateResult.error) {
-      console.error("Error updating product:", updateResult.error.message);
-      return null;
-    }
-
-    if (editProduct.productIcon) {
-      const logoFileExt = editProduct.productIcon.name.split(".").pop();
-      await supabase.storage
-        .from("products")
-        .upload(`public/${product.id}.${logoFileExt}`, editProduct.productIcon, {
-          cacheControl: "3600",
-          upsert: true,
-        });
-    }
-
-    onProductUpdated();
-  };
 
   const handleAttributeAdd = () => {
     if (attributeInput.trim() !== "") {

@@ -2,10 +2,16 @@ import { Input } from "@src/components/ui/input";
 import { Button } from "@src/components/ui/button";
 import { X } from "lucide-react";
 import AddProductDialog from "@src/components/admin/modal/AddProduct"
+import { useState } from "react";
 
 function DataTableToolbar({ table, allData }) {
   const isFiltered = table.getState().columnFilters.length > 0;
 
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+
+  const handleDialogClose = () => {
+    setIsEditDialogOpen(false);
+  };
   const downloadCSV = () => {
     // Logic to download data as CSV
   };
@@ -30,18 +36,10 @@ function DataTableToolbar({ table, allData }) {
             Reset
             <X className="ml-2 h-4 w-4" />
           </Button>
-        )}
-        <Button
-          variant="yellowish"
-          size="sm"
-          className="ml-auto"
-          onClick={downloadCSV}
-        >
-          Download CSV
-        </Button>
+        )}        
       </div>
 
-      <AddProductDialog onProductAdded={() => table.reload()} />
+      <AddProductDialog isEditDialogOpen={isEditDialogOpen} onDialogClose={handleDialogClose} />
     </div>
   );
 }

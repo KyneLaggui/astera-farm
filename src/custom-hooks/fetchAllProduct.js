@@ -9,8 +9,10 @@ const fetchAllProduct = () => {
             const { data, error } = await supabase
                 .from('product')
                 .select('*')
+
             if (data) {
                 setProducts(data)
+                console.log(data)
             } else {
                 console.log(error)
             }
