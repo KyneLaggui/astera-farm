@@ -1,20 +1,25 @@
 import backgroundImage from "@src/assets/images/background-image.png";
 import CallImg from "@src/assets/images/call-us.png";
 import { CircleChevronLeft } from "lucide-react";
-import Health1 from "@src/assets/images/health-1.png";
-import Health2 from "@src/assets/images/health-2.png";
-import Health3 from "@src/assets/images/health-3.png";
-import EveryHealthCard from "@src/components/recommendations/EveryHealthCard";
 import { Link } from "react-router-dom";
 import CallCard from "@src/components/recommendations/CallCard";
+import Jupiter from "@src/assets/images/Planets/jupiter.png";
 
 const CallUs = () => {
   return (
     <div
-      className="bg-cover bg-center flex justify-center items-start navbar-spacing w-full"
+      className="bg-cover bg-center flex justify-center items-start navbar-spacing w-full overflow-hidden relative"
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
-      <div className="w-[1200px] flex flex-col gap-2 justify-center items-start p-4">
+      {/* Container for the planet image */}
+      <div className="absolute bottom-[-250px] right-[-100px]">
+        <img
+          src={Jupiter}
+          alt="Jupiter"
+          className="object-cover w-full h-full xl:max-w-[800px] md:max-w-[600px]"
+        />
+      </div>
+      <div className="w-[1200px] flex flex-col gap-2 justify-center items-start p-4 z-10 ">
         <Link
           to="/recommendations"
           className="flex gap-2 w-full items-center justify-start text-yellow text-base cursor-pointer transition-transform duration-300 ease-in-out hover:scale-105"
@@ -24,7 +29,7 @@ const CallUs = () => {
         </Link>
         <div className="flex flex-col gap-10">
           <div className="flex flex-col justify-start items-start">
-            <div className="flex justify-start item-start">
+            <div className="flex justify-start items-start">
               <h1 className="font-gothic text-6xl sm:text-8xl md:text-9xl text-white tracking-wide leading-none">
                 BOOK A CALL
               </h1>
