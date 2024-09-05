@@ -48,7 +48,13 @@ const Product = () => {
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-20'>
         {productsState.map((product) => (
           <div key={product.id} className='flex flex-col justify-center items-center gap-2'>
-            <img src={product.image} className='w-[200px] sm:w-[300px]' alt={product.name} />
+            <div className='h-[200px] sm:h-[300px] w-[200px] sm:w-[300px] flex items-center justify-center'>
+              <img
+                src={product.image}
+                className='max-h-full max-w-full object-contain'
+                alt={product.name}
+              />
+            </div>
             <h1 className='font-gothic text-4xl sm:text-5xl text-white uppercase tracking-wide text-center'>{product.name}</h1>
             <p className='font-spartan text-xl sm:text-2xl text-white font-bold tracking-wider'>{product.sellMethod}</p>
             <button
