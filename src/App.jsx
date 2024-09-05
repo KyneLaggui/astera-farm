@@ -6,20 +6,22 @@ import Footer from '@src/layouts/Footer'
 
 function App() {
   return (
-    <>
-    <Navbar />
-    <Routes>
-      <Route index path="*" element={<Pages.NotFound />} />      
-      <Route index path="/" element={<Pages.LandingPage />} />
-      <Route index path="/produce" element={<Pages.Produce />} />
-      <Route index path="/test" element={<Pages.TestPage />} />
-      <Route index path="/checkout" element={<Pages.Checkout />} />
-      <Route path="admin">
-        <Route path="products" element={<Pages.AdminProducts />} />
-      </Route>
-    </Routes>
-    <Footer />
-    </>
+    <div className='min-h-screen flex flex-col'>
+      <div className="flex-grow">
+        <Navbar />
+        <Routes>
+          <Route index path="*" element={<Pages.NotFound />} />      
+          <Route index path="/" element={<Pages.LandingPage />} />
+          <Route index path="/produce" element={<Pages.Produce />} />
+          <Route index path="/test" element={<Pages.TestPage />} />
+          <Route index path="/checkout" element={<Pages.Checkout />} />
+          <Route path="admin">
+            <Route path="products" element={<Pages.AdminProducts />} />
+          </Route>
+        </Routes>
+      </div>    
+      <Footer />
+    </div>
   )
 }
 
