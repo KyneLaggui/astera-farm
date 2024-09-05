@@ -1,9 +1,10 @@
-import { Mail } from "lucide-react";
-import React, { useState, useEffect, useRef } from "react";
+import { Mail, MessageCircle, MessageSquare } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
 import { Card, CardDescription, CardTitle } from "./ui/card";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Button } from "./ui/button";
 import { ScrollArea } from "./ui/scroll-area";
+import Messenger from "@src/assets/images/messenger.png";
 
 // Utility function to shuffle array (randomize FAQs)
 const shuffleArray = (array) => {
@@ -33,7 +34,7 @@ const ChatWidget = ({ faqs }) => {
       const botMessage = { type: "bot", content: faq.answer };
       setMessages((prev) => [...prev, botMessage]);
       setIsTyping(false);
-    }, 2000); // 2-second delay for bot response
+    }, 2000);
 
     setRandomFAQs(shuffleArray(faqs));
   };
@@ -56,12 +57,6 @@ const ChatWidget = ({ faqs }) => {
     scrollToBottom();
   }, [messages, isTyping]);
 
-  // Handle scroll event to show "Scroll Down" button
-  const handleScroll = (e) => {
-    const { scrollTop, scrollHeight, clientHeight } = e.target;
-    setShowScrollDown(scrollTop + clientHeight < scrollHeight);
-  };
-
   // Scroll to the bottom of the scroll area, only if ref exists
   const scrollToBottom = () => {
     if (scrollAreaRef.current) {
@@ -78,7 +73,7 @@ const ChatWidget = ({ faqs }) => {
           className="rounded-full flex items-center shadow-lg"
           onClick={toggleChat}
         >
-          <Mail className="mr-2" />
+          <MessageSquare className="mr-2" size={18} />
           {chatStarted ? "Open Facebook Messenger" : "Message Us"}
         </Button>
       </div>
@@ -96,24 +91,21 @@ const ChatWidget = ({ faqs }) => {
           <div className="flex flex-col">
             {/* Conditionally render ScrollArea if there are messages */}
             {messages.length > 0 && (
-              <ScrollArea
-                className="h-64 overflow-y-auto"
-                onScroll={handleScroll}
-              >
+              <ScrollArea className="h-64 overflow-y-auto">
                 {messages.map((msg, index) => (
                   <div
                     key={index}
                     ref={scrollAreaRef}
-                    className={`flex flex-col justify-end ${
+                    className={`flex flex-col justify-end  ${
                       msg.type === "user" ? "items-end" : "items-start"
                     }`}
                   >
                     <Button
                       variant={msg.type === "user" ? "secondary" : "default"}
-                      className={`my-2 p-2 text-wrap rounded-lg h-fit max-w-[200px] ${
+                      className={`my-2 p-2 text-wrap rounded-lg h-fit max-w-[200px]  ${
                         msg.type === "user"
-                          ? "text-right rounded-br-none"
-                          : "text-left rounded-bl-none"
+                          ? "text-right rounded-br-none w-auto"
+                          : "text-left rounded-bl-none w-auto"
                       }`}
                     >
                       {msg.content}
@@ -123,15 +115,21 @@ const ChatWidget = ({ faqs }) => {
 
                 {/* Typing Effect */}
                 {isTyping && (
-                  <div className="text-left text-gray-400 mt-2">Typing...</div>
+                  <div className="text-left bg-muted py-3 mb-2 px-4 w-fit rounded-full rounded-bl-none text-gray-400">
+                    <div className="bouncing-loader">
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                    </div>
+                  </div>
                 )}
               </ScrollArea>
             )}
 
             <div ref={scrollAreaRef}></div>
 
-            <ScrollArea>
-              <div className="flex flex-col gap-1 w-full h-32 border-t-2 pt-2">
+            <ScrollArea className="border-t-2">
+              <div className="flex flex-col gap-1 w-full h-32  pt-2">
                 {randomFAQs.map((faq, index) => (
                   <Button
                     key={index}
@@ -146,7 +144,12 @@ const ChatWidget = ({ faqs }) => {
             </ScrollArea>
           </div>
 
-          <Button className="w-full mt-4 py-2" onClick={openFacebookMessenger}>
+          <Button className="w-full flex gap-2" onClick={openFacebookMessenger}>
+            <img
+              src={Messenger}
+              alt="messenger-icon"
+              className="max-w-[24px]"
+            />
             Continue on Messenger
           </Button>
         </Card>
