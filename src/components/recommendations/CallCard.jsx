@@ -5,7 +5,7 @@ import CallImg from "@src/assets/images/call-us.png";
 
 const CallCard = ({ minutes, amount }) => {
   return (
-    <div className="group bg-yellow text-green-950 hover:bg-green hover:text-white sm:w-fit w-full flex flex-col items-center gap-4 px-7 py-3 rounded-3xl cursor-pointer">
+    <div className="group bg-yellow text-green-950 hover:bg-green hover:text-white sm:w-fit w-full flex flex-col items-center gap-4 px-7 py-3 rounded-3xl cursor-pointer transition-transform duration-300 ease-in-out hover:scale-105">
       <h1 className="font-spartan text-2xl font-extrabold uppercase ">
         {minutes} Minutes
       </h1>
@@ -28,7 +28,7 @@ const CallCard = ({ minutes, amount }) => {
 
 CallCard.propTypes = {
   minutes: PropTypes.number.isRequired,
-  amount: PropTypes.number.isRequired,
+  amount: PropTypes.string.isRequired,
 };
 
 export default CallCard;
