@@ -21,14 +21,14 @@ const ProductView = ({ isOpen, onClose, product }) => {
                       <h1 className="font-gothic text-center sm:text-start lg:text-start text-5xl md:text-7xl lg:text-8xl xl:text-9xl uppercase tracking-wide ">{product.name}</h1>
                       <p className='font-spartan text-center sm:text-start text-xl md:text-2xl xl:text-3xl font-medium xl:max-w-[800px]'>{product.description}</p>  
                       <ul className="list-disc p-0 flex flex-col flex-wrap gap-4 ml-5">
-                        {product.categories.map((category, index) => (
+                        {product.attributes.map((category, index) => (
                           <li key={index} className="font-spartan font-extrabold text-xl md:text-2xl xl:text-3xl uppercase">
                             {category}
                           </li>
                         ))}
                       </ul>
                       <div className='flex justify-between items-center flex-wrap gap-4 lg:items-start lg:flex-col'>
-                        <p className="font-spartan sm:text-xl text-lg lg:text-2xl font-medium tracking-wider">Price is per {product.weight}</p>
+                        <p className="font-spartan sm:text-xl text-lg lg:text-2xl font-medium tracking-wider">{product.sellMethod}</p>
                         <h1 className="font-spartan font-bold text-4xl md:text-5xl xl:text-6xl uppercase tracking-wide ">₱{product.price}</h1>
                       </div>
                       
