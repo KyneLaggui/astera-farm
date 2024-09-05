@@ -4,7 +4,7 @@ import { CircleChevronLeft } from "lucide-react";
 import Health1 from "@src/assets/images/health-1.png";
 import Health2 from "@src/assets/images/health-2.png";
 import Health3 from "@src/assets/images/health-3.png";
-import EveryRecoCard from "@src/components/recommendations/EveryRecoCard";
+import EveryHealthCard from "@src/components/recommendations/EveryHealthCard";
 import { Link } from "react-router-dom";
 
 const Health = () => {
@@ -38,17 +38,17 @@ const Health = () => {
             </p>
           </div>
           <div className="flex flex-col items-center flex-wrap sm:flex-row gap-6 w-full justify-center">
-            <EveryRecoCard
+            <EveryHealthCard
               image={Health1}
               title="Bodybuilding & FITNESS"
-              description="Furthermore, bodybuilding is associated with improved bone density, joint health, and posture. The discipline required in maintaining a structured workout routine and adhering to a balanced diet can positively impact mental health"
+              description="Furthermore, bodybuilding is associated with improved bone density, joint health, and posture. The discipline required in maintaining a structured workout routine and adhering to a balanced diet can positively impact mental health "
             />
-            <EveryRecoCard
+            <EveryHealthCard
               image={Health2}
               title="nutrition"
               description="The body obtains and utilizes nutrients from food through a complex process that involves digestion, absorption, and metabolism. Once ingested, food is broken down in the digestive system into essential nutrients, such as carbohydrates, proteins, fats, vitamins, and minerals"
             />
-            <EveryRecoCard
+            <EveryHealthCard
               image={Health3}
               title="detox"
               description="While the body has its natural detoxification mechanisms through the liver and kidneys, some people engage in specific diets, fasting, or other wellness practices with the belief that it helps rid the body of accumulated toxins."
