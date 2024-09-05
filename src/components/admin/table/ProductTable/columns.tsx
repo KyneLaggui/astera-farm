@@ -1,7 +1,4 @@
-// import { Tag } from "@/app/custom_components/Tag";
-import { Button } from "@src/components/ui/button";
-import { useReactTable } from "@tanstack/react-table";
-import { ArrowDown, ArrowUp } from "lucide-react";
+import { ArrowDown, ArrowUp, MoreHorizontalIcon } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,15 +7,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@src/components/ui/dropdown-menu";
-// import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import { TableCell } from "@src/components/TableCell";
+import EditProductDialog from "@src/components/admin/modal/EditProduct";
+import ConfirmDeleteDialog from "@src/components/admin/modal/ConfirmProductDelete";
+import { useState } from "react";
 
-
+// Helper function to capitalize the first letter
 const capitalizeFirstLetter = (str) => {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 };
 
-// Define the shape of data
+// Define the shape of data and columns
 export const columns = [
   {
     accessorKey: "id",
@@ -71,59 +70,95 @@ export const columns = [
     ),
     cell: ({ row }) => <TableCell>{row.original.price}</TableCell>,
   },
- 
   {
     accessorKey: "description",
     header: ({ column }) => (
-      <p
-        className="flex items-center gap-1 cursor-pointer hover:text-red-500"
-      >
-        Description      
+      <p className="flex items-center gap-1 cursor-pointer hover:text-red-500">
+        Description
       </p>
     ),
-    cell: ({ row }) => <div>Description</div>,
+    cell: ({ row }) => <TableCell>{row.original.description}</TableCell>,
   },
   {
-    accessorKey: "sell_method",
+    accessorKey: "sellMethod",
     header: ({ column }) => (
-      <p
-        className="flex items-center gap-1 cursor-pointer hover:text-red-500"
-      >
+      <p className="flex items-center gap-1 cursor-pointer hover:text-red-500">
         Sell Method
       </p>
     ),
-    cell: ({ row }) => <TableCell>{row.original.sell_method}</TableCell>,
+    cell: ({ row }) => <TableCell>{row.original.sellMethod}</TableCell>,
   },
   {
     accessorKey: "attributes",
     header: "Attributes",
-    cell: ({ row }) => <TableCell>{row.original.attributes}</TableCell>,
+    cell: ({ row }) => {
+      const attributesArray = row.original.attributes;
+      return (
+        <TableCell>
+          [{Array.isArray(attributesArray)
+            ? attributesArray.map((attr) => `"${attr}"`).join(", ")
+            : ""}]
+        </TableCell>
+      );
+    },
   },
-  // {
-  //   accessorKey: "actions",
-  //   header: "Actions",
-  //   cell: ({ row }) => {
-  //     const user = row.original;
-  //     return (
-  //       <DropdownMenu>
-  //         <DropdownMenuTrigger>
-  //           {/* <MoreHorizIcon className="h-4 w-4" /> */}
-  //           <div>okay</div>
-  //         </DropdownMenuTrigger>
-  //         <DropdownMenuContent>
-  //           <DropdownMenuLabel>
-  //             {user.first_name} {user.last_name}
-  //           </DropdownMenuLabel>
-  //           <DropdownMenuSeparator />
-  //           <DropdownMenuItem
-  //             onClick={() => deleteAccountWithId(user.id)}
-  //             className="cursor-pointer"
-  //           >
-  //             Delete
-  //           </DropdownMenuItem>
-  //         </DropdownMenuContent>
-  //       </DropdownMenu>
-  //     );
-  //   },
-  // },
+  {
+    accessorKey: "actions",
+    header: "Actions",
+    cell: ({ row }) => {
+      const product = row.original;
+
+      // For Edit Dialog
+      const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+      const handleEditClick = () => {
+        setIsEditDialogOpen(true);
+      };
+      const handleDialogClose = () => {
+        setIsEditDialogOpen(false);
+      };
+
+      // For Confirm Delete Dialog
+      const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+      const handleDeleteDialogOpen = () => {
+        setIsDeleteDialogOpen(true);
+      };
+      
+      const handleDeleteDialogClose = () => {
+        setIsDeleteDialogOpen(false);
+      };
+
+      return (
+        <>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <MoreHorizontalIcon className="h-4 w-4" />
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuLabel>{product.name}</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                className="cursor-pointer"
+                onClick={handleEditClick}
+              >
+                Edit
+              </DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer" onClick={handleDeleteDialogOpen}>Delete</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+          <EditProductDialog
+            product={product}
+            isEditDialogOpen={isEditDialogOpen}
+            onDialogClose={handleDialogClose}
+            onProductUpdated={handleDialogClose}
+          />          
+          <ConfirmDeleteDialog 
+            product={product}
+            isDeleteDialogOpen={isDeleteDialogOpen}
+            onDialogClose={handleDeleteDialogClose}
+            onProductUpdated={handleDeleteDialogClose}
+          />
+        </>
+      );
+    },
+  },
 ];

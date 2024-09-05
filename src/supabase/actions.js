@@ -41,3 +41,18 @@ export const signInWithEmailAndPassword = async (email, password) => {
 export const signOut = async () => {
   await supabase.auth.signOut();
 };
+
+export const editProfile = async (email, username) => {
+  const { data, error } = await supabase
+  .from('profile')
+  .update({
+    username: username,
+  })
+  .eq('email', email)
+
+  if (error) {
+    return null
+  }
+
+  return data
+};

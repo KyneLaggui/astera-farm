@@ -16,17 +16,20 @@ import {
   TableHeader,
   TableRow,
 } from "@src/components/ui/table";
+import { useSelector } from "react-redux";
 import { DataTablePagination } from "@src/components/TablePagination";
+import { selectProducts } from "@src/redux/slice/productsSlice";
 import React, { useState, useEffect } from 'react';
 import DataTableToolbar from "./data-table-toolbar";
 
-function DataTable({ columns, data }) {
+function DataTable({ columns }) {
   const [sorting, setSorting] = useState([]); // sorting
   const [columnFilters, setColumnFilters] = useState([]); // filtering
   const [allData, setAllData] = useState([]);
+  const products = useSelector(selectProducts); // Select products from Redux state
 
   const table = useReactTable({
-    data,
+    data: allData,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(), // pagination
@@ -43,13 +46,13 @@ function DataTable({ columns, data }) {
   });
 
   useEffect(() => {
-    if (data) {
-      setAllData(data);
+    if (products) {      
+      setAllData(products);
     }
-  }, [data]);
+  }, [products]);
 
   return (
-    <div className="flex flex-col gap-4 max-w-3xl">
+    <div className="flex flex-col gap-4 max-w-5xl">
       <DataTableToolbar table={table} allData={allData} />
       <div className="rounded-md border">
         <Table>
@@ -99,7 +102,7 @@ function DataTable({ columns, data }) {
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} />
+      {/* <DataTablePagination table={table} /> */}
     </div>
   );
 }

@@ -1,15 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@src/components/ui/dialog";
 import { Input } from '@src/components/ui/input';
 import { Label } from '@src/components/ui/label';
 import { Button } from '@src/components/ui/button';
 import { Check, EyeIcon, EyeOffIcon, Pencil } from 'lucide-react';
+import { editProfile } from '@src/supabase/actions';
+import FetchUserProfile from '@src/custom-hooks/fetchUserProfile';
 
 const EditProfileDialog = ({ isOpen, onClose }) => {
   const [profile, setProfile] = useState({
-    username: 'mordecool',
-    email: 'jason@gmail.com',
-    password: 'jasoncool',
+    username: '',
+    email: '',
+    password: '',
   });
 
   const [editableFields, setEditableFields] = useState({
@@ -18,6 +20,8 @@ const EditProfileDialog = ({ isOpen, onClose }) => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
+
+  const { userData } = FetchUserProfile();
 
   const handleEditClick = (field) => {
     setEditableFields(prevState => ({
@@ -34,11 +38,31 @@ const EditProfileDialog = ({ isOpen, onClose }) => {
     }));
   };
 
+  const handleSubmit = async(e) => {
+    e.preventDefault();
+    const { email, username } = profile;
+    const result = await editProfile(email, username);
+    if (result) {
+      onClose()      
+    }
+  }
+
   const getInputClass = (isEditable) => {
     return isEditable 
       ? "border p-2 focus:outline-none"
       : "border-none p-2 bg-transparent focus:outline-none focus-visible:ring-transparent cursor-text"; 
   };
+
+  useEffect(() => {
+    if (userData) {
+      setProfile({
+        username: userData.username,
+        email: userData.email,
+        password: userData.password,
+      });
+    }
+
+  }, [userData])
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -99,7 +123,7 @@ const EditProfileDialog = ({ isOpen, onClose }) => {
               </Button>
             </div>
           </div>
-          <Button type="submit" className="w-full" onClick={onClose}>Save Changes</Button>
+          <Button type="submit" className="w-full" onClick={handleSubmit}>Save Changes</Button>
         </div>
       </DialogContent>
     </Dialog>
