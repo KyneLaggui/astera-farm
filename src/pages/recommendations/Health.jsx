@@ -1,6 +1,6 @@
 import backgroundImage from "@src/assets/images/background-image.png";
 import HealthImg from "@src/assets/images/health.png";
-import { ChevronLeft, CircleChevronLeft, StepBack } from "lucide-react";
+import { CircleChevronLeft } from "lucide-react";
 import Health1 from "@src/assets/images/health-1.png";
 import Health2 from "@src/assets/images/health-2.png";
 import Health3 from "@src/assets/images/health-3.png";
