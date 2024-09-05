@@ -1,4 +1,4 @@
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { ChevronLeftIcon, ChevronRightIcon, ChevronsRightIcon, ChevronsLeftIcon } from "lucide-react";
 import { Button } from "@src/components/ui/button";
 import {
   Select,
@@ -44,7 +44,7 @@ export function DataTablePagination({ table }) {
             disabled={!table.getCanPreviousPage()}
           >
             <span className="sr-only">Go to first page</span>
-            <ChevronLeftIcon className="h-4 w-4" />
+            <ChevronsLeftIcon className="h-4 w-4 cursor-pointer" />
           </Button>
           <Button
             variant="outline"
@@ -53,7 +53,7 @@ export function DataTablePagination({ table }) {
             disabled={!table.getCanPreviousPage()}
           >
             <span className="sr-only">Go to previous page</span>
-            <ChevronLeftIcon className="h-4 w-4" />
+            <ChevronLeftIcon className="h-4 w-4 cursor-pointer" />
           </Button>
           <Button
             variant="outline"
@@ -62,7 +62,7 @@ export function DataTablePagination({ table }) {
             disabled={!table.getCanNextPage()}
           >
             <span className="sr-only">Go to next page</span>
-            <ChevronRightIcon className="h-4 w-4" />
+            <ChevronRightIcon className="h-4 w-4 cursor-pointer" />
           </Button>
           <Button
             variant="outline"
@@ -71,7 +71,7 @@ export function DataTablePagination({ table }) {
             disabled={!table.getCanNextPage()}
           >
             <span className="sr-only">Go to last page</span>
-            <ChevronRightIcon className="h-4 w-4" />
+            <ChevronsRightIcon className="h-4 w-4" />
           </Button>
         </div>
       </div>

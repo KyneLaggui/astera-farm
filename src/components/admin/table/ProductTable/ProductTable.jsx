@@ -19,6 +19,7 @@ export default function ProductTable() {
         attributes: product.attributes,
         price: product.price,
       }));
+
       dispatch(SET_PRODUCTS({ products: allProducts })); // Dispatch to Redux
     }
     

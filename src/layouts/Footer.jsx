@@ -6,7 +6,7 @@ import { CircleChevronRight } from 'lucide-react'
 
 const Footer = () => {
   return (
-    <div className='w-full bg-[#ffe500] flex flex-col gap-4 p-7 sm:p-5 items-center lg:flex-row lg:justify-around lg:items-stretch rounded-t-3xl'>        
+    <div className='w-full bg-[#ffe500] flex flex-col gap-4 p-7 sm:p-5 items-center lg:flex-row lg:justify-around lg:items-stretch rounded-t-3xl mt-3'>        
         {/* Left Side */}
         <div className='flex w-full sm:w-fit lg:justify-between sm:flex-col flex-between items-center lg:items-start justify-start gap-4 '>
             <img src={Logo} alt='Logo' className='w-[160px] sm:w-[200px] object-contain'/>
