@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -60,7 +58,6 @@
     --chart-5: 340 75% 55%;
   }
 }
-
 body {
   min-height: 100vh;
 }
@@ -72,8 +69,10 @@ body {
 }
 
 .navbar-spacing {
-  padding-block: 6rem;
+  padding-top: 6rem;
+  padding-bottom: 2rem;
   padding-inline: 1rem;
+  min-height: calc(100vh - 196px);
 }
 
 .line-clamp {
@@ -84,25 +83,25 @@ body {
 }
 
 .text-container {
-  word-break: break-word; 
+  word-break: break-word;
   overflow-wrap: break-word;
 }
 
 body {
-  font-family: 'Geist', sans-serif;
+  font-family: "Geist", sans-serif;
 }
 
 @screen sm {
   .text-stroke {
-      -webkit-text-stroke: 6px #e39a1f;
-      text-stroke: 6px #e39a1f;
+    -webkit-text-stroke: 6px #e39a1f;
+    text-stroke: 6px #e39a1f;
   }
 }
 
 @screen md {
   .text-stroke {
-      -webkit-text-stroke: 10px #e39a1f;
-      text-stroke: 10px #e39a1f;
+    -webkit-text-stroke: 10px #e39a1f;
+    text-stroke: 10px #e39a1f;
   }
 }
 
@@ -113,4 +112,34 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.bouncing-loader {
+  display: flex;
+  justify-content: center;
+}
+
+.bouncing-loader > div {
+  width: 6px;
+  height: 6px;
+  margin: 2px 2px;
+  border-radius: 50%;
+  background-color: #a3a1a1;
+  opacity: 1;
+  animation: bouncing-loader 0.6s infinite alternate;
+}
+
+@keyframes bouncing-loader {
+  to {
+    opacity: 0.1;
+    transform: translateY(-3px);
+  }
+}
+
+.bouncing-loader > div:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.bouncing-loader > div:nth-child(3) {
+  animation-delay: 0.4s;
 }

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Dialog, DialogContent, DialogFooter, DialogTitle } from "@src/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogTitle, DialogDescription } from "@src/components/ui/dialog";
 import { Button } from "@src/components/ui/button";
 import { Label } from "@src/components/ui/label";
 import { Input } from "@src/components/ui/input";
@@ -29,6 +29,7 @@ const AddAddressDialog = ({ open, onClose }) => {
       
       <DialogContent>
         <DialogTitle>Add New Address</DialogTitle>
+        <DialogDescription>To keep your details up to date for seamless service.</DialogDescription>
         <ScrollArea className="space-y-2 max-h-[350px] sm:max-h-full">
           <div className="px-1">
             <div className="space-y-1">

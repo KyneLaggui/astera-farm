@@ -49,7 +49,7 @@ const CartProducts = ({ image, title, amount, initialQuantity }) => {
                 </div>
             </div>
 
-            <CircleMinus className='h-5 w-5 cursor-pointer'/>
+            <CircleMinus className='h-4 w-4 cursor-pointer text-red-500'/>
             </div>
 
       </CardContent>
