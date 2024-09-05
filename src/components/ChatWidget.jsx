@@ -102,7 +102,7 @@ const ChatWidget = ({ faqs }) => {
                   >
                     <Button
                       variant={msg.type === "user" ? "secondary" : "default"}
-                      className={`my-2 p-2 text-wrap rounded-lg h-fit max-w-[200px]  ${
+                      className={`my-2 p-2 text-wrap rounded-lg h-fit max-w-[250px]  ${
                         msg.type === "user"
                           ? "text-right rounded-br-none w-auto"
                           : "text-left rounded-bl-none w-auto"
