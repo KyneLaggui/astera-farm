@@ -13,7 +13,7 @@ const Recommendations = () => {
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
       <div className="flex flex-col justify-center items-center">
-        <h1 className="font-gothic text-[55px] sm:text-8xl md:text-9xl text-white text-center tracking-wide">
+        <h1 className="font-gothic text-[50px] sm:text-8xl md:text-9xl text-white text-center tracking-wide">
           RECOMMENDATIONS
         </h1>
         <p className="font-spartan font-semibold max-w-[350px] sm:max-w-full text-sm text-white tracking-widest text-center">
