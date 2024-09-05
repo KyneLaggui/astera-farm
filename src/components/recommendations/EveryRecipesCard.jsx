@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
-const EveryRecoCard = ({ image, title, description }) => {
+const EveryRecipesCard = ({ image, title, description }) => {
   return (
-    <div className="cursor-pointer rounded-3xl max-w-[300px] hover:max-w-[500px] h-full min-h-[460px] flex flex-col transition-all duration-300 ease-in-out ">
+    <div className="cursor-pointer rounded-3xl max-w-[300px] hover:max-w-[500px] h-full min-h-[400px] flex flex-col transition-all duration-300 ease-in-out ">
       <img
         src={image}
         className="h-full max-h-[180px] w-full object-cover rounded-t-3xl"
@@ -19,10 +19,10 @@ const EveryRecoCard = ({ image, title, description }) => {
   );
 };
 
-EveryRecoCard.propTypes = {
+EveryRecipesCard.propTypes = {
   image: PropTypes.string.isRequired,
   title: PropTypes.string.isRequired,
   description: PropTypes.string.isRequired,
 };
 
-export default EveryRecoCard;
+export default EveryRecipesCard;
