@@ -1,4 +1,3 @@
-import { Button } from "@src/components/ui/button";
 import { ArrowDown, ArrowUp, MoreHorizontalIcon } from "lucide-react";
 import {
   DropdownMenu,
@@ -10,6 +9,7 @@ import {
 } from "@src/components/ui/dropdown-menu";
 import { TableCell } from "@src/components/TableCell";
 import EditProductDialog from "@src/components/admin/modal/EditProduct";
+import ConfirmDeleteDialog from "@src/components/admin/modal/ConfirmProductDelete";
 import { useState } from "react";
 
 // Helper function to capitalize the first letter
@@ -107,14 +107,24 @@ export const columns = [
     header: "Actions",
     cell: ({ row }) => {
       const product = row.original;
-      const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
+      // For Edit Dialog
+      const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
       const handleEditClick = () => {
         setIsEditDialogOpen(true);
       };
-
       const handleDialogClose = () => {
         setIsEditDialogOpen(false);
+      };
+
+      // For Confirm Delete Dialog
+      const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+      const handleDeleteDialogOpen = () => {
+        setIsDeleteDialogOpen(true);
+      };
+      
+      const handleDeleteDialogClose = () => {
+        setIsDeleteDialogOpen(false);
       };
 
       return (
@@ -132,7 +142,7 @@ export const columns = [
               >
                 Edit
               </DropdownMenuItem>
-              <DropdownMenuItem className="cursor-pointer">Delete</DropdownMenuItem>
+              <DropdownMenuItem className="cursor-pointer" onClick={handleDeleteDialogOpen}>Delete</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
           <EditProductDialog
@@ -140,6 +150,12 @@ export const columns = [
             isEditDialogOpen={isEditDialogOpen}
             onDialogClose={handleDialogClose}
             onProductUpdated={handleDialogClose}
+          />          
+          <ConfirmDeleteDialog 
+            product={product}
+            isDeleteDialogOpen={isDeleteDialogOpen}
+            onDialogClose={handleDeleteDialogClose}
+            onProductUpdated={handleDeleteDialogClose}
           />
         </>
       );

@@ -2,18 +2,20 @@ import { Input } from "@src/components/ui/input";
 import { Button } from "@src/components/ui/button";
 import { X } from "lucide-react";
 import AddProductDialog from "@src/components/admin/modal/AddProduct"
+import { Plus } from "lucide-react";
 import { useState } from "react";
 
 function DataTableToolbar({ table, allData }) {
   const isFiltered = table.getState().columnFilters.length > 0;
 
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+
+  const handleDialogOpen = () => {
+    setIsAddDialogOpen(true);
+  };
 
   const handleDialogClose = () => {
-    setIsEditDialogOpen(false);
-  };
-  const downloadCSV = () => {
-    // Logic to download data as CSV
+    setIsAddDialogOpen(false);
   };
 
   return (
@@ -27,6 +29,12 @@ function DataTableToolbar({ table, allData }) {
           }
           className="max-w-sm"
         />
+        <Button variant="yellowish" size="sm" className="ml-auto" onClick={handleDialogOpen}> 
+          <div className="flex items-center gap-2">
+            Add Product
+            <Plus className="h-4 w-4" />
+          </div>
+        </Button>
         {isFiltered && (
           <Button
             variant="ghost"
@@ -39,7 +47,7 @@ function DataTableToolbar({ table, allData }) {
         )}        
       </div>
 
-      <AddProductDialog isEditDialogOpen={isEditDialogOpen} onDialogClose={handleDialogClose} />
+      <AddProductDialog isAddDialogOpen={isAddDialogOpen} onDialogClose={handleDialogClose} />
     </div>
   );
 }

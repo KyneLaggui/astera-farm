@@ -10,7 +10,7 @@ import { useDispatch } from 'react-redux';
 import { ADD_PRODUCT } from '@src/redux/slice/productsSlice';
 
 
-function AddProduct({ isEditDialogOpen, onDialogClose }) {
+function AddProduct({ isAddDialogOpen, onDialogClose }) {
   const [newProduct, setNewProduct] = useState({});
   const [attributes, setAttributes] = useState([]);
   const [attributeInput, setAttributeInput] = useState("");
@@ -106,7 +106,9 @@ function AddProduct({ isEditDialogOpen, onDialogClose }) {
             attributes: insertResult.data.attributes,
             price: insertResult.data.price,  
           }
-        }));        
+        }));    
+      
+      onDialogClose()
       }
     }
   ;
@@ -124,15 +126,7 @@ function AddProduct({ isEditDialogOpen, onDialogClose }) {
   };
 
   return (
-    <Dialog open={isEditDialogOpen} onOpenChange={onDialogClose}>
-      <DialogTrigger asChild>
-        <Button variant="yellowish" size="sm" className="ml-auto">
-          <div className="flex items-center gap-2">
-            Add Product
-            <Plus className="h-4 w-4" />
-          </div>
-        </Button>
-      </DialogTrigger>
+    <Dialog open={isAddDialogOpen} onOpenChange={onDialogClose}>
       <DialogContent className="max-w-md p-0">
         <ScrollArea className="max-h-[80vh] w-full p-6">
           <div className="p-1">
