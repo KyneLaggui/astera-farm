@@ -19,8 +19,9 @@ import {
 import { useSelector } from "react-redux";
 import { DataTablePagination } from "@src/components/TablePagination";
 import { selectProducts } from "@src/redux/slice/productsSlice";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import DataTableToolbar from "./data-table-toolbar";
+import NoProduct from "@src/assets/images/NoProduct.png";
 
 function DataTable({ columns }) {
   const [sorting, setSorting] = useState([]); // sorting
@@ -46,13 +47,13 @@ function DataTable({ columns }) {
   });
 
   useEffect(() => {
-    if (products) {      
+    if (products) {
       setAllData(products);
     }
   }, [products]);
 
   return (
-    <div className="flex flex-col gap-4 max-w-5xl">
+    <div className="flex flex-col gap-4 max-w-[1200px]">
       <DataTableToolbar table={table} allData={allData} />
       <div className="rounded-md border">
         <Table>
@@ -90,12 +91,16 @@ function DataTable({ columns }) {
                 </TableRow>
               ))
             ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  No results.
+              <TableRow className="">
+                <TableCell colSpan={columns.length} className="w-[1200px] ">
+                  <div className="flex flex-col items-start sm:items-center">
+                    <img
+                      src={NoProduct}
+                      alt="No product picture"
+                      className="max-w-[300px]"
+                    />
+                    <p className="text-center">No products found</p>
+                  </div>
                 </TableCell>
               </TableRow>
             )}

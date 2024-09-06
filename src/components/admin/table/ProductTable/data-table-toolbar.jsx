@@ -1,7 +1,7 @@
 import { Input } from "@src/components/ui/input";
 import { Button } from "@src/components/ui/button";
 import { X } from "lucide-react";
-import AddProductDialog from "@src/components/admin/modal/AddProduct"
+import AddProductDialog from "@src/components/admin/modal/AddProduct";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 
@@ -29,7 +29,7 @@ function DataTableToolbar({ table, allData }) {
           }
           className="max-w-sm"
         />
-        <Button variant="yellowish" size="sm" className="ml-auto" onClick={handleDialogOpen}> 
+        <Button size="sm" className=" ml-auto" onClick={handleDialogOpen}>
           <div className="flex items-center gap-2">
             Add Product
             <Plus className="h-4 w-4" />
@@ -44,10 +44,13 @@ function DataTableToolbar({ table, allData }) {
             Reset
             <X className="ml-2 h-4 w-4" />
           </Button>
-        )}        
+        )}
       </div>
 
-      <AddProductDialog isAddDialogOpen={isAddDialogOpen} onDialogClose={handleDialogClose} />
+      <AddProductDialog
+        isAddDialogOpen={isAddDialogOpen}
+        onDialogClose={handleDialogClose}
+      />
     </div>
   );
 }

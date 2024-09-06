@@ -1,14 +1,16 @@
-import React from 'react'
-import ProductTable from '@src/components/admin/table/ProductTable/ProductTable'
+import React from "react";
+import ProductTable from "@src/components/admin/table/ProductTable/ProductTable";
+import { ScrollArea } from "@src/components/ui/scroll-area";
 
 const Products = () => {
   return (
-    <div className="mb-4">
-      <h1 className="font-gothic sm:text-7xl text-white tracking-wide mt-[100px]">PRODUCTS</h1>
+    <div className="flex flex-col sm:items-center gap-8 bg-black navbar-spacing">
+      <h1 className="font-gothic text-7xl sm:text-9xl text-white text-center tracking-wide">
+        PRODUCTS
+      </h1>
       <ProductTable />
     </div>
-    
-  )
-}
+  );
+};
 
-export default Products
+export default Products;
