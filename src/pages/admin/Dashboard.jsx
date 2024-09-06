@@ -85,7 +85,7 @@ const Dashboard = () => {
           <Card className="flex-1">
             {/* <CardTitle></CardTitle>
             <CardDescription></CardDescription> */}
-            <CardContent className="px-4 py-4 flex flex-col gap-2 min-w-[200px] h-full">
+            <CardContent className="px-4 py-4 flex flex-col justify-evenly min-w-[200px] h-full">
               <h1 className="text-3xl font-semibold">Earnings</h1>
               <p className="text-2xl text-yellow font-medium">₱10,000</p>
             </CardContent>
@@ -93,7 +93,7 @@ const Dashboard = () => {
           <Card className="flex-1">
             {/* <CardTitle></CardTitle>
             <CardDescription></CardDescription> */}
-            <CardContent className="px-4 py-4 flex flex-col gap-2 min-w-[200px] h-full">
+            <CardContent className="px-4 py-4 flex flex-col justify-evenly min-w-[200px] h-full">
               <h1 className="text-3xl font-semibold">Products</h1>
               <p className="text-2xl font-medium text-yellow">22</p>
             </CardContent>
@@ -101,7 +101,7 @@ const Dashboard = () => {
           <Card className="flex-1">
             {/* <CardTitle></CardTitle>
             <CardDescription></CardDescription> */}
-            <CardContent className="px-4 py-4 flex flex-col gap-2 min-w-[200px] h-full">
+            <CardContent className="px-4 py-4 flex flex-col justify-evenly min-w-[200px] h-full">
               <h1 className="text-3xl font-semibold">Orders</h1>
               <p className="text-2xl font-medium text-yellow">10</p>
             </CardContent>
