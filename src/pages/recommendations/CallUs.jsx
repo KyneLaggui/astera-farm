@@ -19,6 +19,7 @@ const CallUs = () => {
           className="object-cover w-full h-full xl:max-w-[800px] md:max-w-[600px]"
         />
       </div>
+      <div className="absolute inset-0 bg-black bg-opacity-55"></div>
       <div className="w-[1200px] flex flex-col gap-2 justify-center items-start p-4 z-10 ">
         <Link
           to="/recommendations"
@@ -29,7 +30,7 @@ const CallUs = () => {
         </Link>
         <div className="flex flex-col gap-10">
           <div className="flex flex-col justify-start items-start">
-            <div className="flex justify-start items-start">
+            <div className="flex justify-start items-center">
               <h1 className="font-gothic text-6xl sm:text-8xl md:text-9xl text-white tracking-wide leading-none">
                 BOOK A CALL
               </h1>

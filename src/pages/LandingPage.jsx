@@ -2,6 +2,8 @@ import backgroundImage from "@src/assets/images/background-image.png";
 import Title from "@src/components/landing-page/Title";
 import OrderProcess from "@src/components/landing-page/OrderProcess";
 import ChatWidget from "@src/components/ChatWidget";
+import Mars from "@src/assets/images/Planets/mars.png";
+import Moon from "@src/assets/images/Planets/moon.png";
 
 const LandingPage = () => {
   const faqs = [
@@ -57,10 +59,22 @@ const LandingPage = () => {
 
   return (
     <div
-      className="bg-cover bg-center min-h-screen h-full flex flex-col items-center navbar-spacing w-full "
+      className="relative bg-cover bg-center h-full flex flex-col items-center navbar-spacing overflow-hidden "
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
-      <div className="max-w-[1200px] flex flex-col gap-20">
+      <div className="absolute lg:top-[500px] lg:left-[-100px] md:top-[700px] md:left-[-100px] top-[600px] left-[-100px] ">
+        <img
+          src={Mars}
+          alt="Mars"
+          className="object-contain w-full h-full lg:max-w-[600px] sm:max-w-[500px] max-w-[300px] "
+        />
+      </div>
+      <div className="absolute lg:bottom-[-300px] lg:right-[-100px] bottom-[-300px] right-[-100px] ">
+        <img src={Moon} alt="Moon" className="object-contain w-full h-full " />
+      </div>
+
+      <div className="absolute inset-0 bg-black bg-opacity-55"></div>
+      <div className="max-w-[1200px] flex flex-col gap-20 z-10">
         <Title />
         <OrderProcess />
         <ChatWidget faqs={faqs} />

@@ -3,7 +3,7 @@ import React from "react";
 const MobileMenu = ({ isMobileMenuOpen, toggleMobileMenu }) => {
   return (
     <div
-      className={`z-10 fixed inset-0 bg-black text-yellow transform transition-transform ${
+      className={`z-30 fixed inset-0 bg-black text-yellow transform transition-transform ${
         isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
       } md:hidden`}
     >
