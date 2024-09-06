@@ -30,7 +30,7 @@ const CallUs = () => {
         </Link>
         <div className="flex flex-col gap-10">
           <div className="flex flex-col justify-start items-start">
-            <div className="flex justify-start items-start">
+            <div className="flex justify-start items-center">
               <h1 className="font-gothic text-6xl sm:text-8xl md:text-9xl text-white tracking-wide leading-none">
                 BOOK A CALL
               </h1>
