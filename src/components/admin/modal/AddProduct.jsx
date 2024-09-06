@@ -1,14 +1,22 @@
 import { useState } from "react";
 import { Input } from "@src/components/ui/input";
 import { Button } from "@src/components/ui/button";
-import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from "@src/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+} from "@src/components/ui/dialog";
 import { ScrollArea } from "@src/components/ui/scroll-area";
-import { Plus, Trash2 } from "lucide-react";
+import { CircleMinus } from "lucide-react";
 import { z } from "zod";
 import { supabase } from "@src/supabase/config";
-import { useDispatch } from 'react-redux';
-import { ADD_PRODUCT } from '@src/redux/slice/productsSlice';
-
+import { useDispatch } from "react-redux";
+import { ADD_PRODUCT } from "@src/redux/slice/productsSlice";
+import { Textarea } from "@src/components/ui/textarea";
 
 function AddProduct({ isAddDialogOpen, onDialogClose }) {
   const [newProduct, setNewProduct] = useState({});
@@ -42,20 +50,23 @@ function AddProduct({ isAddDialogOpen, onDialogClose }) {
           ...prevState,
           [name]: value,
         };
-      }     
+      }
     });
   };
 
   const productSchema = z.object({
     name: z.string().min(1, "Product name is required"),
-    price: z.number()
+    price: z
+      .number()
       .min(0, { message: "Price must be a non-negative number" }), // Ensures price is >= 0
     description: z.string().min(1, "Description is required"),
     sellMethod: z.string().min(1, "Sell method is required"),
     productIcon: z.any().refine((file) => file instanceof File, {
       message: "Product icon is required",
     }),
-    attributes: z.array(z.string()).min(1, { message: "At least one attribute is required" }) // Ensures the array is not empty
+    attributes: z
+      .array(z.string())
+      .min(1, { message: "At least one attribute is required" }), // Ensures the array is not empty
   });
 
   const handleSubmit = async () => {
@@ -63,13 +74,13 @@ function AddProduct({ isAddDialogOpen, onDialogClose }) {
       ...newProduct,
       attributes,
     });
-  
+
     if (!validationResult.success) {
       const fieldErrors = validationResult.error.formErrors.fieldErrors;
       setErrors(fieldErrors);
       return;
     }
-  
+
     const insertResult = await supabase
       .from("product")
       .insert({
@@ -81,7 +92,7 @@ function AddProduct({ isAddDialogOpen, onDialogClose }) {
       })
       .select()
       .single();
-  
+
     if (insertResult.error) {
       console.error("Error inserting new product:", insertResult.error.message);
       return null;
@@ -89,37 +100,36 @@ function AddProduct({ isAddDialogOpen, onDialogClose }) {
       console.log(newProduct);
       const logo = newProduct.productIcon;
       const logoFileExt = logo.name.split(".").pop();
-  
+
       const iconUpload = await supabase.storage
         .from("products")
         .upload(`public/${insertResult.data.id}.${logoFileExt}`, logo, {
           cacheControl: "3600",
           upsert: true,
         });
-      
-      dispatch(ADD_PRODUCT({
-        product: {
+
+      dispatch(
+        ADD_PRODUCT({
+          product: {
             id: insertResult.data.id,
             name: insertResult.data.name,
             description: insertResult.data.description,
             sellMethod: insertResult.data.sell_method,
             attributes: insertResult.data.attributes,
-            price: insertResult.data.price,  
-          }
-        }));    
-      
-        setNewProduct({});
-        setAttributes([]);
-        setAttributeInput("")
-        setImagePreview(null)
-        setErrors({})
-        
-        onDialogClose()
-      }
-    }
-  ;
-  
+            price: insertResult.data.price,
+          },
+        })
+      );
 
+      setNewProduct({});
+      setAttributes([]);
+      setAttributeInput("");
+      setImagePreview(null);
+      setErrors({});
+
+      onDialogClose();
+    }
+  };
   const handleAttributeAdd = () => {
     if (attributeInput.trim() !== "") {
       setAttributes([...attributes, attributeInput]);
@@ -162,7 +172,9 @@ function AddProduct({ isAddDialogOpen, onDialogClose }) {
                   onChange={onInputHandleChange}
                 />
                 {errors.productIcon && (
-                  <p className="text-red-500 text-sm mt-2">{errors.productIcon}</p>
+                  <p className="text-red-500 text-sm mt-2">
+                    {errors.productIcon}
+                  </p>
                 )}
               </div>
               <div className="mb-4">
@@ -195,16 +207,18 @@ function AddProduct({ isAddDialogOpen, onDialogClose }) {
               </div>
               <div className="mb-4">
                 <label className="block">Description</label>
-                <textarea
+                <Textarea
                   id="description"
                   placeholder="e.g. This product is..."
                   name="description"
-                  className="mt-2 p-2 w-full border rounded resize-none text-black"
+                  className="mt-2 p-2 w-full border rounded resize-none"
                   onChange={onInputHandleChange}
                   rows="4"
                 />
                 {errors.description && (
-                  <p className="text-red-500 text-sm mt-2">{errors.description}</p>
+                  <p className="text-red-500 text-sm mt-2">
+                    {errors.description}
+                  </p>
                 )}
               </div>
               <div className="mb-4">
@@ -218,7 +232,9 @@ function AddProduct({ isAddDialogOpen, onDialogClose }) {
                   onChange={onInputHandleChange}
                 />
                 {errors.sellMethod && (
-                  <p className="text-red-500 text-sm mt-2">{errors.sellMethod}</p>
+                  <p className="text-red-500 text-sm mt-2">
+                    {errors.sellMethod}
+                  </p>
                 )}
               </div>
               <div className="mb-4">
@@ -242,7 +258,9 @@ function AddProduct({ isAddDialogOpen, onDialogClose }) {
                   </Button>
                 </div>
                 {errors.attributes && (
-                  <p className="text-red-500 text-sm mt-2">{errors.attributes}</p>
+                  <p className="text-red-500 text-sm mt-2">
+                    {errors.attributes}
+                  </p>
                 )}
                 <ul className="mt-2 list-disc list-inside">
                   {attributes.map((attribute, index) => (
@@ -256,7 +274,7 @@ function AddProduct({ isAddDialogOpen, onDialogClose }) {
                         className="text-red-500 ml-2"
                         onClick={() => handleAttributeDelete(index)}
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <CircleMinus className="h-4 w-4" />
                       </button>
                     </li>
                   ))}
@@ -265,13 +283,9 @@ function AddProduct({ isAddDialogOpen, onDialogClose }) {
             </form>
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant="tertiary">Cancel</Button>
+                <Button variant="outline">Cancel</Button>
               </DialogClose>
-              <Button
-                variant="default"
-                className="ml-2"
-                onClick={handleSubmit}
-              >
+              <Button variant="default" className="ml-2" onClick={handleSubmit}>
                 Save
               </Button>
             </DialogFooter>

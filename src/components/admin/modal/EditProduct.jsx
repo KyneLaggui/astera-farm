@@ -12,35 +12,40 @@ import {
   DialogTrigger,
   DialogClose,
 } from "@src/components/ui/dialog";
-import { X, Trash2 } from "lucide-react";
+import { CircleMinus } from "lucide-react";
 import { supabase } from "@src/supabase/config";
 import { z } from "zod";
 import fetchProductUrl from "@src/custom-hooks/actions/fetchProductUrl";
 import { useDispatch } from "react-redux";
 import { UPDATE_PRODUCT } from "@src/redux/slice/productsSlice";
+import { Textarea } from "@src/components/ui/textarea";
 
-function EditProductDialog({ product, onProductUpdated, isEditDialogOpen, onDialogClose }) {
+function EditProductDialog({
+  product,
+  onProductUpdated,
+  isEditDialogOpen,
+  onDialogClose,
+}) {
   const [editProduct, setEditProduct] = useState({});
   const [attributes, setAttributes] = useState([]);
   const [attributeInput, setAttributeInput] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
   const [errors, setErrors] = useState({});
-  const dispatch = useDispatch(); 
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (product) {
       setEditProduct(product);
       setAttributes(product.attributes || []);
-      
+
       const fetchProductImage = async () => {
         const imageUrl = await fetchProductUrl(product.id);
         setImagePreview(imageUrl);
-      }
+      };
 
-      fetchProductImage()
+      fetchProductImage();
     }
   }, [product]);
-
 
   const onInputHandleChange = (event) => {
     const { name, type, value, files } = event.target;
@@ -65,65 +70,74 @@ function EditProductDialog({ product, onProductUpdated, isEditDialogOpen, onDial
           ...prevState,
           [name]: value,
         };
-      }     
+      }
     });
   };
 
   const productSchema = z.object({
     name: z.string().min(1, "Product name is required"),
-    price: z.number()
+    price: z
+      .number()
       .min(0, { message: "Price must be a non-negative number" }), // Ensures price is >= 0
     description: z.string().min(1, "Description is required"),
     sellMethod: z.string().min(1, "Sell method is required"),
   });
-  
-    const handleSubmit = async () => {
-      const validationResult = productSchema.safeParse(editProduct);
 
-      if (!validationResult.success) {
-        const fieldErrors = validationResult.error.formErrors.fieldErrors;
-        setErrors(fieldErrors);
-        return;
-      }
+  const handleSubmit = async () => {
+    const validationResult = productSchema.safeParse(editProduct);
 
-      const updateData = {
-        name: editProduct.name,
-        description: editProduct.description,
-        price: editProduct.price,
-        sell_method: editProduct.sellMethod,
-        attributes: attributes,
-      };
+    if (!validationResult.success) {
+      const fieldErrors = validationResult.error.formErrors.fieldErrors;
+      setErrors(fieldErrors);
+      return;
+    }
 
-      const updateResult = await supabase
-        .from("product")
-        .update(updateData)
-        .eq("id", product.id);
+    const updateData = {
+      name: editProduct.name,
+      description: editProduct.description,
+      price: editProduct.price,
+      sell_method: editProduct.sellMethod,
+      attributes: attributes,
+    };
 
-      if (updateResult.error) {
-        console.error("Error updating product:", updateResult.error.message);
-        return null;
-      }
+    const updateResult = await supabase
+      .from("product")
+      .update(updateData)
+      .eq("id", product.id);
 
-      if (editProduct.productIcon) {
-        const logoFileExt = editProduct.productIcon.name.split(".").pop();
-        await supabase.storage
-          .from("products")
-          .upload(`public/${product.id}.${logoFileExt}`, editProduct.productIcon, {
+    if (updateResult.error) {
+      console.error("Error updating product:", updateResult.error.message);
+      return null;
+    }
+
+    if (editProduct.productIcon) {
+      const logoFileExt = editProduct.productIcon.name.split(".").pop();
+      await supabase.storage
+        .from("products")
+        .upload(
+          `public/${product.id}.${logoFileExt}`,
+          editProduct.productIcon,
+          {
             cacheControl: "3600",
             upsert: true,
-          });
-      }
+          }
+        );
+    }
 
-      // Dispatch the updated product to Redux
-      dispatch(UPDATE_PRODUCT({
+    // Dispatch the updated product to Redux
+    dispatch(
+      UPDATE_PRODUCT({
         id: product.id,
         ...updateData,
         sellMethod: updateData.sell_method,
-        productIcon: editProduct.productIcon ? editProduct.productIcon : product.productIcon,
-      }));
+        productIcon: editProduct.productIcon
+          ? editProduct.productIcon
+          : product.productIcon,
+      })
+    );
 
-      onProductUpdated();
-    };
+    onProductUpdated();
+  };
 
   const handleAttributeAdd = () => {
     if (attributeInput.trim() !== "") {
@@ -167,7 +181,9 @@ function EditProductDialog({ product, onProductUpdated, isEditDialogOpen, onDial
                   onChange={onInputHandleChange}
                 />
                 {errors.productIcon && (
-                  <p className="text-red-500 text-sm mt-2">{errors.productIcon}</p>
+                  <p className="text-red-500 text-sm mt-2">
+                    {errors.productIcon}
+                  </p>
                 )}
               </div>
               <div className="mb-4">
@@ -202,17 +218,19 @@ function EditProductDialog({ product, onProductUpdated, isEditDialogOpen, onDial
               </div>
               <div className="mb-4">
                 <label className="block">Description</label>
-                <textarea
+                <Textarea
                   id="description"
                   placeholder="e.g. This product is..."
                   name="description"
-                  className="mt-2 p-2 w-full border rounded resize-none text-black"
+                  className="mt-2 p-2 w-full border rounded resize-none"
                   value={editProduct.description || ""}
                   onChange={onInputHandleChange}
                   rows="4"
                 />
                 {errors.description && (
-                  <p className="text-red-500 text-sm mt-2">{errors.description}</p>
+                  <p className="text-red-500 text-sm mt-2">
+                    {errors.description}
+                  </p>
                 )}
               </div>
               <div className="mb-4">
@@ -227,7 +245,9 @@ function EditProductDialog({ product, onProductUpdated, isEditDialogOpen, onDial
                   onChange={onInputHandleChange}
                 />
                 {errors.sellMethod && (
-                  <p className="text-red-500 text-sm mt-2">{errors.sellMethod}</p>
+                  <p className="text-red-500 text-sm mt-2">
+                    {errors.sellMethod}
+                  </p>
                 )}
               </div>
               <div className="mb-4">
@@ -262,7 +282,7 @@ function EditProductDialog({ product, onProductUpdated, isEditDialogOpen, onDial
                         className="text-red-500 ml-2"
                         onClick={() => handleAttributeDelete(index)}
                       >
-                        <Trash2 className="h-4 w-4" />
+                        <CircleMinus className="h-4 w-4" />
                       </button>
                     </li>
                   ))}
@@ -271,13 +291,9 @@ function EditProductDialog({ product, onProductUpdated, isEditDialogOpen, onDial
             </form>
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant="tertiary">Cancel</Button>
+                <Button variant="outline">Cancel</Button>
               </DialogClose>
-              <Button
-                variant="default"
-                className="ml-2"
-                onClick={handleSubmit}
-              >
+              <Button variant="default" className="ml-2" onClick={handleSubmit}>
                 Save Changes
               </Button>
             </DialogFooter>
