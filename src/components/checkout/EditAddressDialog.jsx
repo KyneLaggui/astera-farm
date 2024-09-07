@@ -22,7 +22,7 @@ const EditAddressDialog = ({ open, onClose, address, onSave }) => {
       if (address) {
         setFormData(address);
       } else {
-        setFormData({ name: '', phone: '', street: '', barangay: '', city: '', postalCode: '' });
+        setFormData({ recipientName: '', phone: '', street: '', barangay: '', city: '', postalCode: '' });
       }
     }, [address]);
   
@@ -38,13 +38,12 @@ const EditAddressDialog = ({ open, onClose, address, onSave }) => {
       setFormData((prev) => ({ ...prev, [name]: value }));
     };
   
-    const handleSubmit = async() => {
-      console.log(formData)
-      const editResult = await supabase
+    const handleSubmit = async () => {
+      const { data, error } = await supabase
         .from('shipping_address')
         .update({
-          name: formData.name,
-          phone_number: formData.phoneNumber,
+          recipient_name: formData.recipientName,
+          phone_number: formData.phone,
           street: formData.street,
           barangay: formData.barangay,
           city: formData.city,
@@ -52,13 +51,17 @@ const EditAddressDialog = ({ open, onClose, address, onSave }) => {
         })
         .eq('id', formData.id)
         .select()
-        .single()
-
-      if (!editResult.error) {
-        setEditableFields({ name: false, phoneNumber: false, street: false, barangay: false, city: false, postalCode: false });
+        .single();
+    
+      if (error) {
+        console.error(error);
+      } else {
+        onSave(data); // Call onSave with the updated address
+        setEditableFields({ recipientName: false, phoneNumber: false, street: false, barangay: false, city: false, postalCode: false });
         onClose();
-      }     
+      }
     };
+    
 
   if (!address) return null;
 
@@ -71,19 +74,19 @@ const EditAddressDialog = ({ open, onClose, address, onSave }) => {
             <div className="px-1">
               <div className="flex flex-col">
                   <label className="mb-2">
-                      Name
+                      Recipient Name
                   </label>
                   <div className="flex items-start gap-2">
                       <Input
-                      name="name"
-                      value={formData.name}
+                      name="recipientName"
+                      value={formData.recipientName}
                       onChange={handleChange}
                       placeholder="Name"
-                      readOnly={!editableFields.name}
-                      className={`mb-4 ${editableFields.name ? "border p-2 focus:outline-none" : "border-none p-2 bg-transparent focus:outline-none focus-visible:ring-transparent cursor-text"}`}
+                      readOnly={!editableFields.recipientName}
+                      className={`mb-4 ${editableFields.recipientName ? "border p-2 focus:outline-none" : "border-none p-2 bg-transparent focus:outline-none focus-visible:ring-transparent cursor-text"}`}
                       />
-                      <Button onClick={() => handleEditClick('name')}>
-                      {editableFields.name ? <Check size={16} /> : <Pencil size={16} />}
+                      <Button onClick={() => handleEditClick('recipientName')}>
+                      {editableFields.recipientName ? <Check size={16} /> : <Pencil size={16} />}
                       </Button>
                   </div>
               </div>
@@ -166,7 +169,7 @@ const EditAddressDialog = ({ open, onClose, address, onSave }) => {
               <div className="flex items-start gap-2">
                   <Input
                       name="postalCode"
-                      value={formData.postal_code}
+                      value={formData.postalCode}
                       onChange={handleChange}
                       placeholder="Postal Code"
                       readOnly={!editableFields.postalCode}

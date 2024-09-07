@@ -15,6 +15,7 @@ function App() {
           <Route index path="/produce" element={<Pages.Produce />} />
           <Route index path="/test" element={<Pages.TestPage />} />
           <Route index path="/checkout" element={<Pages.Checkout />} />
+          <Route index path="/checkout-paymongo" element={<Pages.CheckoutPayMongo />} />
           <Route index path="/tracking" element={<Pages.Tracking />} />
           <Route index path="/about-us" element={<Pages.AboutUs />} />
           <Route path="/recommendations" element={<Pages.Recommendations />} />

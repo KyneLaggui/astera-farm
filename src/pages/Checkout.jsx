@@ -9,8 +9,11 @@ import AddAddressDialog from "@src/components/checkout/AddAddressDialog";
 import { Pencil, Plus, Trash } from "lucide-react";
 import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogAction, AlertDialogCancel, AlertDialogTitle, AlertDialogDescription } from "@src/components/ui/alert-dialog";
 import fetchUserShippingAddress from "@src/custom-hooks/fetchUserShippingAddress";
+import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux"
 import { selectEmail } from "@src/redux/slice/authSlice";
+import { selectCartItems } from "@src/redux/slice/cartSlice";
+import { set } from "zod";
 
 const Checkout = () => {
   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -21,6 +24,8 @@ const Checkout = () => {
   const [userEmailState, setUserEmailState] = useState("");
 
   const userEmail = useSelector(selectEmail);
+  const userCart = useSelector(selectCartItems);
+  const navigate = useNavigate();
 
   const shippingAddress = fetchUserShippingAddress();
   const [addressData, setAddressData] = useState([]);
@@ -43,28 +48,41 @@ const Checkout = () => {
       return;
     }
   
-      const { data, error } = await supabase
-        .from("shipping_address")
-        .insert({
-          barangay: newAddress.barangay,
-          city: newAddress.city,
-          postal_code: newAddress.postalCode,
-          street: newAddress.street,
-          recipient_name: newAddress.name,
-          phone_number: newAddress.phoneNumber,
-          email: userEmailState,  
-        })
-        .select()
-        .single()
-      
-      if (error) {
-        console.log(error)
-      } else {
-        setAddressData((prev) => [...prev, { id: data.id, ...newAddress }]);
-        setIsAddDialogOpen(false);
-      }
+    const { data, error } = await supabase
+      .from("shipping_address")
+      .insert({
+        barangay: newAddress.barangay,
+        city: newAddress.city,
+        postal_code: newAddress.postalCode,
+        street: newAddress.street,
+        recipient_name: newAddress.recipientName,
+        phone_number: newAddress.phoneNumber,
+        email: userEmailState,  
+      })
+      .select()
+      .single()
+    
+    if (error) {
+      console.log(error)
+    } else {
+      setAddressData((prev) => [...prev, { id: data.id, ...newAddress }]);
+      setIsAddDialogOpen(false);
+    }
   };
 
+  const handleAddressUpdate = (updatedAddress) => {
+    setAddressData((prev) =>
+      prev.map((address) => (address.id === updatedAddress.id ? {
+        ...address,
+        recipientName: updatedAddress.recipient_name,
+        phone: updatedAddress.phone_number,
+        street: updatedAddress.street,
+        barangay: updatedAddress.barangay,
+        city: updatedAddress.city,
+        postalCode: updatedAddress.postal_code
+      } : address))
+    );
+  };
 
   const handleDeleteClick = (e, addressId) => {
     e.stopPropagation();
@@ -102,7 +120,7 @@ const Checkout = () => {
     if (shippingAddress) {
       const allShippingAddress = shippingAddress.map((address) => ({
         id: address.id,
-        name: address.recipient_name,
+        recipientName: address.recipient_name,
         phone: address.phone_number,
         street: address.street,
         barangay: address.barangay,
@@ -118,6 +136,19 @@ const Checkout = () => {
       setUserEmailState(userEmail);
     }
   }, [userEmail]);
+
+  useEffect(() => { 
+    if (userCart) {
+      const userCartData = userCart.map((item) => ({
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        quantity: item.cartQuantity,
+      }))
+
+      setProductData(userCartData);
+    }
+  }, [userCart]);
 
   return (
     <div
@@ -149,11 +180,11 @@ const Checkout = () => {
                 />
                 <div className="flex justify-between w-full">
                   <div>
-                    <h1 className="font-semibold text-lg">{address.name}</h1>
+                    <h1 className="font-semibold text-lg">{address.recipientName}</h1>
                     <p className="font-light text-sm text-muted-foreground truncate">
                       {formatAddress(address)}
                     </p>
-                    <p className="font-light text-sm text-muted-foreground">{address.phone}</p>
+                    <p className="font-light text-sm text-muted-foreground">{address.phoneNumber}</p>
                   </div>
                   <div className="flex gap-2">
                     <Pencil
@@ -189,7 +220,7 @@ const Checkout = () => {
           </Card>
         </CardContent>
         <CardFooter>
-          <Button className="w-full">Proceed to Payment</Button>
+          <Button className="w-full" onClick={() => navigate('/checkout-paymongo')}>Proceed to Payment</Button>
         </CardFooter>
       </Card>
 
@@ -198,6 +229,7 @@ const Checkout = () => {
         open={isEditDialogOpen}
         onClose={() => setIsEditDialogOpen(false)}
         address={addressData.find((addr) => addr.id === selectedAddress)}
+        onSave={handleAddressUpdate} // Pass the handleAddressUpdate function
       />
       <AddAddressDialog
         open={isAddDialogOpen}
