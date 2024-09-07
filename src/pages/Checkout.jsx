@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { supabase } from "@src/supabase/config";  // Import the Supabase client
 import backgroundImage from "@src/assets/images/background-image.png";
 import { Button } from "@src/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@src/components/ui/card";
@@ -7,6 +8,9 @@ import EditAddressDialog from "@src/components/checkout/EditAddressDialog";
 import AddAddressDialog from "@src/components/checkout/AddAddressDialog";
 import { Pencil, Plus, Trash } from "lucide-react";
 import { AlertDialog, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogAction, AlertDialogCancel, AlertDialogTitle, AlertDialogDescription } from "@src/components/ui/alert-dialog";
+import fetchUserShippingAddress from "@src/custom-hooks/fetchUserShippingAddress";
+import { useSelector } from "react-redux"
+import { selectEmail } from "@src/redux/slice/authSlice";
 
 const Checkout = () => {
   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -14,54 +18,13 @@ const Checkout = () => {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [addressToDelete, setAddressToDelete] = useState(null);
+  const [userEmailState, setUserEmailState] = useState("");
 
-  const initialAddressData = [
-    {
-      id: 1,
-      name: "Carlos Santos",
-      phone: "09178889900",
-      street: "789 P. Santos Street",
-      baranggay: "Barangay San Antonio",
-      postal_code: "1605",
-      city: "Pasig City",
-    },
-    {
-      id: 2,
-      name: "Andrea Reyes",
-      phone: "09223334455",
-      street: "123 C. Raymundo Avenue",
-      baranggay: "Barangay Rosario",
-      postal_code: "1609",
-      city: "Pasig City",
-    },
-    {
-      id: 3,
-      name: "Luis Gonzales",
-      phone: "09336667788",
-      street: "456 General Luna Street",
-      baranggay: "Barangay Ususan",
-      postal_code: "1630",
-      city: "Taguig City",
-    },
-  ];
+  const userEmail = useSelector(selectEmail);
 
-  const [addressData, setAddressData] = useState(initialAddressData);
-
-  const productData = [
-    {
-      id: 1,
-      name: "Leafy Vegetable",
-      price: 500,
-      quantity: 3,
-    },
-    {
-      id: 2,
-      name: "Root Vegetable",
-      price: 300,
-      quantity: 2,
-    },
-    // Add more products here if needed
-  ];
+  const shippingAddress = fetchUserShippingAddress();
+  const [addressData, setAddressData] = useState([]);
+  const [productData, setProductData] = useState([]);
 
   const handleAddressSelect = (id) => {
     setSelectedAddress((prev) => (prev === id ? null : id));
@@ -74,14 +37,34 @@ const Checkout = () => {
     }
   };
 
-  const handleAddClick = (e) => {
-    e.stopPropagation();
+  const handleAddClick = async (newAddress) => {
     if (addressData.length >= 3) {
       alert("Account is up to 3 addresses only, please delete an address first.");
       return;
     }
-    setIsAddDialogOpen(true);
+  
+      const { data, error } = await supabase
+        .from("shipping_address")
+        .insert({
+          barangay: newAddress.barangay,
+          city: newAddress.city,
+          postal_code: newAddress.postalCode,
+          street: newAddress.street,
+          recipient_name: newAddress.name,
+          phone_number: newAddress.phoneNumber,
+          email: userEmailState,  
+        })
+        .select()
+        .single()
+      
+      if (error) {
+        console.log(error)
+      } else {
+        setAddressData((prev) => [...prev, { id: data.id, ...newAddress }]);
+        setIsAddDialogOpen(false);
+      }
   };
+
 
   const handleDeleteClick = (e, addressId) => {
     e.stopPropagation();
@@ -89,19 +72,52 @@ const Checkout = () => {
     setIsDeleteDialogOpen(true);
   };
 
-  const handleDeleteConfirm = () => {
-    setAddressData((prev) => prev.filter((address) => address.id !== addressToDelete));
-    setSelectedAddress(null);
-    setIsDeleteDialogOpen(false);
+  const handleDeleteConfirm = async () => {
+    try {
+      const { error } = await supabase
+        .from("shipping_address")
+        .delete()
+        .eq("id", addressToDelete);
+
+      if (error) throw error;
+
+      setAddressData((prev) => prev.filter((address) => address.id !== addressToDelete));
+      setSelectedAddress(null);
+      setIsDeleteDialogOpen(false);
+
+    } catch (error) {
+      console.error("Error deleting address:", error.message);
+    }
   };
 
   const formatAddress = (address) => {
-    const fullAddress = `${address.street}, ${address.baranggay}, ${address.postal_code}, ${address.city}`;
+    const fullAddress = `${address.street}, ${address.barangay}, ${address.postalCode}, ${address.city}`;
     const maxLength = 30; 
     return fullAddress.length > maxLength
       ? `${fullAddress.slice(0, maxLength)}...`
       : fullAddress;
   };
+
+  useEffect(() => {
+    if (shippingAddress) {
+      const allShippingAddress = shippingAddress.map((address) => ({
+        id: address.id,
+        name: address.recipient_name,
+        phone: address.phone_number,
+        street: address.street,
+        barangay: address.barangay,
+        city: address.city,
+        postalCode: address.postal_code,
+      }))
+      setAddressData(allShippingAddress);
+    }
+  }, [shippingAddress]);
+
+  useEffect(() => {
+    if (userEmail) {
+      setUserEmailState(userEmail);
+    }
+  }, [userEmail]);
 
   return (
     <div
@@ -115,7 +131,7 @@ const Checkout = () => {
         </CardHeader>
         <CardContent className="flex flex-col gap-4 sm:flex-row min-h-[400px] sm:min-w-[600px] md:min-w-[800px]">
           <div className="flex flex-col gap-4 w-full">
-            <Card className="p-4 flex items-center h-[100px] justify-center cursor-pointer" onClick={handleAddClick}>
+            <Card className="p-4 flex items-center h-[100px] justify-center cursor-pointer" onClick={() => setIsAddDialogOpen(true)}>
               <Plus />
             </Card>
 
@@ -135,7 +151,7 @@ const Checkout = () => {
                   <div>
                     <h1 className="font-semibold text-lg">{address.name}</h1>
                     <p className="font-light text-sm text-muted-foreground truncate">
-                        {formatAddress(address)}
+                      {formatAddress(address)}
                     </p>
                     <p className="font-light text-sm text-muted-foreground">{address.phone}</p>
                   </div>
@@ -186,6 +202,7 @@ const Checkout = () => {
       <AddAddressDialog
         open={isAddDialogOpen}
         onClose={() => setIsAddDialogOpen(false)}
+        onAdd={handleAddClick}   // Pass the handleAddClick to the dialog
       />
       
       {/* Delete Confirmation Dialog */}

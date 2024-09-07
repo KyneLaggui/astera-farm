@@ -4,24 +4,25 @@ import { Button } from "@src/components/ui/button";
 import { Input } from "@src/components/ui/input";
 import { Check, Pencil } from "lucide-react";
 import { ScrollArea } from "@src/components/ui/scroll-area";
+import { supabase } from "@src/supabase/config";
 
 const EditAddressDialog = ({ open, onClose, address, onSave }) => {
-    const [formData, setFormData] = useState({ name: '', phone: '', street: '', baranggay: '', city: '', postal_code: '' });
+    const [formData, setFormData] = useState({ name: '', phone: '', street: '', barangay: '', city: '', postalCode: '' });
     const [editableFields, setEditableFields] = useState({
       name: false,
       address: false,
-      phone: false,
+      phoneNumber: false,
       street: false,
-      baranggay: false,
+      barangay: false,
       city: false,
-      postal_code: false,
+      postalCode: false,
     });
   
     useEffect(() => {
       if (address) {
         setFormData(address);
       } else {
-        setFormData({ name: '', phone: '', street: '', baranggay: '', city: '', postal_code: '' });
+        setFormData({ name: '', phone: '', street: '', barangay: '', city: '', postalCode: '' });
       }
     }, [address]);
   
@@ -37,10 +38,26 @@ const EditAddressDialog = ({ open, onClose, address, onSave }) => {
       setFormData((prev) => ({ ...prev, [name]: value }));
     };
   
-    const handleSubmit = () => {
-      onSave(formData);
-      setEditableFields({ name: false, phone: false, street: false, baranggay: false, city: false, postal_code: false });
-      onClose();
+    const handleSubmit = async() => {
+      console.log(formData)
+      const editResult = await supabase
+        .from('shipping_address')
+        .update({
+          name: formData.name,
+          phone_number: formData.phoneNumber,
+          street: formData.street,
+          barangay: formData.barangay,
+          city: formData.city,
+          postal_code: formData.postalCode,
+        })
+        .eq('id', formData.id)
+        .select()
+        .single()
+
+      if (!editResult.error) {
+        setEditableFields({ name: false, phoneNumber: false, street: false, barangay: false, city: false, postalCode: false });
+        onClose();
+      }     
     };
 
   if (!address) return null;
@@ -108,19 +125,19 @@ const EditAddressDialog = ({ open, onClose, address, onSave }) => {
               </div>
               <div className="flex flex-col">
               <label className="mb-2">
-                  Baranggay
+                  barangay
               </label>
               <div className="flex items-start gap-2">
                   <Input
-                      name="baranggay"
-                      value={formData.baranggay}
+                      name="barangay"
+                      value={formData.barangay}
                       onChange={handleChange}
-                      placeholder="Baranggay"
-                      readOnly={!editableFields.baranggay}
-                      className={`mb-4 ${editableFields.baranggay ? "border p-2 focus:outline-none" : "border-none p-2 bg-transparent focus:outline-none focus-visible:ring-transparent cursor-text"}`}
+                      placeholder="barangay"
+                      readOnly={!editableFields.barangay}
+                      className={`mb-4 ${editableFields.barangay ? "border p-2 focus:outline-none" : "border-none p-2 bg-transparent focus:outline-none focus-visible:ring-transparent cursor-text"}`}
                   />
-                  <Button onClick={() => handleEditClick('baranggay')}>
-                      {editableFields.baranggay ? <Check size={16} /> : <Pencil size={16} />}
+                  <Button onClick={() => handleEditClick('barangay')}>
+                      {editableFields.barangay ? <Check size={16} /> : <Pencil size={16} />}
                   </Button>
                   </div>
               </div>
@@ -148,15 +165,15 @@ const EditAddressDialog = ({ open, onClose, address, onSave }) => {
               </label>
               <div className="flex items-start gap-2">
                   <Input
-                      name="postal_code"
+                      name="postalCode"
                       value={formData.postal_code}
                       onChange={handleChange}
                       placeholder="Postal Code"
-                      readOnly={!editableFields.postal_code}
-                      className={`mb-4 ${editableFields.postal_code ? "border p-2 focus:outline-none" : "border-none p-2 bg-transparent focus:outline-none focus-visible:ring-transparent cursor-text"}`}
+                      readOnly={!editableFields.postalCode}
+                      className={`mb-4 ${editableFields.postalCode ? "border p-2 focus:outline-none" : "border-none p-2 bg-transparent focus:outline-none focus-visible:ring-transparent cursor-text"}`}
                   />
-                  <Button onClick={() => handleEditClick('postal_code')}>
-                      {editableFields.postal_code ? <Check size={16} /> : <Pencil size={16} />}
+                  <Button onClick={() => handleEditClick('postalCode')}>
+                      {editableFields.postalCode ? <Check size={16} /> : <Pencil size={16} />}
                   </Button>
                   </div>
               </div>

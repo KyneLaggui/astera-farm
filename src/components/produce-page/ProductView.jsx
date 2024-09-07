@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
-import { ADD_TO_CART, CALCULATE_SUBTOTAL } from '@src/redux/slice/cartSlice';
+import { ADD_TO_CART } from '@src/redux/slice/cartSlice';
 import { Drawer, DrawerContent, DrawerDescription, DrawerTitle } from '@src/components/ui/drawer';
 import Background from "@src/assets/images/BG-Products.png";
 import { ScrollArea } from '@src/components/ui/scroll-area';
@@ -33,7 +33,6 @@ const ProductView = ({ isOpen, onClose, product }) => {
       cartQuantity: validQuantity,
     };
     dispatch(ADD_TO_CART(productWithQuantity)); // Dispatch the action to add product to cart
-    dispatch(CALCULATE_SUBTOTAL())
   };
 
   return (
