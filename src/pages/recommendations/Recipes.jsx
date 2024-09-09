@@ -13,7 +13,8 @@ const Recipes = () => {
       className="bg-cover bg-center min-h-full flex justify-center items-center navbar-spacing w-full"
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
-      <div className="w-[1200px] flex flex-col gap-2 justify-center items-center p-4">
+      <div className="absolute inset-0 bg-black bg-opacity-55"></div>
+      <div className="w-[1200px] flex flex-col gap-2 justify-center items-center p-4 z-10">
         <Link
           to="/recommendations"
           className="flex gap-2 w-full items-center justify-start text-yellow text-base cursor-pointer transition-transform duration-300 ease-in-out hover:scale-105"

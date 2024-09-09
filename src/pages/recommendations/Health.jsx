@@ -6,14 +6,23 @@ import Health2 from "@src/assets/images/health-2.png";
 import Health3 from "@src/assets/images/health-3.png";
 import EveryHealthCard from "@src/components/recommendations/EveryHealthCard";
 import { Link } from "react-router-dom";
+import Mars from "@src/assets/images/Planets/mars.png";
 
 const Health = () => {
   return (
     <div
-      className="bg-cover bg-center min-h-full flex justify-center items-center navbar-spacing w-full"
+      className="relative overflow-hidden bg-cover bg-center min-h-full flex justify-center items-center navbar-spacing w-full"
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
-      <div className="w-[1200px] flex flex-col gap-2 justify-center items-center p-4">
+      <div className="absolute w-fit lg:top-[-50px] lg:right-[-100px] top-[-50px] right-[-150px]">
+        <img
+          src={Mars}
+          alt="Mars"
+          className="object-contain w-full h-full lg:max-w-[600px] md:max-w-[400px] max-w-[300px] "
+        />
+      </div>
+      <div className="absolute inset-0 bg-black bg-opacity-55"></div>
+      <div className="w-[1200px] flex flex-col gap-2 justify-center items-center p-4 z-10">
         <Link
           to="/recommendations"
           className="flex gap-2 w-full items-center justify-start text-yellow text-base cursor-pointer transition-transform duration-300 ease-in-out hover:scale-105"
