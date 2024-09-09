@@ -4,8 +4,9 @@ import MainLogo from "@src/assets/images/main-logo.png";
 
 import { supabase } from "@src/supabase/config";
 import { signOut } from '@src/supabase/actions';
-import { REMOVE_ACTIVE_USER, SET_ACTIVE_USER, selectIsLoggedIn } from '@src/redux/slice/authSlice';
+import { REMOVE_ACTIVE_USER, SET_ACTIVE_USER, selectIsAdmin, selectIsLoggedIn } from '@src/redux/slice/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import LoggedInOnlyComponent from '@src/layouts/component-restriction/LoggedInOnlyComponent';
 
 import {
   DropdownMenu,
@@ -35,6 +36,7 @@ import SignUpForm from '@src/components/navbar/SignUpForm';
 import MobileMenu from '@src/components/navbar/MobileMenu';
 import EditProfileDialog from '@src/components/navbar/EditProfileDialog';
 import AddToCartSheet from '@src/components/navbar/AddToCartSheet';
+import fetchAllOrders from '@src/custom-hooks/fetchAllOrders';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -42,6 +44,7 @@ const Navbar = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const isLoggedInRedux = useSelector(selectIsLoggedIn);
+  const allOrders = fetchAllOrders()
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -57,9 +60,11 @@ const Navbar = () => {
     setIsDialogOpen(false);
   };
 
+
   useEffect(() => {
     // This for listening to supabase auth state changes
     supabase.auth.onAuthStateChange((_event, session) => {
+      console.log('okay')
       if (session) {
         dispatch(
           SET_ACTIVE_USER({
@@ -95,9 +100,11 @@ const Navbar = () => {
           <a href="/recommendations" className="hover:text-white">Recommendations</a>
         </div>
 
-        <div className="flex items-center gap-4">
-          <AddToCartSheet />
-
+        <div className="flex items-center gap-4">                      
+          <LoggedInOnlyComponent forAdmin={false} forUser={true}>
+            <AddToCartSheet />
+          </LoggedInOnlyComponent>
+        
           {isLoggedIn ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>

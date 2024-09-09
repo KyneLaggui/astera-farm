@@ -15,12 +15,14 @@ function App() {
           <Route index path="/produce" element={<Pages.Produce />} />
           <Route index path="/test" element={<Pages.TestPage />} />
           <Route index path="/checkout" element={<Pages.Checkout />} />
+          <Route index path="/checkout-paymongo" element={<Pages.CheckoutPayMongo />} />
           <Route index path="/tracking" element={<Pages.Tracking />} />
           <Route index path="/about-us" element={<Pages.AboutUs />} />
           <Route path="/recommendations" element={<Pages.Recommendations />} />
           <Route path="/recommendations/health" element={<Pages.Health />} />
           <Route path="/recommendations/recipes" element={<Pages.Recipes />} />
           <Route path="/recommendations/call-us" element={<Pages.CallUs />} />
+          <Route path="/checkout-success" element={<Pages.Success />} />
           <Route path="admin">
             <Route path="products" element={<Pages.AdminProducts />} />
             <Route path="dashboard" element={<Pages.AdminDashboard />} />

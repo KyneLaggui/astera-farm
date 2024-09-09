@@ -4,6 +4,7 @@ const initialState = {
     isLoggedIn: false,
     email: null,
     userId: null,
+    isAdmin: false
 }
 
 const authSlice = createSlice({
@@ -15,11 +16,16 @@ const authSlice = createSlice({
             state.isLoggedIn = true;
             state.email = email;
             state.userId = userId;
+
+            if (email === "josephbuhain27@gmail.com") {
+                state.isAdmin = true
+            }
         },
-        REMOVE_ACTIVE_USER: (state, action) => {
+        REMOVE_ACTIVE_USER: (state) => {
             state.isLoggedIn = false;
             state.email = null;
             state.userId = null;
+            state.isAdmin = false;
         },
     },
 })
@@ -29,5 +35,6 @@ export const { SET_ACTIVE_USER, REMOVE_ACTIVE_USER } = authSlice.actions;
 export const selectIsLoggedIn = (state) => state.auth.isLoggedIn;
 export const selectEmail = (state) => state.auth.email;
 export const selectUserID = (state) => state.auth.userId;
+export const selectIsAdmin = (state) => state.auth.isAdmin;
 
 export default authSlice.reducer;

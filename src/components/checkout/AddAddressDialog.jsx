@@ -5,16 +5,15 @@ import { Label } from "@src/components/ui/label";
 import { Input } from "@src/components/ui/input";
 import { ScrollArea } from "@src/components/ui/scroll-area";
 
-const AddAddressDialog = ({ open, onClose }) => {
+const AddAddressDialog = ({ open, onClose, onAdd }) => {
 
   const [formData, setFormData] = useState({
     name: '',
-    number: '',
+    phoneNumber: '',
     street: '',
-    baranggay: '',
+    barangay: '',
     city: '',
-    postal_code: '',
-
+    postalCode: '',
   });
 
   const handleChange = (e) => {
@@ -24,46 +23,54 @@ const AddAddressDialog = ({ open, onClose }) => {
       [id]: value,
     }));
   };
+
+  const handleAddAddress = () => {
+    if (Object.values(formData).some(value => !value)) {
+      alert("Please fill out all fields.");
+      return;
+    }
+
+    onAdd(null, formData);  // Pass the new address data to the parent
+  };
+
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      
       <DialogContent>
         <DialogTitle>Add New Address</DialogTitle>
         <DialogDescription>To keep your details up to date for seamless service.</DialogDescription>
         <ScrollArea className="space-y-2 max-h-[350px] sm:max-h-full">
           <div className="px-1">
             <div className="space-y-1">
-              <Label htmlFor="name">Recepient Name</Label>
+              <Label htmlFor="name">Recipient Name</Label>
               <Input id="name" type="text" value={formData.name} onChange={handleChange} />
             </div>
             <div className="space-y-1">
-            <Label htmlFor="number">Phone Number</Label>
-              <Input id="number" type="number" value={formData.number} className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"  onChange={handleChange} />
+              <Label htmlFor="phoneNumber">Phone Number</Label>
+              <Input id="phoneNumber" type="number" value={formData.phoneNumber} className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" onChange={handleChange} />
             </div>
             <div className="space-y-1">
               <Label htmlFor="street">Street</Label>
               <Input id="street" type="text" value={formData.street} onChange={handleChange} />
             </div>
             <div className="space-y-1">
-              <Label htmlFor="baranggay">Baranggay</Label>
-              <Input id="baranggay" type="text" value={formData.baranggay} onChange={handleChange} />
+              <Label htmlFor="barangay">Barangay</Label>
+              <Input id="barangay" type="text" value={formData.barangay} onChange={handleChange} />
             </div>
             <div className="space-y-1">
               <Label htmlFor="city">City</Label>
               <Input id="city" type="text" value={formData.city} onChange={handleChange} />
             </div>
             <div className="space-y-1">
-              <Label htmlFor="postal_code">Postal Code</Label>
-              <Input id="postal_code" type="number" className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" value={formData.postal_code} onChange={handleChange} />
+              <Label htmlFor="postalCode">Postal Code</Label>
+              <Input id="postalCode" type="number" className="[appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none" value={formData.postalCode} onChange={handleChange} />
             </div>
           </div>
         </ScrollArea>
-        
+
         <DialogFooter>
-            <Button onClick={onClose} className="w-full">Create Address</Button>
+          <Button onClick={() => onAdd(formData)} className="w-full">Create Address</Button>
         </DialogFooter>
       </DialogContent>
-      
     </Dialog>
   );
 };

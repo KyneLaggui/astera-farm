@@ -1,30 +1,41 @@
-import React, { useEffect, useState } from 'react'
-import { supabase } from "@src/supabase/config"
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import { selectEmail } from '@src/redux/slice/authSlice';  // Update the path as needed
+import { supabase } from '@src/supabase/config';
 
 const FetchUserProfile = () => {
-    const [user, setUser] = useState(null);
-    const [isLoadingProfile, setIsLoadingProfile] = useState(false);  
+  const [user, setUser] = useState(null);
+  const [isLoadingProfile, setIsLoadingProfile] = useState(false);
 
-    useEffect(() => {
-        setIsLoadingProfile(true)
-        const getProfile = async() => {
-            const { data } = await supabase.auth.getUser();
+  const email = useSelector(selectEmail);  // Get the user's email from Redux
 
-            if (data.user) {
-                let userData = await supabase.from("profile")
-                .select("*")
-                .eq('email', data.user.email)
-                .single();                   
-                setUser(userData['data']);
-            }           
+  useEffect(() => {
+    if (!email) return;  // Exit if email is not available
 
-            setIsLoadingProfile(false)
+    const getProfile = async () => {
+      setIsLoadingProfile(true);
+
+      try {
+        const { data } = await supabase
+          .from('profile')
+          .select('*')
+          .eq('email', email)
+          .single();  // Fetch user profile by email
+
+        if (data) {
+          setUser(data);  // Set the fetched profile
         }
+      } catch (error) {
+        console.error('Error fetching profile:', error);
+      } finally {
+        setIsLoadingProfile(false);
+      }
+    };
 
-        getProfile();
-    }, [])
+    getProfile();
+  }, [email]);
 
-    return {userData: user, isLoadingProfile}
-}
+  return { userData: user, isLoadingProfile };
+};
 
-export default FetchUserProfile
+export default FetchUserProfile;

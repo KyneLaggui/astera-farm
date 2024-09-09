@@ -21,7 +21,7 @@ const LoggedInOnly = ({ children }) => {
 
         getSession()
         
-    }, [id, navigate, userData])
+    }, [navigate, userData])
        
   return (
     <div>

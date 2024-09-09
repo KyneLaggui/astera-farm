@@ -104,7 +104,7 @@ function AddProduct({ isAddDialogOpen, onDialogClose }) {
       const iconUpload = await supabase.storage
         .from("products")
         .upload(`public/${insertResult.data.id}.${logoFileExt}`, logo, {
-          cacheControl: "3600",
+          cacheControl: "0",
           upsert: true,
         });
 

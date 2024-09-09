@@ -28,7 +28,7 @@ const Product = () => {
           return {
             id: product.id,
             name: product.name,
-            image: imageUrl,
+            image: `${imageUrl}?t=${new Date().toISOString()}`,
             description: product.description,
             sellMethod: product.sell_method,
             attributes: product.attributes,
@@ -50,7 +50,7 @@ const Product = () => {
           <div key={product.id} className='flex flex-col justify-center items-center gap-2'>
             <div className='h-[200px] sm:h-[300px] w-[200px] sm:w-[300px] flex items-center justify-center'>
               <img
-                src={product.image}
+                src={`${product.image}`}
                 className='max-h-full max-w-full object-contain'
                 alt={product.name}
               />

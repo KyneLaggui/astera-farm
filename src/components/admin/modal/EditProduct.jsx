@@ -18,7 +18,9 @@ import { z } from "zod";
 import fetchProductUrl from "@src/custom-hooks/actions/fetchProductUrl";
 import { useDispatch } from "react-redux";
 import { UPDATE_PRODUCT } from "@src/redux/slice/productsSlice";
+import fetchProductIconPath from "@src/custom-hooks/actions/fetchProductIconPath";
 import { Textarea } from "@src/components/ui/textarea";
+
 
 function EditProductDialog({
   product,
@@ -40,8 +42,8 @@ function EditProductDialog({
 
       const fetchProductImage = async () => {
         const imageUrl = await fetchProductUrl(product.id);
-        setImagePreview(imageUrl);
-      };
+        setImagePreview(`${imageUrl}?t=${new Date().toISOString()}`);
+      }
 
       fetchProductImage();
     }
@@ -110,19 +112,24 @@ function EditProductDialog({
       return null;
     }
 
-    if (editProduct.productIcon) {
-      const logoFileExt = editProduct.productIcon.name.split(".").pop();
-      await supabase.storage
-        .from("products")
-        .upload(
-          `public/${product.id}.${logoFileExt}`,
-          editProduct.productIcon,
-          {
-            cacheControl: "3600",
+      if (editProduct.productIcon) {
+        const logoFileExt = editProduct.productIcon.name.split(".").pop();
+
+        const imageUrl = await fetchProductIconPath(product.id);
+        const { data, error } = await supabase
+        .storage
+        .from('products')
+        .remove([`${imageUrl}`])
+
+        if (!error) {
+          await supabase.storage
+          .from("products")
+          .upload(`public/${product.id}.${logoFileExt}`, editProduct.productIcon, {
+            cacheControl: "0",
             upsert: true,
-          }
-        );
-    }
+          });
+        }       
+      }
 
     // Dispatch the updated product to Redux
     dispatch(
@@ -136,7 +143,8 @@ function EditProductDialog({
       })
     );
 
-    onProductUpdated();
+      onProductUpdated();      
+    };
   };
 
   const handleAttributeAdd = () => {
@@ -162,7 +170,7 @@ function EditProductDialog({
               <div className="mb-4">
                 {imagePreview && (
                   <img
-                    src={imagePreview}
+                    src={`${imagePreview}`}
                     alt="Product Icon Preview"
                     className="mb-4 w-full h-auto rounded-md object-cover"
                   />
