@@ -36,6 +36,7 @@ import SignUpForm from '@src/components/navbar/SignUpForm';
 import MobileMenu from '@src/components/navbar/MobileMenu';
 import EditProfileDialog from '@src/components/navbar/EditProfileDialog';
 import AddToCartSheet from '@src/components/navbar/AddToCartSheet';
+import fetchAllOrders from '@src/custom-hooks/fetchAllOrders';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -43,6 +44,7 @@ const Navbar = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const isLoggedInRedux = useSelector(selectIsLoggedIn);
+  const allOrders = fetchAllOrders()
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -62,6 +64,7 @@ const Navbar = () => {
   useEffect(() => {
     // This for listening to supabase auth state changes
     supabase.auth.onAuthStateChange((_event, session) => {
+      console.log('okay')
       if (session) {
         dispatch(
           SET_ACTIVE_USER({

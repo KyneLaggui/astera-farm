@@ -22,6 +22,7 @@ function App() {
           <Route path="/recommendations/health" element={<Pages.Health />} />
           <Route path="/recommendations/recipes" element={<Pages.Recipes />} />
           <Route path="/recommendations/call-us" element={<Pages.CallUs />} />
+          <Route path="/checkout-success" element={<Pages.Success />} />
           <Route path="admin">
             <Route path="products" element={<Pages.AdminProducts />} />
           </Route>

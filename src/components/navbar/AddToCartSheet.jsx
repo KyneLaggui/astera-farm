@@ -22,11 +22,9 @@ const AddToCartSheet = () => {
     if (cartItems) {
       setCartState(cartItems);
     }
-    console.log(cartItems)
   }, [cartItems])
 
   useEffect(() => {
-    console.log(cartTotalAmount)
     if (cartTotalAmount) {
       setCartPriceState(cartTotalAmount);
     }

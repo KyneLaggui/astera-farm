@@ -11,6 +11,7 @@ import Health from "@src/pages/recommendations/Health";
 import CallUs from "@src/pages/recommendations/CallUs";
 import Recipes from "@src/pages/recommendations/Recipes";
 import CheckoutPayMongo from "@src/pages/checkout/CheckoutPayMongo";
+import Success from "@src/pages/Success";
 
 export const Pages = {
     LandingPage,
@@ -25,7 +26,8 @@ export const Pages = {
     Health,
     CallUs,
     Recipes,
-    CheckoutPayMongo
+    CheckoutPayMongo,
+    Success,   
 }
 
 export default Pages;

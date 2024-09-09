@@ -116,6 +116,15 @@ const Checkout = () => {
       : fullAddress;
   };
 
+  const proceedToPayment = () => {
+    if (!selectedAddress) { 
+      console.log('no address selected');
+      
+    } else {
+      navigate("/checkout-paymongo");
+    }
+  }
+
   useEffect(() => {
     if (shippingAddress) {
       const allShippingAddress = shippingAddress.map((address) => ({
@@ -220,7 +229,7 @@ const Checkout = () => {
           </Card>
         </CardContent>
         <CardFooter>
-          <Button className="w-full" onClick={() => navigate('/checkout-paymongo')}>Proceed to Payment</Button>
+          <Button className="w-full" onClick={proceedToPayment}>Proceed to Payment</Button>
         </CardFooter>
       </Card>
 
