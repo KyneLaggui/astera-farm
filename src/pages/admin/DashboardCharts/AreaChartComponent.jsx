@@ -1,69 +1,49 @@
 import React from "react";
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts";
+import { Area, AreaChart, CartesianGrid, XAxis, Tooltip } from "recharts";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@src/components/ui/card";
-import {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@src/components/ui/chart";
-import { TrendingUp } from "lucide-react";
-
-const priceData = [
-  { month: "January", earnings: 186 },
-  { month: "February", earnings: 305 },
-  { month: "March", earnings: 237 },
-  { month: "April", earnings: 73 },
-  { month: "May", earnings: 209 },
-  { month: "June", earnings: 214 },
-];
+import { ChartContainer, ChartTooltipContent } from "@src/components/ui/chart";
 
 const priceConfig = {
   earnings: {
     label: "Earnings",
-    color: "#FFE500",
+    color: "#FFE500", // You can replace this with a hardcoded value to check if this is defined properly
   },
 };
 
-const AreaChartComponent = () => (
+const AreaChartComponent = ({ data }) => (
   <Card>
     <CardHeader>
       <CardTitle>Earnings</CardTitle>
       <CardDescription>
-        Showing total earnings for the last 6 months
+        Showing earnings for the selected period
       </CardDescription>
     </CardHeader>
     <CardContent>
       <ChartContainer config={priceConfig}>
         <AreaChart
-          accessibilityLayer
-          data={priceData}
+          data={data} // Ensure the data is passed correctly
           margin={{ left: 12, right: 12 }}
         >
           <CartesianGrid vertical={false} />
           <XAxis
-            dataKey="month"
+            dataKey="timePeriod" // Ensure this matches the 'timePeriod' key in data
             tickLine={false}
             axisLine={false}
             tickMargin={8}
-            tickFormatter={(value) => value.slice(0, 3)}
           />
-          <ChartTooltip
-            cursor={false}
-            content={<ChartTooltipContent indicator="line" />}
-          />
+          <Tooltip content={<ChartTooltipContent indicator="line" />} />
           <Area
             dataKey="earnings"
-            type="natural"
-            fill="var(--color-earnings)"
+            type="monotone"
+            fill="#FFE500" // Replace var(--color-earnings) with actual value for now
             fillOpacity={0.4}
-            stroke="var(--color-earnings)"
+            stroke="#FFE500" // Replace var(--color-earnings) with actual value for now
           />
         </AreaChart>
       </ChartContainer>
