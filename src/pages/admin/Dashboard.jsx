@@ -11,13 +11,12 @@ const Dashboard = () => {
   const [sellingData, setSellingData] = useState([]);
   const [chartData, setChartData] = useState([]);
 
-  const orders = useSelector(selectOrders); // Select orders from Redux state
+  const orders = useSelector(selectOrders);
 
   useEffect(() => {
     if (orders && orders.length > 0) {
-      console.log("Orders:", orders); // Debug: Check if orders are available
+      console.log("Orders:", orders);
 
-      // Step 1: Calculate total earnings per order
       const filteredOrders = orders.map((order) => {
         const totalEarnings = order.cart.reduce(
           (acc, product) => acc + product.amount * product.quantity,
@@ -27,13 +26,12 @@ const Dashboard = () => {
         return {
           orderId: order.id,
           status: order.status,
-          totalEarnings, // Include total earnings for this order
-          createdAt: order.createdAt, // Timestamp in seconds
-          products: order.cart, // Assuming products are in the cart array
+          totalEarnings,
+          createdAt: order.createdAt,
+          products: order.cart,
         };
       });
 
-      // Step 2: Calculate total product sales for BestSellingChart
       const productSales = filteredOrders.reduce((acc, order) => {
         order.products.forEach((product) => {
           if (acc[product.name]) {
@@ -52,7 +50,6 @@ const Dashboard = () => {
         })
       );
 
-      // Step 3: Calculate the range of order dates to decide whether to group by day, week, or month
       const earliestOrder = new Date(
         Math.min(...filteredOrders.map((order) => order.createdAt * 1000))
       );
@@ -65,19 +62,15 @@ const Dashboard = () => {
 
       console.log("Date Range:", { earliestOrder, latestOrder, totalDays });
 
-      // Step 4: Group orders by day, week, or month dynamically based on the date range
       const groupByDate = filteredOrders.reduce((acc, order) => {
-        const orderDate = new Date(order.createdAt * 1000); // Convert timestamp to milliseconds
+        const orderDate = new Date(order.createdAt * 1000);
         let key;
 
         if (totalDays < 7) {
-          // Group by day if the range is less than 7 days
           key = format(orderDate, "yyyy-MM-dd");
         } else if (totalWeeks < 5) {
-          // Group by week if the range is less than 5 weeks
           key = `Week ${getWeek(orderDate)}`;
         } else {
-          // Group by month if it's a larger range
           key = format(orderDate, "MMMM yyyy");
         }
 
@@ -89,21 +82,20 @@ const Dashboard = () => {
         return acc;
       }, {});
 
-      console.log("Grouped by Date:", groupByDate); // Debug: Check grouped earnings
+      console.log("Grouped by Date:", groupByDate);
 
-      // Step 5: Convert the grouped earnings into chart-friendly format
       const chartDataArray = Object.entries(groupByDate)
         .map(([period, earnings]) => ({
-          timePeriod: period, // Either "Day", "Week X", or the month name
-          earnings, // Total earnings for that period
+          timePeriod: period,
+          earnings,
         }))
-        .sort((a, b) => new Date(a.timePeriod) - new Date(b.timePeriod)); // Sort by date from left to right
+        .sort((a, b) => new Date(a.timePeriod) - new Date(b.timePeriod));
 
-      console.log("Chart Data (Sorted):", chartDataArray); // Debug: Check sorted chart data
+      console.log("Chart Data (Sorted):", chartDataArray);
 
-      setSellingData(sellingDataArray); // Set the selling data with total purchases
+      setSellingData(sellingDataArray);
       setOrderData(filteredOrders);
-      setChartData(chartDataArray); // Set the chart data with total earnings
+      setChartData(chartDataArray);
     }
   }, [orders]);
 
