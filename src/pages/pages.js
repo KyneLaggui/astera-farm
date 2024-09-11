@@ -14,25 +14,26 @@ import CheckoutPayMongo from "@src/pages/checkout/CheckoutPayMongo";
 import Success from "@src/pages/Success";
 import AdminDashboard from "@src/pages/admin/Dashboard";
 import Orders from "@src/pages/admin/Orders";
+import ResetPassword from "@src/pages/ResetPassword";
 
 export const Pages = {
-    LandingPage,
-    NotFound,
-    Produce,
-    TestPage,
-    AdminProducts,
-    Checkout,
-    Tracking,
-    AboutUs,
-    Recommendations,
-    Health,
-    CallUs,
-    Recipes,
-    CheckoutPayMongo,
-    Success,   
-    AdminDashboard,
-    Orders,
-}
-
+  LandingPage,
+  NotFound,
+  Produce,
+  TestPage,
+  AdminProducts,
+  Checkout,
+  Tracking,
+  AboutUs,
+  Recommendations,
+  Health,
+  CallUs,
+  Recipes,
+  CheckoutPayMongo,
+  Success,
+  AdminDashboard,
+  Orders,
+  ResetPassword,
+};
 
 export default Pages;
