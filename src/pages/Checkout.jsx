@@ -47,7 +47,7 @@ const Checkout = () => {
       alert("Account is up to 3 addresses only, please delete an address first.");
       return;
     }
-  
+    console.log(newAddress)
     const { data, error } = await supabase
       .from("shipping_address")
       .insert({
@@ -127,6 +127,7 @@ const Checkout = () => {
 
   useEffect(() => {
     if (shippingAddress) {
+      console.log(shippingAddress);
       const allShippingAddress = shippingAddress.map((address) => ({
         id: address.id,
         recipientName: address.recipient_name,

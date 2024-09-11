@@ -8,7 +8,7 @@ import { ScrollArea } from "@src/components/ui/scroll-area";
 const AddAddressDialog = ({ open, onClose, onAdd }) => {
 
   const [formData, setFormData] = useState({
-    name: '',
+    recipientName: '',
     phoneNumber: '',
     street: '',
     barangay: '',
@@ -42,7 +42,7 @@ const AddAddressDialog = ({ open, onClose, onAdd }) => {
           <div className="px-1">
             <div className="space-y-1">
               <Label htmlFor="name">Recipient Name</Label>
-              <Input id="name" type="text" value={formData.name} onChange={handleChange} />
+              <Input id="recipientName" type="text" value={formData.recipientName} onChange={handleChange} />
             </div>
             <div className="space-y-1">
               <Label htmlFor="phoneNumber">Phone Number</Label>
