@@ -145,7 +145,6 @@ function EditProductDialog({
 
       onProductUpdated();      
     };
-  };
 
   const handleAttributeAdd = () => {
     if (attributeInput.trim() !== "") {

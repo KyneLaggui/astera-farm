@@ -26,6 +26,7 @@ function App() {
           <Route path="admin">
             <Route path="products" element={<Pages.AdminProducts />} />
             <Route path="dashboard" element={<Pages.AdminDashboard />} />
+            <Route path="orders" element={<Pages.Orders />} />
           </Route>
         </Routes>
       </div>
