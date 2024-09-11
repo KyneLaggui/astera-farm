@@ -12,7 +12,6 @@ const Success = () => {
                 const result = await supabase
                     .from('order')
                     .insert({
-                        id: "dasdsa",
                         status: "pending",
                         user_id: "d4dcc322-d6c4-423e-9874-6076d2bf5d6b",
                         total: 4000,

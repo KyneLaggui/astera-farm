@@ -121,7 +121,7 @@ const Checkout = () => {
       console.log('no address selected');
       
     } else {
-      navigate("/checkout-paymongo");
+      navigate("/checkout-paymongo", { state: { shippingAddress: addressData.find((addr) => addr.id === selectedAddress) }});
     }
   }
 
