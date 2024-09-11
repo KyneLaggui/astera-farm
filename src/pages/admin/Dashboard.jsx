@@ -35,7 +35,9 @@ const Dashboard = () => {
           name: product.name,
           price: product.amount,
           quantity: product.quantity,
+          lastUpdated: order.lastUpdated,
         })),
+        createdAt: order.createdAt,
       }));
 
       // Calculate aggregate sales data for the best-selling chart
@@ -56,6 +58,13 @@ const Dashboard = () => {
         purchases,
       }));
 
+      // filteredOrders.map((order) => {
+      //   const timestamp = 1726032834; // Example timestamp
+      //   const date = new Date(order.createdAt * 1000); // Convert seconds to milliseconds
+      //   console.log(date.toISOString()); // Outputs the date in ISO 8601 format
+        
+      // })
+      
       setOrderData(filteredOrders);
       setSellingData(sellingDataArray);
     }

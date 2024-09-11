@@ -51,6 +51,7 @@ const fetchAllOrders = () => {
                 total: payment.attributes.amount,
                 paymentMethod: payment.attributes.source.type,
                 shippingAddress: JSON.parse(metadata.shippingAddress),
+                createdAt: payment.attributes.created_at,
               };
             });
         };
