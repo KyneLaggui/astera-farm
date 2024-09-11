@@ -66,7 +66,6 @@ const Checkout = () => {
       );
       return;
     }
-
     const { data, error } = await supabase
       .from("shipping_address")
       .insert({
@@ -156,6 +155,7 @@ const Checkout = () => {
 
   useEffect(() => {
     if (shippingAddress) {
+      console.log(shippingAddress);
       const allShippingAddress = shippingAddress.map((address) => ({
         id: address.id,
         recipientName: address.recipient_name,

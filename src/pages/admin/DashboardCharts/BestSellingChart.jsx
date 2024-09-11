@@ -4,7 +4,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@src/components/ui/card";
@@ -13,14 +12,6 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@src/components/ui/chart";
-
-const sellingData = [
-  { products: "chrome", purchases: 275 },
-  { products: "safari", purchases: 200 },
-  { products: "firefox", purchases: 287 },
-  { products: "edge", purchases: 173 },
-  { products: "other", purchases: 190 },
-];
 
 const sellingConfig = {
   purchases: {
@@ -39,7 +30,7 @@ const sellingConfig = {
   ],
 };
 
-const BestSellingChart = () => {
+const BestSellingChart = ({ sellingData }) => {
   // Sort the selling data based on purchases (highest to lowest)
   const sortedSellingData = [...sellingData].sort(
     (a, b) => b.purchases - a.purchases
@@ -50,8 +41,11 @@ const BestSellingChart = () => {
     ...item,
     fill:
       sellingConfig.colors[index] ||
-      sellingConfig.colors[sellingConfig.colors.length - 1], // Assign color based on position, fallback to last color if more than 5
+      sellingConfig.colors[sellingConfig.colors.length - 1], // Assign color based on position, fallback to last color if more than colors available
   }));
+
+  // Calculate the total number of products sold
+  const totalPurchases = sellingData.reduce((total, item) => total + item.purchases, 0);
 
   return (
     <Card className="flex flex-col">
@@ -91,14 +85,14 @@ const BestSellingChart = () => {
                           y={viewBox.cy}
                           className="fill-foreground text-3xl font-bold"
                         >
-                          100
+                          {totalPurchases}
                         </tspan>
                         <tspan
                           x={viewBox.cx}
                           y={(viewBox.cy || 0) + 24}
                           className="fill-muted-foreground"
                         >
-                          Products
+                          Products Sold
                         </tspan>
                       </text>
                     );

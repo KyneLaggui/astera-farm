@@ -14,12 +14,12 @@ import { toast } from "react-toastify";
 
 const AddAddressDialog = ({ open, onClose, onAdd }) => {
   const [formData, setFormData] = useState({
-    name: "",
-    phoneNumber: "",
-    street: "",
-    barangay: "",
-    city: "",
-    postalCode: "",
+    recipientName: '',
+    phoneNumber: '',
+    street: '',
+    barangay: '',
+    city: '',
+    postalCode: '',
   });
 
   const handleChange = (e) => {
@@ -50,12 +50,7 @@ const AddAddressDialog = ({ open, onClose, onAdd }) => {
           <div className="px-1">
             <div className="space-y-1">
               <Label htmlFor="name">Recipient Name</Label>
-              <Input
-                id="name"
-                type="text"
-                value={formData.name}
-                onChange={handleChange}
-              />
+              <Input id="recipientName" type="text" value={formData.recipientName} onChange={handleChange} />
             </div>
             <div className="space-y-1">
               <Label htmlFor="phoneNumber">Phone Number</Label>

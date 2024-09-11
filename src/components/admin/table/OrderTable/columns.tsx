@@ -10,7 +10,7 @@ import {
 import { TableCell } from "@src/components/TableCell";
 import EditProductDialog from "@src/components/admin/modal/EditProduct";
 import ConfirmDeleteDialog from "@src/components/admin/modal/ConfirmProductDelete";
-import OrderCard from "@src/components/OrderCard";
+import OrderModal from "@src/components/admin/modal/OrderCard";
 import { useState } from "react";
 import { supabase } from "@src/supabase/config";
 
@@ -61,7 +61,7 @@ export const columns = [
         )}
       </p>
     ),
-    cell: ({ row }) => <TableCell>{row.original.total}</TableCell>,
+    cell: ({ row }) => <TableCell>₱{row.original.total/100}</TableCell>,
   },
   {
     accessorKey: "paymentMethod",
@@ -149,45 +149,25 @@ export const columns = [
     header: "Actions",
     cell: ({ row }) => {
       const order = row.original;
-
+      const [isOpen, setIsOpen] = useState(false);
+  
       const orderDetails = {
         orderId: order.id,
-        userName: order.userId,
+        userName: order.shippingAddress.recipientName,
         userAddress: `${order.shippingAddress.street} Street, Brgy. ${order.shippingAddress.barangay}, ${order.shippingAddress.city}`,
         userPhone: order.shippingAddress.phone,
         paymentMethod: formatPaymentMethod(order.paymentMethod),
         status: order.status,
         deliveryDate: order.lastUpdated,
         statusUpdateDate: order.lastUpdated,
-        products: order.cart.map((product) => {
-          return {
-            id: product.id,
-            name: product.name,
-            price: product.amount,
-            quantity: product.quantity
-          }
-        })
-      }
-      
-      // For Edit Dialog
-      // const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-      // const handleEditClick = () => {
-      //   setIsEditDialogOpen(true);
-      // };
-      // const handleDialogClose = () => {
-      //   setIsEditDialogOpen(false);
-      // };
-
-      // // For Confirm Delete Dialog
-      // const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-      // const handleDeleteDialogOpen = () => {
-      //   setIsDeleteDialogOpen(true);
-      // };
-      
-      // const handleDeleteDialogClose = () => {
-      //   setIsDeleteDialogOpen(false);
-      // };
-
+        products: order.cart.map((product) => ({
+          id: product.id,
+          name: product.name,
+          price: product.amount,
+          quantity: product.quantity,
+        })),
+      };
+  
       return (
         <>
           <DropdownMenu>
@@ -199,13 +179,15 @@ export const columns = [
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 className="cursor-pointer"
-                // onClick={handleEditClick}
+                onClick={() => setIsOpen(true)} // Open the modal on click
               >
-                Open
+                View Details
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
-          <OrderCard order={orderDetails}/>
+          
+          {/* Render the modal */}
+          <OrderModal isOpen={isOpen} setIsOpen={setIsOpen} order={orderDetails} />
         </>
       );
     },
@@ -213,96 +195,4 @@ export const columns = [
 ];
 
 
-
-
-// {
-  //   accessorKey: "description",
-  //   header: ({ column }) => (
-  //     <p className="flex items-center gap-1 cursor-pointer hover:text-red-500">
-  //       Description
-  //     </p>
-  //   ),
-  //   cell: ({ row }) => <TableCell>{row.original.description}</TableCell>,
-  // },
-  // {
-  //   accessorKey: "sellMethod",
-  //   header: ({ column }) => (
-  //     <p className="flex items-center gap-1 cursor-pointer hover:text-red-500">
-  //       Sell Method
-  //     </p>
-  //   ),
-  //   cell: ({ row }) => <TableCell>{row.original.sellMethod}</TableCell>,
-  // },
-  // {
-  //   accessorKey: "attributes",
-  //   header: "Attributes",
-  //   cell: ({ row }) => {
-  //     const attributesArray = row.original.attributes;
-  //     return (
-  //       <TableCell>
-  //         [{Array.isArray(attributesArray)
-  //           ? attributesArray.map((attr) => `"${attr}"`).join(", ")
-  //           : ""}]
-  //       </TableCell>
-  //     );
-  //   },
-  // },
-  // {
-  //   accessorKey: "actions",
-  //   header: "Actions",
-  //   cell: ({ row }) => {
-  //     const product = row.original;
-
-  //     // For Edit Dialog
-  //     const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  //     const handleEditClick = () => {
-  //       setIsEditDialogOpen(true);
-  //     };
-  //     const handleDialogClose = () => {
-  //       setIsEditDialogOpen(false);
-  //     };
-
-  //     // For Confirm Delete Dialog
-  //     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  //     const handleDeleteDialogOpen = () => {
-  //       setIsDeleteDialogOpen(true);
-  //     };
-      
-  //     const handleDeleteDialogClose = () => {
-  //       setIsDeleteDialogOpen(false);
-  //     };
-
-  //     return (
-  //       <>
-  //         <DropdownMenu>
-  //           <DropdownMenuTrigger>
-  //             <MoreHorizontalIcon className="h-4 w-4" />
-  //           </DropdownMenuTrigger>
-  //           <DropdownMenuContent>
-  //             <DropdownMenuLabel>{product.name}</DropdownMenuLabel>
-  //             <DropdownMenuSeparator />
-  //             <DropdownMenuItem
-  //               className="cursor-pointer"
-  //               onClick={handleEditClick}
-  //             >
-  //               Edit
-  //             </DropdownMenuItem>
-  //             <DropdownMenuItem className="cursor-pointer" onClick={handleDeleteDialogOpen}>Delete</DropdownMenuItem>
-  //           </DropdownMenuContent>
-  //         </DropdownMenu>
-  //         <EditProductDialog
-  //           product={product}
-  //           isEditDialogOpen={isEditDialogOpen}
-  //           onDialogClose={handleDialogClose}
-  //           onProductUpdated={handleDialogClose}
-  //         />          
-  //         <ConfirmDeleteDialog 
-  //           product={product}
-  //           isDeleteDialogOpen={isDeleteDialogOpen}
-  //           onDialogClose={handleDeleteDialogClose}
-  //           onProductUpdated={handleDeleteDialogClose}
-  //         />
-  //       </>
-  //     );
-  //   },
-  // },
+  

@@ -94,7 +94,9 @@ const Navbar = () => {
 
         <div className="hidden md:flex md:space-x-8 font-bakbak lg:text-lg text-md tracking-wider">
           <a href="/produce" className="hover:text-white">Produce</a>
-          <a href="/tracking" className="hover:text-white">Tracking</a>
+          <LoggedInOnlyComponent forAdmin={false} forUser={true}>
+            <a href="/tracking" className="hover:text-white">Tracking</a>
+          </LoggedInOnlyComponent>
           <a href="/about-us" className="hover:text-white">About Us</a>
           <a href="/recommendations" className="hover:text-white">Recommendations</a>
         </div>

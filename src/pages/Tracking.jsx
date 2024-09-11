@@ -19,52 +19,67 @@ import { Input } from "@src/components/ui/input";
 import { ScrollArea } from "@src/components/ui/scroll-area";
 import NoProduct from "@src/assets/images/NoProduct.png";
 import OrderCard from "@src/components/OrderCard";
+import { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { selectOrders } from "@src/redux/slice/ordersSlice";
+import { selectUserID } from "@src/redux/slice/authSlice";
 
 const Tracking = () => {
-  const [selectedStatus, setSelectedStatus] = useState("all");
+  const [selectedStatus, setSelectedStatus] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  const [orderData, setOrderData] = useState([]);
 
-  const orderData = [
-    {
-      orderId: "ORD12345",
-      userName: "John Doe",
-      userAddress: "123 Main Street, City",
-      userPhone: "123-456-7890",
-      paymentMethod: "Credit Card",
-      status: "delivered",
-      deliveryDate: "2024-09-01T14:00:00Z",
-      statusUpdateDate: "2024-08-28T10:00:00Z",
-      products: [
-        { id: 1, name: "Leafy Vegetable", price: 500, quantity: 3 },
-        { id: 2, name: "Root Vegetable", price: 300, quantity: 2 },
-        { id: 2, name: "Root Vegetable", price: 300, quantity: 2 },
-        { id: 2, name: "Root Vegetable", price: 300, quantity: 2 },
-      ],
-    },
-    {
-      orderId: "ORD67890",
-      userName: "Jane Smith",
-      userAddress: "456 Another Road, Town",
-      userPhone: "987-654-3210",
-      paymentMethod: "PayPal",
-      status: "shipped",
-      deliveryDate: null,
-      statusUpdateDate: "2024-08-29T11:00:00Z",
-      products: [
-        { id: 3, name: "Tomato", price: 200, quantity: 5 },
-        { id: 4, name: "Carrot", price: 150, quantity: 10 },
-      ],
-    },
-  ];
+  const orders = useSelector(selectOrders); // Select products from Redux state
+  const userId = useSelector(selectUserID);
+
+  // Helper function to capitalize the first letter
+  const capitalizeFirstLetter = (str) => {
+    return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+  };
+
+  const formatPaymentMethod = (paymentMethod) => {
+    return paymentMethod
+      .replace(/_/g, " ") // Replace underscores with spaces
+      .split(" ") // Split into words
+      .map(capitalizeFirstLetter) // Capitalize first letter of each word
+      .join(" "); // Join them back with a space
+  };
 
   const filteredOrders = orderData.filter((order) => {
     const matchesStatus =
-      selectedStatus === "all" || order.status === selectedStatus;
+      selectedStatus === "All" || order.status === selectedStatus;
     const matchesSearch = order.orderId
       .toLowerCase()
       .includes(searchQuery.toLowerCase());
     return matchesStatus && matchesSearch;
   });
+
+  useEffect(() => {
+    if (orders) {
+      const filteredOrders = orders
+        .filter((order) => order.userId === userId) // Replace with your target email
+        .map((order) => ({
+          userId: order.userId,
+          orderId: order.id,
+          userName: order.shippingAddress.recipientName,
+          userAddress: `${order.shippingAddress.street} Street, Brgy. ${order.shippingAddress.barangay}, ${order.shippingAddress.city}`,
+          userPhone: order.shippingAddress.phone,
+          paymentMethod: formatPaymentMethod(order.paymentMethod),
+          status: order.status,
+          deliveryDate: order.lastUpdated,
+          statusUpdateDate: order.lastUpdated,
+          products: order.cart.map((product) => ({
+            id: product.id,
+            name: product.name,
+            price: product.amount,
+            quantity: product.quantity,
+          })),
+        }));
+  
+      setOrderData(filteredOrders);
+    }
+  }, [orders, userId]);
+  
 
   return (
     <div
@@ -101,11 +116,11 @@ const Tracking = () => {
                 <SelectValue placeholder="Order Status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">All</SelectItem>
-                <SelectItem value="order-placed">Order Placed</SelectItem>
-                <SelectItem value="processing">Processing</SelectItem>
-                <SelectItem value="shipped">Shipped</SelectItem>
-                <SelectItem value="delivered">Delivered</SelectItem>
+                <SelectItem value="All">All</SelectItem>
+                <SelectItem value="Order Placed">Order Placed</SelectItem>
+                <SelectItem value="Processing">Processing</SelectItem>
+                <SelectItem value="Shipped">Shipped</SelectItem>
+                <SelectItem value="Delivered">Delivered</SelectItem>
               </SelectContent>
             </Select>
           </div>
