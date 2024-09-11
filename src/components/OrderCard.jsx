@@ -14,10 +14,10 @@ import { MapPin, Navigation, Phone } from "lucide-react";
 import { ScrollArea } from "./ui/scroll-area";
 
 const statusLabels = {
-  "order-placed": "Order Placed",
-  processing: "Processing",
-  shipped: "Shipped",
-  delivered: "Delivered",
+  "Order Placed": "Order Placed",
+  Processing: "Processing",
+  Shipped: "Shipped",
+  Delivered: "Delivered",
 };
 
 const formatDate = (dateString) => {
@@ -50,7 +50,7 @@ const OrderCard = ({ order }) => {
               Total: ₱{calculateTotalAmount(order.products)}
             </p>
             <p className="font-light text-sm text-green-50 mt-1">
-              {order.status === "delivered"
+              {order.status === "Delivered"
                 ? `Delivered: ${formatDate(order.deliveryDate)}`
                 : `Updated: ${formatDate(order.statusUpdateDate)}`}
             </p>
@@ -75,7 +75,7 @@ const OrderCard = ({ order }) => {
           </p>
 
           <p className="text-sm font-light text-muted-foreground">
-            {order.status === "delivered"
+            {order.status === "Delivered"
               ? `Delivered: ${formatDate(order.deliveryDate)}`
               : `Updated: ${formatDate(order.statusUpdateDate)}`}
           </p>
