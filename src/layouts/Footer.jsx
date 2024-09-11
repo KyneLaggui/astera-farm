@@ -4,6 +4,7 @@ import Instagram from "@src/assets/images/Instagram.png";
 import { CircleChevronRight } from "lucide-react";
 import emailjs from "emailjs-com";
 import { useState } from "react";
+import { toast } from "react-toastify";
 
 const Footer = () => {
   const [email, setEmail] = useState("");
@@ -12,7 +13,7 @@ const Footer = () => {
     e.preventDefault();
 
     if (!email || !email.includes("@")) {
-      alert("Please enter a valid email");
+      toast.error("Please enter a valid email");
       return;
     }
 
@@ -35,11 +36,11 @@ const Footer = () => {
     emailjs
       .send(serviceID, templateID, templateParams, userID)
       .then((response) => {
-        alert("Subscription successful! Welcome email sent.");
+        toast.success("Subscription successful! Welcome email sent.");
         setEmail(""); // Clear the input value
       })
       .catch((error) => {
-        alert("Failed to send email, please try again.");
+        toast.error("Failed to send email, please try again.");
         console.error("Failed to send email:", error);
       });
   };
