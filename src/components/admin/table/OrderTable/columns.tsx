@@ -47,7 +47,7 @@ export const columns = [
     cell: ({ row }) => <TableCell>{row.original.id}</TableCell>,
   },
   {
-    accessorKey: "amount",
+    accessorKey: "total",
     header: ({ column }) => (
       <p
         className="flex items-center gap-1 cursor-pointer hover:text-red-500"
@@ -66,7 +66,8 @@ export const columns = [
   {
     accessorKey: "paymentMethod",
     header: ({ column }) => (
-      <p className="flex items-center gap-1 cursor-pointer hover:text-red-500">
+      <p className="flex items-center gap-1 cursor-pointer hover:text-red-500"
+      onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
         Payment Method
         {column.getIsSorted() === "asc" ? (
           <ArrowUp className="h-3 w-3" />
