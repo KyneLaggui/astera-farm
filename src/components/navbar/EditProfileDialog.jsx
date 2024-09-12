@@ -6,6 +6,9 @@ import { Button } from '@src/components/ui/button';
 import { Check, EyeIcon, EyeOffIcon, Pencil } from 'lucide-react';
 import { editProfile } from '@src/supabase/actions';
 import FetchUserProfile from '@src/custom-hooks/fetchUserProfile';
+import { useNavigate } from 'react-router-dom';
+import { supabase } from '@src/supabase/config';
+import { toast } from 'react-toastify';
 
 const EditProfileDialog = ({ isOpen, onClose }) => {
   const [profile, setProfile] = useState({
@@ -22,6 +25,7 @@ const EditProfileDialog = ({ isOpen, onClose }) => {
   const [showPassword, setShowPassword] = useState(false);
 
   const { userData } = FetchUserProfile();
+  const navigate = useNavigate();
 
   const handleEditClick = (field) => {
     setEditableFields(prevState => ({
@@ -37,13 +41,23 @@ const EditProfileDialog = ({ isOpen, onClose }) => {
       [id]: value,
     }));
   };
+  
+  const handleEditPassword = async() => {
+    const result = await supabase.auth.resetPasswordForEmail(profile.email, {
+      redirectTo: 'http://localhost:5173/reset-password',
+    })
+    toast.success('Password reset link sent to your email.');
+  }
 
   const handleSubmit = async(e) => {
     e.preventDefault();
     const { email, username } = profile;
     const result = await editProfile(email, username);
     if (result) {
+      toast.success('Profile updated successfully!');
       onClose()      
+    } else {
+      toast.error('An error occurred when updating profile details. Please try again.');
     }
   }
 
@@ -118,7 +132,7 @@ const EditProfileDialog = ({ isOpen, onClose }) => {
                         </button>
                     )}
                 </div>
-              <Button onClick={() => handleEditClick('password')}>
+              <Button onClick={handleEditPassword}>
                 {editableFields.password ? <Check size={16} /> : <Pencil size={16} />}
               </Button>
             </div>

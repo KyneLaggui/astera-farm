@@ -17,6 +17,7 @@ import { supabase } from "@src/supabase/config";
 import { useDispatch } from "react-redux";
 import { ADD_PRODUCT } from "@src/redux/slice/productsSlice";
 import { Textarea } from "@src/components/ui/textarea";
+import { toast } from "react-toastify";
 
 function AddProduct({ isAddDialogOpen, onDialogClose }) {
   const [newProduct, setNewProduct] = useState({});
@@ -78,6 +79,7 @@ function AddProduct({ isAddDialogOpen, onDialogClose }) {
     if (!validationResult.success) {
       const fieldErrors = validationResult.error.formErrors.fieldErrors;
       setErrors(fieldErrors);
+      toast.success("Please fill out all required fields.");
       return;
     }
 
@@ -94,7 +96,7 @@ function AddProduct({ isAddDialogOpen, onDialogClose }) {
       .single();
 
     if (insertResult.error) {
-      console.error("Error inserting new product:", insertResult.error.message);
+      toast.error("Error inserting new product.");
       return null;
     } else {
       console.log(newProduct);
@@ -107,6 +109,8 @@ function AddProduct({ isAddDialogOpen, onDialogClose }) {
           cacheControl: "0",
           upsert: true,
         });
+
+        toast.success("Product added successfully!");
 
       dispatch(
         ADD_PRODUCT({

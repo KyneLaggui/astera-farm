@@ -50,10 +50,12 @@ export const editProfile = async (email, username) => {
     username: username,
   })
   .eq('email', email)
-
+  
+  console.log(data)
   if (error) {
     return null
+  } else {
+    return true
   }
 
-  return data
 };
