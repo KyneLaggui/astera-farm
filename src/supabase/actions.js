@@ -1,4 +1,5 @@
 import { supabase } from "./config";
+import { toast } from "react-toastify";
 
 export const signUpWithEmailAndPassword = async (
     email,
@@ -38,6 +39,7 @@ export const signInWithEmailAndPassword = async (email, password) => {
 };
 
 export const signOut = async () => {
+  toast.success("Logged out successfully!");
   await supabase.auth.signOut();
 };
 

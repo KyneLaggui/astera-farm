@@ -70,7 +70,7 @@ CartProducts.propTypes = {
   title: PropTypes.string.isRequired,
   amount: PropTypes.number.isRequired,
   initialQuantity: PropTypes.number.isRequired,
-  productId: PropTypes.string.isRequired, // added prop for product ID
+  productId: PropTypes.number.isRequired, // added prop for product ID
 };
 
 export default CartProducts;

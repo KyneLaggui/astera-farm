@@ -121,13 +121,13 @@ const Navbar = () => {
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuGroup>
-                  <DropdownMenuItem onClick={handleDialogOpen}>
+                  <DropdownMenuItem className="cursor-pointer" onClick={handleDialogOpen}>
                     <UserPen className="mr-2 h-4 w-4" />
                     <span className="cursor-pointer">Edit Profile</span>
                   </DropdownMenuItem>
-                  <DropdownMenuItem className="flex items-center" onClick={signOut}>
+                  <DropdownMenuItem className="flex items-center cursor-pointer" onClick={signOut}>
                     <LogOut className="mr-2 h-4 w-4" />
-                    <span className="cursor-pointer">Logout</span>
+                    <span>Logout</span>
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
               </DropdownMenuContent>
