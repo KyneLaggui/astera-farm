@@ -17,9 +17,6 @@ const CheckoutPayMongo = () => {
 
   const description = `Astera payment: Email: ${customerEmail}, Amount: ${totalAmount}`;
 
-  // const dev = process.env.NODE_ENV !== 'production';
-  // const server = dev ? 'http://localhost:4242/create-payment-intent-paymongo' : 'https://ecommerce-shop-api.onrender.com/create-payment-intent-paymongo';
-  
   useEffect(() => {
     dispatch(CALCULATE_TOTAL_QUANTITY());
   }, [dispatch, cartItems]);

@@ -5,6 +5,8 @@ import BestSellingChart from "@src/pages/admin/DashboardCharts/BestSellingChart"
 import { selectOrders } from "@src/redux/slice/ordersSlice";
 import { useSelector } from "react-redux";
 import { format, getWeek, differenceInDays, differenceInWeeks } from "date-fns";
+import LoggedInOnly from "@src/layouts/LoggedInOnly";
+
 
 const Dashboard = () => {
   const [orderData, setOrderData] = useState([]);
@@ -100,21 +102,24 @@ const Dashboard = () => {
   }, [orders]);
 
   return (
-    <div className="navbar-spacing flex flex-col justify-center items-center gap-4 sm:gap-8">
-      <h1 className="font-gothic text-7xl sm:text-9xl text-white text-center tracking-wide">
-        DASHBOARD
-      </h1>
-      <div className="flex flex-col sm:flex-row gap-4 ">
-        {/* Left Container */}
-        <OrderStatusChart orderData={orderData} />
+    <LoggedInOnly forAdmin={true} forUser={false} >
+      <div className="navbar-spacing flex flex-col justify-center items-center gap-4 sm:gap-8">
+        <h1 className="font-gothic text-7xl sm:text-9xl text-white text-center tracking-wide">
+          DASHBOARD
+        </h1>
+        <div className="flex flex-col sm:flex-row gap-4 ">
+          {/* Left Container */}
+          <OrderStatusChart orderData={orderData} />
 
-        {/* Right Container */}
-        <div className="flex flex-col gap-4 justify-between">
-          <AreaChartComponent data={chartData} />
-          <BestSellingChart sellingData={sellingData} />
+          {/* Right Container */}
+          <div className="flex flex-col gap-4 justify-between">
+            <AreaChartComponent data={chartData} />
+            <BestSellingChart sellingData={sellingData} />
+          </div>
         </div>
       </div>
-    </div>
+    </LoggedInOnly>
+    
   );
 };
 

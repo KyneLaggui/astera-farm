@@ -6,8 +6,15 @@ import { Eye, EyeOff } from 'lucide-react';
 import { DialogHeader, DialogDescription, DialogTitle, Dialog, DialogContent } from '@src/components/ui/dialog';
 import { Form } from '../ui/form';
 import { signInWithEmailAndPassword } from '@src/supabase/actions';
+import { z } from 'zod';
+import { toast } from "react-toastify";
 
-const LoginForm = () => {
+// Define Zod schema
+const loginSchema = z.object({
+  email: z.string().email('Invalid email address'),
+});
+
+const LoginForm = ({ onSuccess }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
   const [forgotEmail, setForgotEmail] = useState('');
@@ -16,6 +23,8 @@ const LoginForm = () => {
     email: '',
     password: '',
   });
+
+  const [errors, setErrors] = useState({});
 
   const handleChange = (e) => {
     const { id, value } = e.target;
@@ -45,8 +54,27 @@ const LoginForm = () => {
 
   const handleLogin = async () => {
     const { email, password } = formData;
-    const result = await signInWithEmailAndPassword(email, password);
-    console.log(result);
+
+    // Zod validation
+    const result = loginSchema.safeParse({ email, password });
+
+    if (!result.success) {
+      // Map errors from Zod
+      const errorMessages = result.error.format();
+      setErrors({
+        email: errorMessages.email?._errors[0],
+      });
+      return;
+    } else {
+       // Proceed with login
+        const loginResult = await signInWithEmailAndPassword(email, password);
+        if (loginResult) {
+          toast.success("Logged in successfully!");
+          onSuccess()
+        } else {
+          toast.error("Invalid email or password");
+        }
+    }
   };
 
   return (
@@ -60,12 +88,26 @@ const LoginForm = () => {
       <div className="space-y-2">
         <div className="space-y-1">
           <Label htmlFor="email">Email</Label>
-          <Input id="email" value={formData.email} onChange={handleChange} />
+          <Input
+            id="email"
+            value={formData.email}
+            onChange={handleChange}
+            className={errors.email ? 'border-red-500' : ''}
+          />
+          {errors.email && (
+            <p className="text-red-500 text-sm">{errors.email}</p>
+          )}
         </div>
         <div className="space-y-1">
           <Label htmlFor="password">Password</Label>
           <div className="relative">
-            <Input id="password" type={showPassword ? 'text' : 'password'} value={formData.password} onChange={handleChange} />
+            <Input
+              id="password"
+              type={showPassword ? 'text' : 'password'}
+              value={formData.password}
+              onChange={handleChange}
+              className={errors.password ? 'border-red-500' : ''}
+            />
             <button
               type="button"
               className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
@@ -74,6 +116,9 @@ const LoginForm = () => {
               {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
             </button>
           </div>
+          {errors.password && (
+            <p className="text-red-500 text-sm">{errors.password}</p>
+          )}
         </div>
       </div>
       <div className="flex justify-between items-center">

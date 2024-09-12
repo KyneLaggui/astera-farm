@@ -1,4 +1,5 @@
 import React from "react";
+import LoggedInOnlyComponent from "@src/layouts/component-restriction/LoggedInOnlyComponent";
 
 const MobileMenu = ({ isMobileMenuOpen, toggleMobileMenu }) => {
   return (
@@ -29,7 +30,9 @@ const MobileMenu = ({ isMobileMenuOpen, toggleMobileMenu }) => {
       <div className="flex flex-col items-center gap-4 mt-24 font-bakbak py-2 px-4 text-lg sm:text-xl">
         <a href="/">Home</a>
         <a href="/produce">Produce</a>
-        <a href="/tracking">Tracking</a>
+        <LoggedInOnlyComponent forAdmin={false} forUser={true}>
+          <a href="/tracking">Tracking</a>
+        </LoggedInOnlyComponent>
         <a href="/about-us">About Us</a>
         <a href="/recommendations">Recommendations</a>
       </div>
