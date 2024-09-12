@@ -1,34 +1,46 @@
-import React, { useEffect, useState } from 'react'
-import { supabase } from '../../supabase/config';
+import React, { useEffect, useState } from 'react';
+import { selectIsAdmin, selectIsLoggedIn } from '@src/redux/slice/authSlice';
+import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
-// For faculty/faculty admin role pages only
-const LoggedInOnly = ({ children }) => {
+const LoggedInOnlyComponent = ({ children, forAdmin, forUser }) => {
+  const [isLoading, setIsLoading] = useState(true);
+  
+  const navigate = useNavigate();
+  const isLoggedInRedux = useSelector(selectIsLoggedIn);
+  const isAdminRedux = useSelector(selectIsAdmin);  
 
-    const navigate = useNavigate();
-
-    const [isLoading, setIsLoading] = useState(true)
-    
-    useEffect(() => {
-        const getSession = async() => {            
-            const { data: { user } } = await supabase.auth.getUser();
-            if (!user) {
-              navigate("/")
-            } else {
-                setIsLoading(false)
-            }
+  useEffect(() => {
+    const handleNavigation = () => {
+      // Wait until loading finishes before navigating
+      if (!isLoading) {
+        if (!isLoggedInRedux) {
+          navigate('/');
+          return;
         }
+  
+        if (forAdmin && !isAdminRedux) {
+          navigate('/');
+          return;
+        }
+  
+        if (forUser && isAdminRedux) {
+          navigate('/');
+          return;
+        }
+      }
+    };
 
-        getSession()
-        
-    }, [navigate, userData])
-       
-  return (
-    <div>
-      {/* {isLoading || isLoadingProfile ? <Loader /> : children} */}
-      {children}
-    </div>
-  )
-}
+    setIsLoading(false);
+    handleNavigation();
+  }, [isAdminRedux, isLoggedInRedux, isLoading, navigate, forAdmin, forUser]);
 
-export default LoggedInOnly
+  // Show a loading state until the Redux state is initialized
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
+
+  return <>{children}</>;
+};
+
+export default LoggedInOnlyComponent;
