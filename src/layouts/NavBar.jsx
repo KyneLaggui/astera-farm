@@ -42,6 +42,7 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isRegisterLoginOpen, setIsRegisterLoginOpen] = useState(false);
 
   const isLoggedInRedux = useSelector(selectIsLoggedIn);
   const allOrders = fetchAllOrders()
@@ -55,11 +56,16 @@ const Navbar = () => {
   const handleDialogOpen = () => {
     setIsDialogOpen(true);
   };
-
   const handleDialogClose = () => {
     setIsDialogOpen(false);
   };
 
+  const handleRegisterLoginOpen = () => {
+    setIsRegisterLoginOpen(true);
+  };
+  const handleRegisterLoginClose = () => {
+    setIsRegisterLoginOpen(false);
+  };
 
   useEffect(() => {
     // This for listening to supabase auth state changes
@@ -127,8 +133,8 @@ const Navbar = () => {
               </DropdownMenuContent>
             </DropdownMenu>
           ) : (
-            <Dialog>
-              <DialogTrigger asChild>
+            <Dialog open={isRegisterLoginOpen} onOpenChange={setIsRegisterLoginOpen}>
+              <DialogTrigger>
                 <CircleUserRound className="h-6 cursor-pointer text-yellow" />
               </DialogTrigger>
               <DialogContent className="w-[400px]" onOpenAutoFocus={(e) => e.preventDefault()}>
@@ -138,10 +144,10 @@ const Navbar = () => {
                     <TabsTrigger value="signup">SignUp</TabsTrigger>
                   </TabsList>
                   <TabsContent value="login">
-                    <LoginForm />
+                    <LoginForm onSuccess={handleRegisterLoginClose} />
                   </TabsContent>
                   <TabsContent value="signup">
-                    <SignUpForm />
+                    <SignUpForm onSuccess={handleRegisterLoginClose} />
                   </TabsContent>
                 </Tabs>
               </DialogContent>

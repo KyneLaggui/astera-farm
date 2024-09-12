@@ -15,7 +15,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (orders && orders.length > 0) {
-      console.log("Orderss:", orders);
+      console.log("Orders:", orders);
 
       const filteredOrders = orders.map((order) => {
         const totalEarnings = order.cart.reduce(
