@@ -20,7 +20,7 @@ import { useDispatch } from "react-redux";
 import { UPDATE_PRODUCT } from "@src/redux/slice/productsSlice";
 import fetchProductIconPath from "@src/custom-hooks/actions/fetchProductIconPath";
 import { Textarea } from "@src/components/ui/textarea";
-
+import { toast } from "react-toastify";
 
 function EditProductDialog({
   product,
@@ -91,6 +91,7 @@ function EditProductDialog({
     if (!validationResult.success) {
       const fieldErrors = validationResult.error.formErrors.fieldErrors;
       setErrors(fieldErrors);
+      toast.error("Error updating product");
       return;
     }
 
@@ -108,7 +109,7 @@ function EditProductDialog({
       .eq("id", product.id);
 
     if (updateResult.error) {
-      console.error("Error updating product:", updateResult.error.message);
+      toast.error("Error updating product");
       return null;
     }
 
@@ -128,7 +129,11 @@ function EditProductDialog({
             cacheControl: "0",
             upsert: true,
           });
-        }       
+
+          toast.success("Product updated successfully!");
+        } else {
+          toast.error("Error updating product");
+        }
       }
 
     // Dispatch the updated product to Redux

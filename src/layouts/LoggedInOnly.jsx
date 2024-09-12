@@ -13,7 +13,8 @@ const LoggedInOnlyComponent = ({ children, forAdmin, forUser }) => {
   useEffect(() => {
     const handleNavigation = () => {
       // Wait until loading finishes before navigating
-      if (!isLoading) {
+      if (!isLoading && isAdminRedux !== null && isLoggedInRedux !== null) {
+        console.log(isLoggedInRedux, isAdminRedux);
         if (!isLoggedInRedux) {
           navigate('/');
           return;

@@ -13,6 +13,7 @@ import fetchProductIconPath from "@src/custom-hooks/actions/fetchProductIconPath
 import { supabase } from "@src/supabase/config"
 import { useDispatch } from 'react-redux';
 import { DELETE_PRODUCT } from '@src/redux/slice/productsSlice';
+import { toast } from 'react-toastify';
   
 const ConfirmProductDelete = ({ product, onProductUpdated, isDeleteDialogOpen, onDialogClose }) => {
     const dispatch = useDispatch();
@@ -24,7 +25,7 @@ const ConfirmProductDelete = ({ product, onProductUpdated, isDeleteDialogOpen, o
         .eq('id', product.id)      
 
         if (deleteResult.error) {
-            console.log(deleteResult.error)
+            toast.error('Product deletion failed')
         } else {
             const imageUrl = await fetchProductIconPath(product.id);
             const { data, error } = await supabase
@@ -36,6 +37,7 @@ const ConfirmProductDelete = ({ product, onProductUpdated, isDeleteDialogOpen, o
                 console.log(error)
             } else {
                 dispatch(DELETE_PRODUCT({ id: product.id }))
+                toast.success('Product deleted successfully!')
                 onDialogClose()
             }
         }
