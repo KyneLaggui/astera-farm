@@ -123,11 +123,11 @@ const Navbar = () => {
                 <DropdownMenuGroup>
                   <DropdownMenuItem onClick={handleDialogOpen}>
                     <UserPen className="mr-2 h-4 w-4" />
-                    <span>Edit Profile</span>
+                    <span className="cursor-pointer">Edit Profile</span>
                   </DropdownMenuItem>
                   <DropdownMenuItem className="flex items-center" onClick={signOut}>
                     <LogOut className="mr-2 h-4 w-4" />
-                    <span>Logout</span>
+                    <span className="cursor-pointer">Logout</span>
                   </DropdownMenuItem>
                 </DropdownMenuGroup>
               </DropdownMenuContent>
