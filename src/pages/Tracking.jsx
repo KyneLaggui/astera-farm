@@ -23,6 +23,7 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { selectOrders } from "@src/redux/slice/ordersSlice";
 import { selectUserID } from "@src/redux/slice/authSlice";
+import LoggedInOnly from "@src/layouts/LoggedInOnly";
 
 const Tracking = () => {
   const [selectedStatus, setSelectedStatus] = useState("All");
@@ -82,69 +83,71 @@ const Tracking = () => {
   
 
   return (
-    <div
-      className="relative bg-cover min-h-screen h-full flex flex-col gap-7 items-center navbar-spacing w-full "
-      style={{ backgroundImage: `url(${backgroundImage})` }}
-    >
-      <div className="absolute inset-0 bg-black bg-opacity-75"></div>
-      <div className="flex flex-col justify-center items-center z-10">
-        <h1 className="font-gothic text-7xl sm:text-9xl text-white text-center tracking-wide">
-          TRACK & TRACE
-        </h1>
-        <p className="font-spartan font-semibold text-white text-xs sm:text-base tracking-widest text-center max-w-[600px]">
-          STAY IN TOUCH WITH YOUR PRODUCE FROM THE MOMENT IT GETS PICKED AND
-          DELIVERED TO YOUR DOORSTEP
-        </p>
-      </div>
-      <Card className="w-full max-w-[700px] min-h-[600px] z-10">
-        <VisuallyHidden>
-          <CardTitle>Create project</CardTitle>
-          <CardDescription>
-            Deploy your new project in one-click.
-          </CardDescription>
-        </VisuallyHidden>
-        <CardContent className="flex flex-col py-6 gap-4">
-          <div className="flex w-full flex-col sm:flex-row items-end sm:justify-between gap-4">
-            <Input
-              type="text"
-              placeholder="Search Order ID"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <Select onValueChange={setSelectedStatus}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Order Status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="All">All</SelectItem>
-                <SelectItem value="Order Placed">Order Placed</SelectItem>
-                <SelectItem value="Processing">Processing</SelectItem>
-                <SelectItem value="Shipped">Shipped</SelectItem>
-                <SelectItem value="Delivered">Delivered</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-          <ScrollArea>
-            <div className="flex flex-col gap-4 max-h-[500px]">
-              {filteredOrders.length > 0 ? (
-                filteredOrders.map((order) => (
-                  <OrderCard key={order.orderId} order={order} />
-                ))
-              ) : (
-                <div className="flex flex-col justify-center items-center">
-                  <img
-                    src={NoProduct}
-                    alt="No orders"
-                    className="max-w-[300px]"
-                  />
-                  <p className="text-center">No orders found</p>
-                </div>
-              )}
+    <LoggedInOnly forUser={true} forAdmin={false}>
+      <div
+        className="relative bg-cover min-h-screen h-full flex flex-col gap-7 items-center navbar-spacing w-full "
+        style={{ backgroundImage: `url(${backgroundImage})` }}
+      >
+        <div className="absolute inset-0 bg-black bg-opacity-75"></div>
+        <div className="flex flex-col justify-center items-center z-10">
+          <h1 className="font-gothic text-7xl sm:text-9xl text-white text-center tracking-wide">
+            TRACK & TRACE
+          </h1>
+          <p className="font-spartan font-semibold text-white text-xs sm:text-base tracking-widest text-center max-w-[600px]">
+            STAY IN TOUCH WITH YOUR PRODUCE FROM THE MOMENT IT GETS PICKED AND
+            DELIVERED TO YOUR DOORSTEP
+          </p>
+        </div>
+        <Card className="w-full max-w-[700px] min-h-[600px] z-10">
+          <VisuallyHidden>
+            <CardTitle>Create project</CardTitle>
+            <CardDescription>
+              Deploy your new project in one-click.
+            </CardDescription>
+          </VisuallyHidden>
+          <CardContent className="flex flex-col py-6 gap-4">
+            <div className="flex w-full flex-col sm:flex-row items-end sm:justify-between gap-4">
+              <Input
+                type="text"
+                placeholder="Search Order ID"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              <Select onValueChange={setSelectedStatus}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Order Status" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="All">All</SelectItem>
+                  <SelectItem value="Order Placed">Order Placed</SelectItem>
+                  <SelectItem value="Processing">Processing</SelectItem>
+                  <SelectItem value="Shipped">Shipped</SelectItem>
+                  <SelectItem value="Delivered">Delivered</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
-          </ScrollArea>
-        </CardContent>
-      </Card>
-    </div>
+            <ScrollArea>
+              <div className="flex flex-col gap-4 max-h-[500px]">
+                {filteredOrders.length > 0 ? (
+                  filteredOrders.map((order) => (
+                    <OrderCard key={order.orderId} order={order} />
+                  ))
+                ) : (
+                  <div className="flex flex-col justify-center items-center">
+                    <img
+                      src={NoProduct}
+                      alt="No orders"
+                      className="max-w-[300px]"
+                    />
+                    <p className="text-center">No orders found</p>
+                  </div>
+                )}
+              </div>
+            </ScrollArea>
+          </CardContent>
+        </Card>
+      </div>
+    </LoggedInOnly>
   );
 };
 

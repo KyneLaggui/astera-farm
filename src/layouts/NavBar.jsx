@@ -7,6 +7,7 @@ import { signOut } from '@src/supabase/actions';
 import { REMOVE_ACTIVE_USER, SET_ACTIVE_USER, selectIsAdmin, selectIsLoggedIn } from '@src/redux/slice/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import LoggedInOnlyComponent from '@src/layouts/component-restriction/LoggedInOnlyComponent';
+import UserGuestOnlyComponent from '@src/layouts/component-restriction/UserGuestOnlyComponent';
 
 import {
   DropdownMenu,
@@ -99,12 +100,27 @@ const Navbar = () => {
         </div>
 
         <div className="hidden md:flex md:space-x-8 font-bakbak lg:text-lg text-md tracking-wider">
-          <a href="/produce" className="hover:text-white">Produce</a>
+          <LoggedInOnlyComponent forAdmin={false} forUser={true}>
+            <a href="/produce" className="hover:text-white">Produce</a>
+          </LoggedInOnlyComponent>
           <LoggedInOnlyComponent forAdmin={false} forUser={true}>
             <a href="/tracking" className="hover:text-white">Tracking</a>
           </LoggedInOnlyComponent>
-          <a href="/about-us" className="hover:text-white">About Us</a>
-          <a href="/recommendations" className="hover:text-white">Recommendations</a>
+          <UserGuestOnlyComponent>
+            <a href="/about-us" className="hover:text-white">About Us</a>
+          </UserGuestOnlyComponent>
+          <UserGuestOnlyComponent>
+            <a href="/recommendations" className="hover:text-white">Recommendations</a>
+          </UserGuestOnlyComponent>
+          <LoggedInOnlyComponent forAdmin={true} forUser={false}>
+            <a href="/admin/dashboard" className="hover:text-white">Dashboard</a>
+          </LoggedInOnlyComponent>
+          <LoggedInOnlyComponent forAdmin={true} forUser={false}>
+            <a href="/admin/products" className="hover:text-white">Products</a>
+          </LoggedInOnlyComponent>
+          <LoggedInOnlyComponent forAdmin={true} forUser={false}>
+            <a href="/admin/orders" className="hover:text-white">Orders</a>
+          </LoggedInOnlyComponent>
         </div>
 
         <div className="flex items-center gap-4">                      
