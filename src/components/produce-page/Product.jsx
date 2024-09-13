@@ -49,9 +49,6 @@ const Product = () => {
 
   return (
     <div className='flex flex-col gap-10'>
-      {isLoading ? (
-        <p>Loading...</p>
-      ) : (
         <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-20'>
           {productsState.map((product) => (
             <div key={product.id} className='flex flex-col justify-center items-center gap-2'>
@@ -73,7 +70,6 @@ const Product = () => {
             </div>
           ))}
         </div>
-      )}
       {selectedProduct && (
         <ProduceView isOpen={isDrawerOpen} onClose={closeDrawer} product={selectedProduct} />
       )}
