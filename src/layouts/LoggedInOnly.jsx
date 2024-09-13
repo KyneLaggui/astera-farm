@@ -26,7 +26,7 @@ const LoggedInOnlyComponent = ({ children, forAdmin, forUser }) => {
         }
   
         if (forUser && isAdminRedux) {
-          navigate('/');
+          navigate('/admin/dashboard');
           return;
         }
       }
