@@ -29,9 +29,9 @@ const MobileMenu = ({ isMobileMenuOpen, toggleMobileMenu }) => {
         </svg>
       </button>
       <div className="flex flex-col items-center gap-4 mt-24 font-bakbak py-2 px-4 text-lg sm:text-xl">
-        <LoggedInOnlyComponent forAdmin={false} forUser={true}>
+        <UserGuestOnlyComponent>
           <a href="/produce">Produce</a>
-        </LoggedInOnlyComponent>
+        </UserGuestOnlyComponent>
         <LoggedInOnlyComponent forAdmin={false} forUser={true}>
           <a href="/tracking">Tracking</a>
         </LoggedInOnlyComponent>

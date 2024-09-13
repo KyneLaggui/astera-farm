@@ -100,9 +100,9 @@ const Navbar = () => {
         </div>
 
         <div className="hidden md:flex md:space-x-8 font-bakbak lg:text-lg text-md tracking-wider">
-          <LoggedInOnlyComponent forAdmin={false} forUser={true}>
+          <UserGuestOnlyComponent>
             <a href="/produce" className="hover:text-white">Produce</a>
-          </LoggedInOnlyComponent>
+          </UserGuestOnlyComponent>
           <LoggedInOnlyComponent forAdmin={false} forUser={true}>
             <a href="/tracking" className="hover:text-white">Tracking</a>
           </LoggedInOnlyComponent>
