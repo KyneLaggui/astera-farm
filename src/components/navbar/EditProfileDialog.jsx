@@ -44,7 +44,7 @@ const EditProfileDialog = ({ isOpen, onClose }) => {
   
   const handleEditPassword = async() => {
     const result = await supabase.auth.resetPasswordForEmail(profile.email, {
-      redirectTo: 'http://localhost:5173/reset-password',
+      redirectTo: 'https://astera-farm.vercel.app/reset-password',
     })
     toast.success('Password reset link sent to your email.');
   }
