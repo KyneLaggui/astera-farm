@@ -48,7 +48,7 @@ const CheckoutPayMongo = () => {
             headers: {
               'Content-Type': 'application/json',
               'accept': 'application/json',
-              'authorization': 'Basic c2tfdGVzdF84ZmRZaFhnOVhjM05kcHhmZVpxVmNKZng6', 
+              'authorization': 'Basic c2tfdGVzdF9iNTR6bVYxSFRjSlVXYkcxemZQeUo1Umk6', 
             },
             body: JSON.stringify({
               data: {
