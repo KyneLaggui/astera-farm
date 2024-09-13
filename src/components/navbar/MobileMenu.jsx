@@ -1,5 +1,6 @@
 import React from "react";
 import LoggedInOnlyComponent from "@src/layouts/component-restriction/LoggedInOnlyComponent";
+import UserGuestOnlyComponent from '@src/layouts/component-restriction/UserGuestOnlyComponent';
 
 const MobileMenu = ({ isMobileMenuOpen, toggleMobileMenu }) => {
   return (
@@ -28,13 +29,27 @@ const MobileMenu = ({ isMobileMenuOpen, toggleMobileMenu }) => {
         </svg>
       </button>
       <div className="flex flex-col items-center gap-4 mt-24 font-bakbak py-2 px-4 text-lg sm:text-xl">
-        <a href="/">Home</a>
-        <a href="/produce">Produce</a>
+        <LoggedInOnlyComponent forAdmin={false} forUser={true}>
+          <a href="/produce">Produce</a>
+        </LoggedInOnlyComponent>
         <LoggedInOnlyComponent forAdmin={false} forUser={true}>
           <a href="/tracking">Tracking</a>
         </LoggedInOnlyComponent>
-        <a href="/about-us">About Us</a>
-        <a href="/recommendations">Recommendations</a>
+        <UserGuestOnlyComponent>
+          <a href="/about-us">About Us</a>
+        </UserGuestOnlyComponent>
+        <UserGuestOnlyComponent>
+          <a href="/recommendations">Recommendations</a>
+        </UserGuestOnlyComponent>
+        <LoggedInOnlyComponent forAdmin={true} forUser={false}>
+          <a href="/admin/dashboard">Dashboard</a>
+        </LoggedInOnlyComponent>
+        <LoggedInOnlyComponent forAdmin={true} forUser={false}>
+          <a href="/admin/products">Products</a>
+        </LoggedInOnlyComponent>
+        <LoggedInOnlyComponent forAdmin={true} forUser={false}>
+          <a href="/admin/orders">Orders</a>
+        </LoggedInOnlyComponent>
       </div>
     </div>
   );
