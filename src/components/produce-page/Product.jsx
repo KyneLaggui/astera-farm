@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
-import ProduceView from '@src/components/produce-page/ProductView';
-import fetchAllProduct from '@src/custom-hooks/fetchAllProduct';
-import fetchProductUrl from '@src/custom-hooks/actions/fetchProductUrl';
+import { useState, useEffect } from "react";
+import ProduceView from "@src/components/produce-page/ProductView";
+import fetchAllProduct from "@src/custom-hooks/fetchAllProduct";
+import fetchProductUrl from "@src/custom-hooks/actions/fetchProductUrl";
+import { Sparkles } from "lucide-react";
 
 const Product = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -48,30 +49,46 @@ const Product = () => {
   }, [fetchedProducts]);
 
   return (
-    <div className='flex flex-col gap-10'>
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-20'>
-          {productsState.map((product) => (
-            <div key={product.id} className='flex flex-col justify-center items-center gap-2'>
-              <div className='h-[200px] sm:h-[300px] w-[200px] sm:w-[300px] flex items-center justify-center'>
-                <img
-                  src={`${product.image}`}
-                  className='max-h-full max-w-full object-contain'
-                  alt={product.name}
-                />
-              </div>
-              <h1 className='font-gothic text-4xl sm:text-5xl text-white uppercase tracking-wide text-center'>{product.name}</h1>
-              <p className='font-spartan text-xl sm:text-2xl text-white font-bold tracking-wider'>{product.sellMethod}</p>
-              <button
-                className='bg-yellow font-bakbak uppercase text-xl text-green-950 rounded-full px-3 py-2 hover:text-yellow hover:bg-green'
-                onClick={() => openDrawer(product)}
-              >
-                Quick View
-              </button>
+    <div className="flex flex-col gap-10">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-20">
+        {productsState.map((product) => (
+          <div
+            key={product.id}
+            className="flex flex-col justify-center items-center gap-2 relative"
+          >
+            <div className="h-[200px] sm:h-[300px] w-[200px] sm:w-[300px] flex items-center justify-center">
+              <img
+                src={`${product.image}`}
+                className="max-h-full max-w-full object-contain"
+                alt={product.name}
+              />
             </div>
-          ))}
-        </div>
+            {/* TODO: Add a validation in which checks if the product is best seller */}
+            <div className="absolute top-[275px] text-[yellow] font-shrikhand w-full flex justify-start  gap-2 text-3xl">
+              <h1>Astral Best </h1>
+              <Sparkles />
+            </div>
+            <h1 className="font-gothic text-4xl sm:text-5xl text-white uppercase tracking-wide text-center">
+              {product.name}
+            </h1>
+            <p className="font-spartan text-xl sm:text-2xl text-white font-bold tracking-wider">
+              {product.sellMethod}
+            </p>
+            <button
+              className="bg-yellow font-bakbak uppercase text-xl text-green-950 rounded-full px-3 py-2 hover:text-yellow hover:bg-green"
+              onClick={() => openDrawer(product)}
+            >
+              Quick View
+            </button>
+          </div>
+        ))}
+      </div>
       {selectedProduct && (
-        <ProduceView isOpen={isDrawerOpen} onClose={closeDrawer} product={selectedProduct} />
+        <ProduceView
+          isOpen={isDrawerOpen}
+          onClose={closeDrawer}
+          product={selectedProduct}
+        />
       )}
     </div>
   );
