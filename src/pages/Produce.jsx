@@ -6,6 +6,10 @@ import Jupiter from "@src/assets/images/Planets/jupiter.png";
 import Moon from "@src/assets/images/Planets/moon.png";
 
 const Produce = () => {
+  // const handleInstagramRedirect = () => {
+  //   window.open("https://www.instagram.com/asterafarmsph/", "_blank");
+  // };
+
   return (
     <div
       className="overflow-hidden relative bg-cover bg-center bg-black h-full flex justify-center navbar-spacing w-full "
@@ -24,7 +28,7 @@ const Produce = () => {
 
       <div className="absolute inset-0 bg-black bg-opacity-55"></div>
 
-      <div className="z-10 flex flex-col gap-8 md:gap-12 lg:gap-16 xl:gap-20">
+      <div className="z-10 flex flex-col gap-8 md:gap-12 lg:gap-16 xl:gap-20 max-w-[1200px]">
         <div className="flex flex-col justify-center items-center ">
           <h1 className="font-gothic text-7xl sm:text-9xl text-white text-center tracking-wide">
             OUR PRODUCE
@@ -38,7 +42,19 @@ const Produce = () => {
           <h1 className="font-gothic text-7xl sm:text-9xl text-white text-center tracking-wide">
             ORDERING IN A BULK?
           </h1>
-          <div className="flex items-center py-2 sm:py-3 lg:py-3 px-4 sm:px-5 lg:px-5 justify-center text-green gap-2 sm:gap-3 lg:gap-3 rounded-full bg-yellow w-max font-spartan font-bold text-xl md:text-2xl xl:text-3xl hover:text-yellow hover:bg-green cursor-pointer">
+          <p className="font-spartan text-center text-lg sm:text-xl md:text-2xl">
+            When you order <span className="text-yellow">30 items or more</span>
+            , it’s officially a bulk order, and just like preparing for a space
+            mission, it requires a bit more time! Expect{" "}
+            <span className="text-yellow">longer processing times </span>
+            as we carefully pack and prepare your cosmic haul with the utmost
+            care. So whether you're stocking up for your farm or fueling up your
+            galactic garden, rest assured, your stellar order is in good hands!
+          </p>
+          {/* <div
+            className="flex items-center py-2 sm:py-3 lg:py-3 px-4 sm:px-5 lg:px-5 justify-center text-green gap-2 sm:gap-3 lg:gap-3 rounded-full bg-yellow w-max font-spartan font-bold text-xl md:text-2xl xl:text-3xl hover:text-yellow hover:bg-green cursor-pointer"
+            onClick={handleInstagramRedirect}
+          >
             <button className="mt-1">Click Here</button>
             <CircleChevronRight size={25} className="md:hidden" />
             <CircleChevronRight
@@ -46,7 +62,7 @@ const Produce = () => {
               className="hidden md:block lg:hidden"
             />
             <CircleChevronRight size={35} className="hidden lg:block" />
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

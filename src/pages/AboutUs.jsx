@@ -6,6 +6,10 @@ import Moon2 from "@src/assets/images/about-us-pic-2.png";
 import Saturn from "@src/assets/images/Planets/saturn.png";
 
 const AboutUs = () => {
+  const handleInstagramRedirect = () => {
+    window.open("https://www.instagram.com/asterafarmsph/", "_blank");
+  };
+
   return (
     <div
       className="relative overflow-hidden bg-cover bg-center min-h-screen h-full flex flex-col gap-7 items-center navbar-spacing w-full"
@@ -71,7 +75,10 @@ const AboutUs = () => {
                 We decided to have fun and asked ourselves this question: "What
                 would be the kind of farms in Mars when we start colonizing it?"{" "}
               </p>
-              <button className="bg-yellow text-green font-spartan font-semibold text-xl sm:text-2xl lg:text-3xl px-4 sm:px-6 pb-1 pt-2 rounded-full hover:bg-green hover:text-yellow max-w-fit">
+              <button
+                className="bg-yellow text-green font-spartan font-semibold text-xl sm:text-2xl lg:text-3xl px-4 sm:px-6 pb-1 pt-2 rounded-full hover:bg-green hover:text-yellow max-w-fit"
+                onClick={handleInstagramRedirect}
+              >
                 Learn More
               </button>
             </div>
@@ -91,7 +98,10 @@ const AboutUs = () => {
                 You can't go to Mars without having a stop first on the Moon
                 right?{" "}
               </p>
-              <button className="bg-yellow text-green font-spartan font-semibold text-xl sm:text-2xl lg:text-3xl px-4 sm:px-6 pb-1 pt-2 rounded-full hover:bg-green hover:text-yellow max-w-fit">
+              <button
+                className="bg-yellow text-green font-spartan font-semibold text-xl sm:text-2xl lg:text-3xl px-4 sm:px-6 pb-1 pt-2 rounded-full hover:bg-green hover:text-yellow max-w-fit"
+                onClick={handleInstagramRedirect}
+              >
                 Learn More
               </button>
             </div>
