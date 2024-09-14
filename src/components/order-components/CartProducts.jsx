@@ -1,22 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Card, CardContent } from '@src/components/ui/card';
 import { CircleMinus, Minus, Plus } from 'lucide-react';
 import { Input } from '@src/components/ui/input';
-import { ADD_TO_CART, DECREASE_CART, REMOVE_FROM_CART } from '@src/redux/slice/cartSlice';
+import { DECREASE_CART, REMOVE_FROM_CART, selectCartItems } from '@src/redux/slice/cartSlice';
+import { selectEmail } from '@src/redux/slice/authSlice';
+import { addToCart } from '@src/supabase/actions';
 
 const CartProducts = ({ image, title, amount, initialQuantity, productId }) => {
   const [quantity, setQuantity] = useState(initialQuantity);
+  const [emailState, setEmailState] = useState('');
+  const [cartItemsState, setCartItemsState] = useState([]);
+  const email = useSelector(selectEmail);
   const dispatch = useDispatch();
+  const cartItems = useSelector(selectCartItems);
 
   useEffect(() => {
     setQuantity(initialQuantity);
   }, [initialQuantity]);
 
-  const handleIncrement = () => {
+  const handleIncrement = async() => {
     setQuantity(prevQuantity => prevQuantity + 1);
-    dispatch(ADD_TO_CART({ id: productId, name: title, price: amount, cartQuantity: 1 }));
+    await addToCart(cartItemsState, { id: productId, name: title, price: amount, cartQuantity: 1 }, emailState);
   };
 
   const handleDecrement = () => {
@@ -29,6 +35,14 @@ const CartProducts = ({ image, title, amount, initialQuantity, productId }) => {
   const handleRemove = () => {
     dispatch(REMOVE_FROM_CART({ id: productId }));
   };
+
+  useEffect(() => {
+    setEmailState(email);
+  }, [email])
+
+  useEffect(() => {
+    setCartItemsState(cartItems);
+  }, [cartItems])
 
   return (
     <Card>  

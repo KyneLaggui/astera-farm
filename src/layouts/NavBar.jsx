@@ -44,6 +44,7 @@ const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isRegisterLoginOpen, setIsRegisterLoginOpen] = useState(false);
+  const [cartState, setCartState] = useState([]);
 
   const isLoggedInRedux = useSelector(selectIsLoggedIn);
   const allOrders = fetchAllOrders()
@@ -78,10 +79,26 @@ const Navbar = () => {
             userId: session.user.id,
           })
         );
+        
+        const fetchCart = async () => {
+          const { data, error } = await supabase
+            .from("cart")
+            .select("cart")
+            .eq("email", session.user.email)
+            .single();
+          if (error) {
+            console.log(error);
+          } else {
+            setCartState(data.cart);
+          }
+        }
+
+        fetchCart();
       } else {
         dispatch(REMOVE_ACTIVE_USER());
       }
     });
+
   }, [dispatch]);
 
   useEffect(() => {
@@ -125,7 +142,7 @@ const Navbar = () => {
 
         <div className="flex items-center gap-4">                      
           <LoggedInOnlyComponent forAdmin={false} forUser={true}>
-            <AddToCartSheet />
+            <AddToCartSheet cart={cartState}/>
           </LoggedInOnlyComponent>
         
           {isLoggedIn ? (
