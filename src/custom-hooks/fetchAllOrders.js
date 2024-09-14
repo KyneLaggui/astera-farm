@@ -99,7 +99,6 @@ const fetchAllOrders = () => {
         }
 
         // Dispatch merged orders to Redux
-        console.log('Merged orders:', mergedOrders);
         setAllOrders(mergedOrders); // Set the valid carts to state
         dispatch(SET_ORDERS(mergedOrders));
       }
@@ -112,3 +111,5 @@ const fetchAllOrders = () => {
 };
 
 export default fetchAllOrders;
+
+

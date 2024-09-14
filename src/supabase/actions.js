@@ -135,7 +135,7 @@ export const decreaseCart = async(cart, product, email) => {
   ];
 
   } else if (cartItems[productIndex].cartQuantity === 1) {
-      cartItems = cartItems.filter((item) => item.id !== action.payload.id);
+    cartItems = cartItems.filter((item) => item.id !== action.payload.id);
   }
       // Now, upsert the cart to Supabase
 
