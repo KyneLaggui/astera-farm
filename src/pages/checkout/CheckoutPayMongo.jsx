@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
-import { CALCULATE_TOTAL_QUANTITY, selectCartItems, selectCartTotalAmount } from '@src/redux/slice/cartSlice';
+import { selectCartItems, selectCartTotalAmount } from '@src/redux/slice/cartSlice';
 import { selectEmail, selectUserID } from '@src/redux/slice/authSlice';
 import { useLocation, useNavigate } from 'react-router-dom';
 
@@ -17,9 +17,9 @@ const CheckoutPayMongo = () => {
 
   const description = `Astera payment: Email: ${customerEmail}, Amount: ${totalAmount}`;
 
-  useEffect(() => {
-    dispatch(CALCULATE_TOTAL_QUANTITY());
-  }, [dispatch, cartItems]);
+  // useEffect(() => {
+  //   dispatch(CALCULATE_TOTAL_QUANTITY());
+  // }, [dispatch, cartItems]);
 
   useEffect(() => {    
     const getUrl = async () => {

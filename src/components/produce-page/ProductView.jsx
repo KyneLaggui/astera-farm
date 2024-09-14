@@ -1,7 +1,10 @@
-import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import PropTypes from "prop-types";
-import { ADD_TO_CART } from "@src/redux/slice/cartSlice";
+import { ADD_TO_CART, SET_CART, selectCartItems } from "@src/redux/slice/cartSlice";
+import { selectEmail } from "@src/redux/slice/authSlice";
+import { addToCart } from "@src/supabase/actions";
+import { toast } from "react-toastify";
 import {
   Drawer,
   DrawerContent,
@@ -11,12 +14,18 @@ import {
 import Background from "@src/assets/images/BG-Products.png";
 import { ScrollArea } from "@src/components/ui/scroll-area";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { toast } from "react-toastify";
 import LoggedInOnlyComponent from "@src/layouts/component-restriction/LoggedInOnlyComponent";
 
 const ProductView = ({ isOpen, onClose, product }) => {
   const dispatch = useDispatch();
   const [quantity, setQuantity] = useState(1); // Default quantity is 1
+  const [loading, setLoading] = useState(false); // Loading state for add to cart
+  const email = useSelector(selectEmail);
+  const cartItems = useSelector(selectCartItems);
+
+  useEffect(() => {
+    setQuantity(1); // Reset quantity when the drawer opens
+  }, [isOpen]);
 
   // Handle input change without immediately forcing a valid value
   const handleQuantityChange = (e) => {
@@ -26,22 +35,34 @@ const ProductView = ({ isOpen, onClose, product }) => {
 
   // Ensure quantity is valid after the user finishes inputting (e.g., on blur or add to cart)
   const handleBlur = () => {
-    // If the input is empty or less than 1, reset to 1
     if (quantity === "" || quantity < 1) {
-      setQuantity(1);
+      setQuantity(1); // Reset to 1 if the input is empty or less than 1
     }
   };
 
-  // Add product to cart with the validated quantity
-  const handleAddToCart = () => {
+  // Add product to cart with the validated quantity and sync with Supabase + Redux
+  const handleAddToCart = async () => {
+    if (loading) return; // Prevent duplicate requests
+    setLoading(true); // Lock the action while adding
+
     const validQuantity = Math.max(1, parseInt(quantity)); // Ensure quantity is at least 1
     const productWithQuantity = {
       ...product,
       cartQuantity: validQuantity,
     };
-    dispatch(ADD_TO_CART(productWithQuantity)); // Dispatch the action to add product to cart
-    toast.success("Added to cart"); // Show a success toast notification
-    onClose(); // Close the drawer after adding to cart
+
+    try {
+      const result = await addToCart(cartItems, productWithQuantity, email);
+      if (result) {
+        dispatch(SET_CART(result.cartItems)); // Update Redux with the new cart
+        toast.success("Added to cart"); // Show success message
+        onClose(); // Close the drawer
+      }
+    } catch (error) {
+      toast.error("Failed to add to cart. Please try again."); // Show error message
+    } finally {
+      setLoading(false); // Unlock the action
+    }
   };
 
   return (
@@ -102,9 +123,10 @@ const ProductView = ({ isOpen, onClose, product }) => {
                       />
                       <button
                         onClick={handleAddToCart}
-                        className="bg-yellow text-green h-full font-spartan font-extrabold text-2xl xl:text-3xl pt-3 pb-2 px-5 rounded-r-full"
+                        className={`bg-yellow text-green h-full font-spartan font-extrabold text-2xl xl:text-3xl pt-3 pb-2 px-5 rounded-r-full ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        disabled={loading} // Disable while loading
                       >
-                        ADD TO CART
+                        {loading ? "Adding..." : "ADD TO CART"}
                       </button>
                     </div>
                   </div>
@@ -128,9 +150,10 @@ const ProductView = ({ isOpen, onClose, product }) => {
               />
               <button
                 onClick={handleAddToCart}
-                className="bg-yellow text-green font-spartan font-extrabold text-xl pt-3 pb-2 px-5 rounded-r-full w-full h-full"
+                className={`bg-yellow text-green font-spartan font-extrabold text-xl pt-3 pb-2 px-5 rounded-r-full w-full h-full ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                disabled={loading} // Disable while loading
               >
-                ADD TO CART
+                {loading ? "Adding..." : "ADD TO CART"}
               </button>
             </div>
           </div>

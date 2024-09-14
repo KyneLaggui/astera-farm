@@ -141,7 +141,7 @@ const Checkout = () => {
 
   const proceedToPayment = () => {
     if (!selectedAddress) {
-      console.log("no address selected");
+      toast.error("Please select an address to proceed.");
     } else {
       navigate("/checkout-paymongo", {
         state: {

@@ -7,27 +7,29 @@ import CartProducts from '@src/components/order-components/CartProducts';
 import { ScrollArea } from '@src/components/ui/scroll-area';
 import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from '@src/components/ui/drawer';
 import { useSelector } from 'react-redux';
-import { selectCartItems, selectCartTotalAmount } from '@src/redux/slice/cartSlice';
+import { selectCartItems, selectCartTotalAmount, SET_CART } from '@src/redux/slice/cartSlice';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from "react-router-dom"
 
-const AddToCartSheet = () => {
+const AddToCartSheet = ({ cart }) => {
   const isDesktop = useMediaQuery({ query: "(min-width: 768px)" });
   const [cartState, setCartState] = useState([]);
   const [cartPriceState, setCartPriceState] = useState(0);
-  const cartItems = useSelector(selectCartItems);
+  // const cartItems = useSelector(selectCartItems);
   const cartTotalAmount = useSelector(selectCartTotalAmount);
   const navigate = useNavigate();
+  const dispatch = useDispatch()
+
 
   useEffect(() => {
-    if (cartItems) {
-      setCartState(cartItems);
+    if (cart) {
+      setCartState(cart);
+      dispatch(SET_CART(cart));
     }
-  }, [cartItems])
+  }, [cart])
 
   useEffect(() => {
-    if (cartTotalAmount) {
-      setCartPriceState(cartTotalAmount);
-    }
+    setCartPriceState(cartTotalAmount);
   
   }, [cartTotalAmount])
 
@@ -81,7 +83,7 @@ const AddToCartSheet = () => {
             </DrawerHeader>
             <ScrollArea className="p-4 overflow-y-auto">
               <div className='flex flex-col gap-2'>
-                {cartItems.map((item, index) => (
+                {cartState.map((item, index) => (
                   <CartProducts
                     key={index}
                     image={item.image}

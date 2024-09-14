@@ -38,14 +38,17 @@ import MobileMenu from '@src/components/navbar/MobileMenu';
 import EditProfileDialog from '@src/components/navbar/EditProfileDialog';
 import AddToCartSheet from '@src/components/navbar/AddToCartSheet';
 import fetchAllOrders from '@src/custom-hooks/fetchAllOrders';
+import { SET_CART, selectCartItems } from '@src/redux/slice/cartSlice';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isRegisterLoginOpen, setIsRegisterLoginOpen] = useState(false);
+  const [cartState, setCartState] = useState([]);
 
   const isLoggedInRedux = useSelector(selectIsLoggedIn);
+  const cart = useSelector(selectCartItems);
   const allOrders = fetchAllOrders()
 
   const toggleMobileMenu = () => {
@@ -78,15 +81,37 @@ const Navbar = () => {
             userId: session.user.id,
           })
         );
+        
+        const fetchCart = async () => {
+          const { data, error } = await supabase
+            .from("cart")
+            .select("cart")
+            .eq("email", session.user.email)
+            .single();
+          if (error) {
+            setCartState([]);
+            dispatch(SET_CART([]))            
+          } else {
+            setCartState(data.cart);
+          }
+        }
+
+        fetchCart();
       } else {
         dispatch(REMOVE_ACTIVE_USER());
       }
     });
+
   }, [dispatch]);
 
   useEffect(() => {
     setIsLoggedIn(isLoggedInRedux);
   }, [isLoggedInRedux]);
+
+
+  useEffect(() => {
+    setCartState(cart);    
+  }, [cart])
 
   return (
     <div>
@@ -125,7 +150,7 @@ const Navbar = () => {
 
         <div className="flex items-center gap-4">                      
           <LoggedInOnlyComponent forAdmin={false} forUser={true}>
-            <AddToCartSheet />
+            <AddToCartSheet cart={cartState}/>
           </LoggedInOnlyComponent>
         
           {isLoggedIn ? (
