@@ -3,6 +3,8 @@ import ProduceView from "@src/components/produce-page/ProductView";
 import fetchAllProduct from "@src/custom-hooks/fetchAllProduct";
 import fetchProductUrl from "@src/custom-hooks/actions/fetchProductUrl";
 import { Sparkles } from "lucide-react";
+import { useSelector } from "react-redux";
+import { selectOrders, selectTopProducts } from "@src/redux/slice/ordersSlice";
 
 const Product = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -10,6 +12,8 @@ const Product = () => {
   const [productsState, setProductsState] = useState([]);
   const { products: fetchedProducts } = fetchAllProduct(); // Fetch products from Supabase
   const [isLoading, setIsLoading] = useState(true);
+  const allOrders = useSelector(selectOrders);
+  const bestSellers = useSelector(selectTopProducts); // Get top 3 products from Redux
 
   const openDrawer = (product) => {
     setSelectedProduct(product);
@@ -48,6 +52,19 @@ const Product = () => {
     }
   }, [fetchedProducts]);
 
+  useEffect(() => {
+    console.log(allOrders)
+  }, [allOrders]);
+
+  useEffect(() => {
+    console.log(bestSellers)
+  }, [bestSellers]);
+
+  const isBestSeller = (product) => {
+    // Check if the current product is in the top 3 best sellers
+    return bestSellers.some((bestSeller) => bestSeller.name === product.name);
+  };
+
   return (
     <div className="flex flex-col gap-10">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-20">
@@ -64,11 +81,13 @@ const Product = () => {
               />
             </div>
             <div className="relative flex flex-col justify-center items-center gap-2 w-full max-w-[350px] sm:max-w-[400px] md:max-w-full">
-              {/* TODO: Add a validation in which checks if the product is best seller */}
-              <div className="absolute top-[-35px] text-2xl sm:text-3xl text-[yellow] font-shrikhand w-full flex justify-start  gap-2 ">
-                <h1>Astral Best </h1>
-                <Sparkles />
-              </div>
+              {/* Display Astral Best and Sparkles for the top 3 best sellers */}
+              {isBestSeller(product) && (
+                <div className="absolute top-[-35px] text-2xl sm:text-3xl text-[yellow] font-shrikhand w-full flex justify-start gap-2 ">
+                  <h1>Astral Best</h1>
+                  <Sparkles />
+                </div>
+              )}
               <h1 className="font-gothic text-4xl sm:text-5xl text-white uppercase tracking-wide text-center">
                 {product.name}
               </h1>
