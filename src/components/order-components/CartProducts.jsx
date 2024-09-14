@@ -9,6 +9,12 @@ import {
   DECREASE_CART,
   REMOVE_FROM_CART,
 } from "@src/redux/slice/cartSlice";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@src/components/ui/tooltip";
 
 const CartProducts = ({ image, title, amount, initialQuantity, productId }) => {
   const [quantity, setQuantity] = useState(initialQuantity);
@@ -41,6 +47,27 @@ const CartProducts = ({ image, title, amount, initialQuantity, productId }) => {
     dispatch(REMOVE_FROM_CART({ id: productId }));
   };
 
+  const handleInputChange = (e) => {
+    let newQuantity = e.target.value;
+    setQuantity(newQuantity);
+  };
+
+  const handleInputBlur = () => {
+    let newQuantity = parseInt(quantity, 10);
+    if (isNaN(newQuantity) || newQuantity < 1) {
+      newQuantity = 1;
+    }
+    setQuantity(newQuantity);
+    dispatch(
+      ADD_TO_CART({
+        id: productId,
+        name: title,
+        price: amount,
+        cartQuantity: newQuantity - initialQuantity,
+      })
+    );
+  };
+
   return (
     <Card>
       <CardContent className="p-3">
@@ -70,7 +97,8 @@ const CartProducts = ({ image, title, amount, initialQuantity, productId }) => {
                   <Input
                     type="number"
                     value={quantity}
-                    readOnly
+                    onChange={handleInputChange}
+                    onBlur={handleInputBlur}
                     className="w-9 h-7 p-0 pl-2 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />
                   <Minus
@@ -79,6 +107,30 @@ const CartProducts = ({ image, title, amount, initialQuantity, productId }) => {
                     className="cursor-pointer"
                   />
                 </div>
+                {quantity >= 30 && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild className="cursor-pointer">
+                        <h1 className="text-yellow font-spartan">
+                          Ordering as Bulk?
+                        </h1>
+                      </TooltipTrigger>
+                      <TooltipContent className="max-w-[200px]" side="bottom">
+                        <p>
+                          Orders of{" "}
+                          <span className="text-yellow">30+ items</span> are
+                          considered <span className="text-yellow">bulk</span>{" "}
+                          and will require{" "}
+                          <span className="text-yellow">
+                            extra processing time
+                          </span>
+                          . We’ll ensure everything is prepared and packed with
+                          care!
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
               </div>
             </div>
           </div>
@@ -98,7 +150,7 @@ CartProducts.propTypes = {
   title: PropTypes.string.isRequired,
   amount: PropTypes.number.isRequired,
   initialQuantity: PropTypes.number.isRequired,
-  productId: PropTypes.number.isRequired, // added prop for product ID
+  productId: PropTypes.number.isRequired,
 };
 
 export default CartProducts;
