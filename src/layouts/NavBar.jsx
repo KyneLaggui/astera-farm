@@ -38,6 +38,7 @@ import MobileMenu from '@src/components/navbar/MobileMenu';
 import EditProfileDialog from '@src/components/navbar/EditProfileDialog';
 import AddToCartSheet from '@src/components/navbar/AddToCartSheet';
 import fetchAllOrders from '@src/custom-hooks/fetchAllOrders';
+import { SET_CART, selectCartItems } from '@src/redux/slice/cartSlice';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -47,6 +48,7 @@ const Navbar = () => {
   const [cartState, setCartState] = useState([]);
 
   const isLoggedInRedux = useSelector(selectIsLoggedIn);
+  const cart = useSelector(selectCartItems);
   const allOrders = fetchAllOrders()
 
   const toggleMobileMenu = () => {
@@ -87,7 +89,8 @@ const Navbar = () => {
             .eq("email", session.user.email)
             .single();
           if (error) {
-            console.log(error);
+            setCartState([]);
+            dispatch(SET_CART([]))            
           } else {
             setCartState(data.cart);
           }
@@ -104,6 +107,11 @@ const Navbar = () => {
   useEffect(() => {
     setIsLoggedIn(isLoggedInRedux);
   }, [isLoggedInRedux]);
+
+
+  useEffect(() => {
+    setCartState(cart);    
+  }, [cart])
 
   return (
     <div>

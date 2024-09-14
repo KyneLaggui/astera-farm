@@ -63,7 +63,8 @@ const cartSlice = createSlice({
     },
     SET_CART(state, action) {
       state.cartItems = action.payload;
-      state.cartTotalAmount = calculateCartTotalAmount(state.cartItems);
+      state.cartTotalAmount = calculateCartTotalAmount(action.payload);
+      console.log(calculateCartTotalAmount(action.payload))
     },
   }
 });

@@ -4,12 +4,13 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Card, CardContent } from '@src/components/ui/card';
 import { CircleMinus, Minus, Plus } from 'lucide-react';
 import { Input } from '@src/components/ui/input';
-import { DECREASE_CART, REMOVE_FROM_CART, selectCartItems } from '@src/redux/slice/cartSlice';
+import { REMOVE_FROM_CART, SET_CART, selectCartItems } from '@src/redux/slice/cartSlice';
 import { selectEmail } from '@src/redux/slice/authSlice';
-import { addToCart } from '@src/supabase/actions';
+import { addToCart, decreaseCart, removeFromCart } from '@src/supabase/actions';
 
 const CartProducts = ({ image, title, amount, initialQuantity, productId }) => {
   const [quantity, setQuantity] = useState(initialQuantity);
+  const [loading, setLoading] = useState(false); // Track loading for both increment and decrement
   const [emailState, setEmailState] = useState('');
   const [cartItemsState, setCartItemsState] = useState([]);
   const email = useSelector(selectEmail);
@@ -20,29 +21,53 @@ const CartProducts = ({ image, title, amount, initialQuantity, productId }) => {
     setQuantity(initialQuantity);
   }, [initialQuantity]);
 
-  const handleIncrement = async() => {
-    setQuantity(prevQuantity => prevQuantity + 1);
-    await addToCart(cartItemsState, { id: productId, name: title, price: amount, cartQuantity: 1 }, emailState);
-  };
+  const handleIncrement = async () => {
+    if (loading) return; // Prevent another click while loading
+    setLoading(true); // Lock all actions
 
-  const handleDecrement = () => {
-    if (quantity > 1) {
-      setQuantity(prevQuantity => prevQuantity - 1);
-      dispatch(DECREASE_CART({ id: productId, cartQuantity: 1 }));
+    const result = await addToCart(cartItemsState, { id: productId, name: title, price: amount, cartQuantity: 1 }, email);
+    if (result) {
+      dispatch(SET_CART(result.cartItems)); // Update Redux store with the updated cart
+      setQuantity(prevQuantity => prevQuantity + 1); // Update local state
+    }
+
+    setLoading(false); // Unlock after operation
+  };
+  
+  const handleDecrement = async () => {
+    if (quantity > 1 && !loading) { // Prevent action if loading
+      setLoading(true); // Lock all actions
+
+      const result = await decreaseCart(cartItemsState, { id: productId, name: title, price: amount, cartQuantity: 1 }, email);
+      if (result) {
+        dispatch(SET_CART(result.cartItems)); // Update Redux store
+        setQuantity(prevQuantity => prevQuantity - 1); // Update local state
+      }
+
+      setLoading(false); // Unlock after operation
     }
   };
+  
+  const handleRemove = async() => {
+    if (loading) return; // Prevent another click while loading
+    setLoading(true); // Lock all actions
 
-  const handleRemove = () => {
-    dispatch(REMOVE_FROM_CART({ id: productId }));
+    const result = await removeFromCart(cartItemsState, productId, email)
+
+    if (result) {
+      dispatch(SET_CART(result.cartItems)); // Update Redux store with the updated cart
+    }
+
+    setLoading(false); // Unlock after operation
   };
 
   useEffect(() => {
     setEmailState(email);
-  }, [email])
+  }, [email]);
 
   useEffect(() => {
     setCartItemsState(cartItems);
-  }, [cartItems])
+  }, [cartItems]);
 
   return (
     <Card>  
@@ -59,20 +84,34 @@ const CartProducts = ({ image, title, amount, initialQuantity, productId }) => {
               <div className='flex flex-col sm:flex-row sm:gap-7 md:flex-col md:gap-4 gap-4 items-start sm:items-center md:items-start'>
                 <p className='text-md text-yellow'>₱{Number(amount) * Number(quantity)}</p>
                 <div className='flex justify-between items-center border max-h-[40px] max-w-[200px] rounded-full px-2 py-1 w-full'>
-                  <Plus size={16} onClick={handleIncrement} className='cursor-pointer' />
+                  <Plus 
+                    size={16} 
+                    onClick={handleIncrement} 
+                    className={`cursor-pointer ${loading ? 'opacity-50 cursor-not-allowed' : ''}`} 
+                    disabled={loading} // Disable while loading
+                  />
                   <Input 
                     type="number" 
                     value={quantity} 
                     readOnly 
                     className="w-9 h-7 p-0 pl-2 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                   />
-                  <Minus size={16} onClick={handleDecrement} className='cursor-pointer' />
+                  <Minus 
+                    size={16} 
+                    onClick={handleDecrement} 
+                    className={`cursor-pointer ${loading ? 'opacity-50 cursor-not-allowed' : ''}`} 
+                    disabled={loading} // Disable while loading
+                  />
                 </div>
               </div>
             </div>
           </div>
 
-          <CircleMinus onClick={handleRemove} className='h-4 w-4 cursor-pointer text-red-500'/>
+          <CircleMinus 
+            onClick={handleRemove} 
+            className={`h-4 w-4 cursor-pointer text-red-500 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`} 
+            disabled={loading} // Disable while loading
+          />
         </div>
       </CardContent>
     </Card>

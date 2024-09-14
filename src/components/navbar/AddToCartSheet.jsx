@@ -20,6 +20,7 @@ const AddToCartSheet = ({ cart }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch()
 
+
   useEffect(() => {
     if (cart) {
       setCartState(cart);
@@ -27,12 +28,10 @@ const AddToCartSheet = ({ cart }) => {
     }
   }, [cart])
 
-  // useEffect(() => {
-  //   if (cartTotalAmount) {
-  //     setCartPriceState(cartTotalAmount);
-  //   }
+  useEffect(() => {
+    setCartPriceState(cartTotalAmount);
   
-  // }, [cartTotalAmount])
+  }, [cartTotalAmount])
 
   return (
     <>
@@ -84,7 +83,7 @@ const AddToCartSheet = ({ cart }) => {
             </DrawerHeader>
             <ScrollArea className="p-4 overflow-y-auto">
               <div className='flex flex-col gap-2'>
-                {cartItems.map((item, index) => (
+                {cartState.map((item, index) => (
                   <CartProducts
                     key={index}
                     image={item.image}
