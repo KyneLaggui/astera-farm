@@ -17,7 +17,7 @@ const authSlice = createSlice({
             state.email = email;
             state.userId = userId;
 
-            if (email === "josephbuhain27@gmail.com") {
+            if (email === "asterafarmsph@gmail.com") {
                 state.isAdmin = true
             }
         },
