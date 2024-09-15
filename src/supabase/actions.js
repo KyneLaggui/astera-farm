@@ -40,7 +40,8 @@ export const signInWithEmailAndPassword = async (email, password) => {
 
 export const signOut = async () => {
   toast.success("Logged out successfully!");
-  await supabase.auth.signOut();
+  const logOut = await supabase.auth.signOut();
+  console.log(logOut)
 };
 
 export const editProfile = async (email, username) => {

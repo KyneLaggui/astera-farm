@@ -113,6 +113,7 @@ const Navbar = () => {
     setCartState(cart);    
   }, [cart])
 
+
   return (
     <div>
       {/* Navbar */}

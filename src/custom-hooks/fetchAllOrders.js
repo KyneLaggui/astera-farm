@@ -19,9 +19,7 @@ const fetchAllOrders = () => {
 
       const response = await fetch('https://api.paymongo.com/v1/payments?limit=100', options);
       const result = await response.json();
-
       if (result.data) {
-        // Function to extract valid cart metadata and filter out invalid ones
         const extractValidCarts = (result) => {
           return result.data
             .filter((payment) => {
@@ -31,7 +29,6 @@ const fetchAllOrders = () => {
                   const cart = JSON.parse(metadata.cart);
                   const shippingAddress = JSON.parse(metadata.shippingAddress);
 
-                  // Filter out invalid shipping addresses (null or empty objects)
                   if (shippingAddress && Object.keys(shippingAddress).length > 0) {
                     return true; // Keep valid carts
                   }
@@ -60,47 +57,67 @@ const fetchAllOrders = () => {
 
         const mergedOrders = [];
 
-        // Insert valid carts into the database and accumulate merged orders
         for (const order of validCarts) {
           const { data: existingOrder, error } = await supabase
             .from('order')
-            .select('*') // Select all fields to check for existing order
+            .select('*')
             .eq('order_id', order.id)
             .single();
 
+          const orderType = order.cart.some((product) => product.quantity >= 30) ? 'Bulk' : 'Retail';
           let mergedOrder = {
             ...order,
-            status: "Order Placed", // Default status if inserting new order
+            status: "Order Placed",
+            type: orderType,
           };
 
           if (existingOrder) {
-            // Merge status from the existing order
-            mergedOrder = { ...order, status: existingOrder.status, lastUpdated: existingOrder.last_updated };
+            // If order exists, update its status and type if missing
+            mergedOrder = { 
+              ...order, 
+              status: existingOrder.status, 
+              lastUpdated: existingOrder.last_updated,
+              type: existingOrder.type || orderType, 
+            };
+
+            if (!existingOrder.type) {
+              // Update order type if it's NULL
+              const { error: updateError } = await supabase
+                .from('order')
+                .update({ type: orderType })
+                .eq('order_id', order.id);
+
+              if (updateError) {
+                console.error('Error updating order type:', updateError);
+              } else {
+                console.log('Order type updated successfully:', order.id);
+              }
+            }
           } else {
-            // Insert the order into Supabase
+            // Insert new order into Supabase with type
             const { error: insertError } = await supabase
               .from('order')
               .insert([
                 {
                   order_id: order.id,
-                  status: "Order Placed", // Set status as pending for new orders
+                  status: "Order Placed",
+                  type: orderType, // Ensure the type is inserted for new orders
                 },
               ]);
 
             if (insertError) {
               console.error('Error inserting order:', insertError);
             } else {
-              console.log('Order inserted successfully:', order.id);
+              console.log('Order inserted successfully with type:', order.id);
             }
           }
 
-          // Add merged order (with status) to the list
           mergedOrders.push(mergedOrder);
         }
 
-        // Dispatch merged orders to Redux
-        setAllOrders(mergedOrders); // Set the valid carts to state
-        dispatch(SET_ORDERS(mergedOrders));
+        console.log(mergedOrders)
+        setAllOrders(mergedOrders); // Set valid carts to state
+        dispatch(SET_ORDERS(mergedOrders)); // Dispatch to Redux
       }
     };
 
@@ -111,5 +128,3 @@ const fetchAllOrders = () => {
 };
 
 export default fetchAllOrders;
-
-
