@@ -5,12 +5,12 @@ const Processes = () => {
     {
       id: 1,
       title: "ORDER PLACEMENT",
-      description: "After you choose from our available produce at that day you will be redirected to our <strong>Shopify</strong> page.",
+      description: "After you choose from our available produce at that day you will be redirected to our <strong>Paymongo</strong> page.",
     },
     {
       id: 2,
       title: "BILLING & PAYMENT",
-      description: "After confirming your order we will send you your bill and pay your order via <strong>Gcash</strong> or bank transfer on <strong>Shopify</strong>.",
+      description: "After confirming your order we will send you your bill and pay your order via <strong>Gcash</strong> or bank transfer on <strong>Paymongo</strong>.",
     },
     {
       id: 3,

@@ -74,6 +74,8 @@ const Navbar = () => {
   useEffect(() => {
     // This for listening to supabase auth state changes
     supabase.auth.onAuthStateChange((_event, session) => {
+      console.log(session)
+
       if (session) {
         dispatch(
           SET_ACTIVE_USER({
