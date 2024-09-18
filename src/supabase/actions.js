@@ -40,7 +40,7 @@ export const signInWithEmailAndPassword = async (email, password) => {
 
 export const signOut = async () => {
   toast.success("Logged out successfully!");
-  const logOut = await supabase.auth.signOut();
+  const logOut = await supabase.auth.signOut({ scope: 'local' });
   console.log(logOut)
 };
 
