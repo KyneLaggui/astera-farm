@@ -1,25 +1,43 @@
 import { supabase } from '@src/supabase/config';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 
 const fetchAllProduct = () => {
-    const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState([]);
 
-    useEffect(() => {
-        const fetchProducts = async () => {
-            const { data, error } = await supabase
-                .from('product')
-                .select('*')
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const { data, error } = await supabase.from('product').select('*');
 
-            if (data) {
-                setProducts(data)
-            } else {
-                console.log(error)
+      if (data) {
+        const productStocks = await Promise.all(
+          data.map(async (product) => {
+            const { data: stockData, error: stockError } = await supabase
+              .from('stock')
+              .select('quantity')
+              .eq('product_id', product.id)
+              .single();
+
+            if (stockError) {
+              console.log(stockError);
             }
-        }
-        fetchProducts()
-    }, [])
 
-    return { products: products }
-}
+            return {
+              ...product,
+              stock: stockData ? stockData.quantity : 0,
+            };
+          })
+        );
 
-export default fetchAllProduct
+        setProducts(productStocks);
+      } else {
+        console.log(error);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  return { products };
+};
+
+export default fetchAllProduct;

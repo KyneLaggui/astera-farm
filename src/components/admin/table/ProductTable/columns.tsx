@@ -71,6 +71,23 @@ export const columns = [
     cell: ({ row }) => <TableCell>{row.original.price}</TableCell>,
   },
   {
+    accessorKey: "stock",
+    header: ({ column }) => (
+      <p
+        className="flex items-center gap-1 cursor-pointer hover:text-red-500"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Stock
+        {column.getIsSorted() === "asc" ? (
+          <ArrowUp className="h-3 w-3" />
+        ) : (
+          <ArrowDown className="h-3 w-3" />
+        )}
+      </p>
+    ),
+    cell: ({ row }) => <TableCell>{row.original.stock}</TableCell>,
+  },
+  {
     accessorKey: "description",
     header: ({ column }) => (
       <p className="flex items-center gap-1 cursor-pointer hover:text-red-500">

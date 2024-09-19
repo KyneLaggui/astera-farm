@@ -18,6 +18,7 @@ export default function ProductTable() {
         sellMethod: product.sell_method,
         attributes: product.attributes,
         price: product.price,
+        stock: product.stock,
       }));
 
       dispatch(SET_PRODUCTS({ products: allProducts })); // Dispatch to Redux
