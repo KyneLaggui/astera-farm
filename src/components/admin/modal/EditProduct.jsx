@@ -83,10 +83,11 @@ function EditProductDialog({
       .min(0, { message: "Price must be a non-negative number" }), // Ensures price is >= 0
     description: z.string().min(1, "Description is required"),
     sellMethod: z.string().min(1, "Sell method is required"),
+    stock: z.number().min(0, "Stock must be a non-negative number"), // Stock validation
   });
 
   const handleSubmit = async () => {
-    const validationResult = productSchema.safeParse(editProduct);
+    const validationResult = productSchema.safeParse({ ...editProduct, stock: isNaN(editProduct.stock) ? 0 : Number(editProduct.stock) });
 
     if (!validationResult.success) {
       const fieldErrors = validationResult.error.formErrors.fieldErrors;
@@ -108,9 +109,20 @@ function EditProductDialog({
       .update(updateData)
       .eq("id", product.id);
 
-    if (updateResult.error) {
+    const stockUpdateResult = await supabase
+      .from("stock")
+      .update({
+        quantity: isNaN(editProduct.stock) ? 0 : Number(editProduct.stock),
+      })
+      .eq("product_id", product.id);
+
+    console.log(stockUpdateResult);
+    
+    if (updateResult.error && stockUpdateResult.error) {
       toast.error("Error updating product");
       return null;
+    } else {
+      toast.success("Product details updated successfully!");
     }
 
       if (editProduct.productIcon) {
@@ -130,11 +142,11 @@ function EditProductDialog({
             upsert: true,
           });
 
-          toast.success("Product updated successfully!");
+          toast.success("Product icon updated successfully!");
         } else {
           toast.error("Error updating product");
         }
-      }
+      } 
 
     // Dispatch the updated product to Redux
     dispatch(
@@ -145,6 +157,7 @@ function EditProductDialog({
         productIcon: editProduct.productIcon
           ? editProduct.productIcon
           : product.productIcon,
+        stock: isNaN(editProduct.stock) ? 0 : Number(editProduct.stock),
       })
     );
 
@@ -160,6 +173,14 @@ function EditProductDialog({
 
   const handleAttributeDelete = (index) => {
     setAttributes(attributes.filter((_, i) => i !== index));
+  };
+
+  const onStockChange = (event) => {
+    const value = event.target.value;
+    setEditProduct((prevState) => ({
+      ...prevState,
+      stock: value // Store as a string
+    }));
   };
 
   return (
@@ -260,6 +281,20 @@ function EditProductDialog({
                   <p className="text-red-500 text-sm mt-2">
                     {errors.sellMethod}
                   </p>
+                )}
+              </div>
+              <div className="mb-4">
+                <label className="block">Stock</label>
+                <Input
+                  id="stock"
+                  type="number"
+                  placeholder="Enter stock quantity"
+                  className="mt-2"
+                  value={editProduct.stock || ""} // Set initial value to empty string if undefined
+                  onChange={onStockChange}
+                />
+                {errors.stock && (
+                  <p className="text-red-500 text-sm mt-2">{errors.stock}</p>
                 )}
               </div>
               <div className="mb-4">
