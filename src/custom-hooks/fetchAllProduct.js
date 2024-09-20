@@ -9,26 +9,33 @@ const fetchAllProduct = () => {
       const { data, error } = await supabase.from('product').select('*');
 
       if (data) {
-        const productStocks = await Promise.all(
-          data.map(async (product) => {
-            const { data: stockData, error: stockError } = await supabase
-              .from('stock')
-              .select('quantity')
-              .eq('product_id', product.id)
-              .single();
+        // const productStocks = await Promise.all(
+        //   data.map(async (product) => {
+        //     const { data: stockData, error: stockError } = await supabase
+        //       .from('stock')
+        //       .select('quantity')
+        //       .eq('product_id', product.id)
+        //       .single();
 
-            if (stockError) {
-              console.log(stockError);
-            }
+        //     if (stockError) {
+        //       console.log(stockError);
+        //     }
 
-            return {
-              ...product,
-              stock: stockData ? stockData.quantity : 0,
-            };
-          })
-        );
+        //     return {
+        //       ...product,
+        //       stock: stockData ? stockData.quantity : 0,
+        //     };
+        //   })
+        // );
 
-        setProducts(productStocks);
+      const allProducts = data.map((product) => {
+        return {
+          ...product,
+          stock: product.stock ? product.stock : 0,
+        }
+      })
+
+        setProducts(allProducts);
       } else {
         console.log(error);
       }

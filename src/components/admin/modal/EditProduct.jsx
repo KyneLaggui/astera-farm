@@ -102,23 +102,15 @@ function EditProductDialog({
       price: editProduct.price,
       sell_method: editProduct.sellMethod,
       attributes: attributes,
+      stock: isNaN(editProduct.stock) ? 0 : Number(editProduct.stock)
     };
 
     const updateResult = await supabase
       .from("product")
       .update(updateData)
       .eq("id", product.id);
-
-    const stockUpdateResult = await supabase
-      .from("stock")
-      .update({
-        quantity: isNaN(editProduct.stock) ? 0 : Number(editProduct.stock),
-      })
-      .eq("product_id", product.id);
-
-    console.log(stockUpdateResult);
     
-    if (updateResult.error && stockUpdateResult.error) {
+    if (updateResult.error) {
       toast.error("Error updating product");
       return null;
     } else {
@@ -173,14 +165,6 @@ function EditProductDialog({
 
   const handleAttributeDelete = (index) => {
     setAttributes(attributes.filter((_, i) => i !== index));
-  };
-
-  const onStockChange = (event) => {
-    const value = event.target.value;
-    setEditProduct((prevState) => ({
-      ...prevState,
-      stock: value // Store as a string
-    }));
   };
 
   return (
@@ -287,11 +271,12 @@ function EditProductDialog({
                 <label className="block">Stock</label>
                 <Input
                   id="stock"
+                  name="stock"
                   type="number"
                   placeholder="Enter stock quantity"
                   className="mt-2"
                   value={editProduct.stock || ""} // Set initial value to empty string if undefined
-                  onChange={onStockChange}
+                  onChange={onInputHandleChange}
                 />
                 {errors.stock && (
                   <p className="text-red-500 text-sm mt-2">{errors.stock}</p>

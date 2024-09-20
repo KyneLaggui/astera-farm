@@ -48,6 +48,7 @@ const Navbar = () => {
   const [cartState, setCartState] = useState([]);
 
   const isLoggedInRedux = useSelector(selectIsLoggedIn);
+  const isAdminRedux = useSelector(selectIsAdmin)
   const cart = useSelector(selectCartItems);
   const allOrders = fetchAllOrders()
 
@@ -88,12 +89,12 @@ const Navbar = () => {
             .from("cart")
             .select("cart")
             .eq("email", session.user.email)
-            .single();
-          if (error) {
-            setCartState([]);
-            dispatch(SET_CART([]))            
+            .maybeSingle();
+          if (data) {
+            setCartState(data.cart);                      
           } else {
-            setCartState(data.cart);
+            setCartState([]);
+            dispatch(SET_CART([]))  
           }
         }
 

@@ -18,7 +18,11 @@ const productsSlice = createSlice({
             const updatedProduct = action.payload;
             const index = state.products.findIndex(product => product.id === updatedProduct.id);
             if (index !== -1) {
-                state.products[index] = updatedProduct;
+                // Merge existing product with updated properties
+                state.products[index] = { 
+                    ...state.products[index], 
+                    ...updatedProduct 
+                };
             }
         },
         DELETE_PRODUCT: (state, action) => {
