@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useDispatch, useSelector } from 'react-redux';
@@ -7,18 +6,19 @@ import { CircleMinus, Minus, Plus } from 'lucide-react';
 import { Input } from '@src/components/ui/input';
 import { REMOVE_FROM_CART, SET_CART, selectCartItems } from '@src/redux/slice/cartSlice';
 import { selectEmail } from '@src/redux/slice/authSlice';
-import { addToCart, decreaseCart, removeFromCart } from '@src/supabase/actions';
+import { addToCart, decreaseCart, removeFromCart, getProductStock } from '@src/supabase/actions';
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@src/components/ui/tooltip";
-
+import { toast } from 'react-toastify';
 
 const CartProducts = ({ image, title, amount, initialQuantity, productId }) => {
   const [quantity, setQuantity] = useState(initialQuantity);
   const [loading, setLoading] = useState(false); // Track loading for both increment and decrement
+  const [stock, setStock] = useState(null); // Store product stock
   const [emailState, setEmailState] = useState('');
   const [cartItemsState, setCartItemsState] = useState([]);
   const email = useSelector(selectEmail);
@@ -29,8 +29,32 @@ const CartProducts = ({ image, title, amount, initialQuantity, productId }) => {
     setQuantity(initialQuantity);
   }, [initialQuantity]);
 
+  // Fetch product stock when component mounts
+  useEffect(() => {
+    const fetchStock = async () => {
+      try {
+        const productStock = await getProductStock(productId);
+        if (productStock !== null) {
+          setStock(productStock);
+        } else {
+          toast.error("Failed to retrieve product stock.");
+        }
+      } catch (error) {
+        console.error("Error fetching product stock:", error);
+        toast.error("Error fetching product stock.");
+      }
+    };
+    if (productId) {
+      fetchStock();
+    }
+  }, [productId]);
+
   const handleIncrement = async () => {
     if (loading) return; // Prevent another click while loading
+    if (stock !== null && quantity + 1 > stock) {
+      toast.error(`Cannot add more than ${stock} items to the cart.`);
+      return; // Prevent exceeding stock
+    }
     setLoading(true); // Lock all actions
 
     const result = await addToCart(cartItemsState, { id: productId, name: title, price: amount, cartQuantity: 1 }, email);
@@ -68,27 +92,6 @@ const CartProducts = ({ image, title, amount, initialQuantity, productId }) => {
 
     setLoading(false); // Unlock after operation
   };
-
-  const handleInputChange = (e) => {
-    let newQuantity = e.target.value;
-    setQuantity(newQuantity);
-  };
-
-  const handleInputBlur = () => {
-    let newQuantity = parseInt(quantity, 10);
-    if (isNaN(newQuantity) || newQuantity < 1) {
-      newQuantity = 1;
-    }
-    setQuantity(newQuantity);
-    dispatch(
-      ADD_TO_CART({
-        id: productId,
-        name: title,
-        price: amount,
-        cartQuantity: newQuantity - initialQuantity,
-      })
-    );
-  };
   
  useEffect(() => {
     setEmailState(email);
@@ -97,7 +100,6 @@ const CartProducts = ({ image, title, amount, initialQuantity, productId }) => {
   useEffect(() => {
     setCartItemsState(cartItems);
   }, [cartItems]);
-
 
   return (
     <Card>

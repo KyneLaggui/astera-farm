@@ -189,3 +189,22 @@ export const removeFromCart = async (cart, productId, email) => {
     cartItems: cartItems
   }
 }
+
+export const getProductStock = async (productId) => {
+  try {
+    const { data, error } = await supabase
+      .from('product')
+      .select('stock')
+      .eq('id', productId)
+      .single();
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    return data ? data.stock : null;
+  } catch (error) {
+    console.error('Error fetching product stock:', error);
+    return null;
+  }
+};
