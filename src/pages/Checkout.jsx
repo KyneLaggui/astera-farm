@@ -259,10 +259,9 @@ const Checkout = () => {
               <CardTitle>Checkout Summary</CardTitle>
               <CardDescription className="text-yellow text-md">
                 Subtotal: ₱
-                {productData.reduce(
-                  (total, item) => total + item.price * item.quantity,
-                  0
-                )}
+                {productData
+                  .reduce((total, item) => total + item.price * item.quantity, 0)
+                  .toLocaleString()}
               </CardDescription>
             </CardHeader>
             {productData.map((product) => (
