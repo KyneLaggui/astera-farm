@@ -40,6 +40,7 @@ const Product = () => {
               sellMethod: product.sell_method,
               attributes: product.attributes,
               price: product.price,
+              stock: product.stock,
             };
           })
         );
