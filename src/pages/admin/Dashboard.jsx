@@ -4,7 +4,7 @@ import AreaChartComponent from "@src/pages/admin/DashboardCharts/AreaChartCompon
 import BestSellingChart from "@src/pages/admin/DashboardCharts/BestSellingChart";
 import { selectOrders } from "@src/redux/slice/ordersSlice";
 import { useSelector } from "react-redux";
-import { format, getWeek, differenceInDays, differenceInWeeks } from "date-fns";
+import { format, getWeek, differenceInDays, differenceInWeeks, getMonth, getYear } from "date-fns";
 import LoggedInOnly from "@src/layouts/LoggedInOnly";
 import {
   Card,
@@ -18,6 +18,7 @@ const Dashboard = () => {
   const [sellingData, setSellingData] = useState([]);
   const [chartData, setChartData] = useState([]);
   const [statusData, setStatusData] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("week"); // Add state for selected category
 
   const orders = useSelector(selectOrders);
 
@@ -63,24 +64,21 @@ const Dashboard = () => {
       ([status, count]) => ({ status, count })
     );
 
-    const earliestOrder = new Date(
-      Math.min(...filteredOrders.map((order) => order.createdAt * 1000))
-    );
-    const latestOrder = new Date(
-      Math.max(...filteredOrders.map((order) => order.createdAt * 1000))
-    );
-    const totalDays = differenceInDays(latestOrder, earliestOrder);
-    const totalWeeks = differenceInWeeks(latestOrder, earliestOrder);
-
     const groupByDate = filteredOrders.reduce((acc, order) => {
       const orderDate = new Date(order.createdAt * 1000);
       let key;
-      if (totalDays < 7) {
-        key = format(orderDate, "yyyy-MM-dd");
-      } else if (totalWeeks < 5) {
-        key = `Week ${getWeek(orderDate)}`;
-      } else {
-        key = format(orderDate, "MMMM yyyy");
+      switch (selectedCategory) {
+        case "week":
+          key = `Week ${getWeek(orderDate)}`;
+          break;
+        case "month":
+          key = `${format(orderDate, "MMMM")} ${getYear(orderDate)}`;
+          break;
+        case "year":
+          key = `${getYear(orderDate)}`;
+          break;
+        default:
+          key = format(orderDate, "yyyy-MM-dd");
       }
 
       acc[key] = (acc[key] || 0) + order.totalEarnings;
@@ -94,7 +92,7 @@ const Dashboard = () => {
     setSellingData(sellingDataArray);
     setChartData(chartDataArray);
     setStatusData(statusDataArray);
-  }, [filteredOrders]);
+  }, [filteredOrders, selectedCategory]);
 
   const totalEarnings = filteredOrders.reduce(
     (acc, order) => acc + order.totalEarnings,
@@ -136,14 +134,14 @@ const Dashboard = () => {
             <BestSellingChart sellingData={sellingData} />
           </div>
           <div className="flex flex-col gap-4 justify-between w-full">
-            <AreaChartComponent data={chartData} />
+            {/* Pass selectedCategory as a prop to AreaChartComponent */}
+            <AreaChartComponent data={chartData} setCategory={setSelectedCategory} />
             <OrderStatusChart statusData={statusData} />
           </div>
         </div>
       </div>
     </LoggedInOnly>
   );
-  
 };
 
 export default Dashboard;
