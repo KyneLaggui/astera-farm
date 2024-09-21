@@ -26,7 +26,7 @@ const BestSellingChart = ({ sellingData }) => {
   };
 
   return (
-    <Card>
+    <Card className="h-full max-w-full">
       <CardHeader>
         <CardTitle>Top Products</CardTitle>
         <CardDescription>
