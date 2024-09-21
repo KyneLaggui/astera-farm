@@ -9,29 +9,26 @@ import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, Dr
 import { useSelector } from 'react-redux';
 import { selectCartItems, selectCartTotalAmount, SET_CART } from '@src/redux/slice/cartSlice';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
 
 const AddToCartSheet = ({ cart }) => {
   const isDesktop = useMediaQuery({ query: "(min-width: 768px)" });
   const [cartState, setCartState] = useState([]);
   const [cartPriceState, setCartPriceState] = useState(0);
-  // const cartItems = useSelector(selectCartItems);
   const cartTotalAmount = useSelector(selectCartTotalAmount);
   const navigate = useNavigate();
-  const dispatch = useDispatch()
-
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (cart) {
       setCartState(cart);
       dispatch(SET_CART(cart));
     }
-  }, [cart])
+  }, [cart]);
 
   useEffect(() => {
     setCartPriceState(cartTotalAmount);
-  
-  }, [cartTotalAmount])
+  }, [cartTotalAmount]);
 
   return (
     <>
@@ -62,7 +59,9 @@ const AddToCartSheet = ({ cart }) => {
               </div>
             </ScrollArea>
             <SheetFooter className="border-t pt-4">
-              <h1 className='text min-w-[100px] text-md font-medium'>Total Price <span className='text-yellow'>₱{cartPriceState}</span></h1>
+              <h1 className='text min-w-[100px] text-md font-medium'>
+                Total Price <span className='text-yellow'>₱{cartPriceState.toLocaleString()}</span>
+              </h1>
               <SheetClose asChild>
                 <Button type="submit" className="w-full" onClick={() => navigate("/checkout")}>Checkout</Button>
               </SheetClose>
@@ -96,7 +95,9 @@ const AddToCartSheet = ({ cart }) => {
               </div>
             </ScrollArea>
             <DrawerFooter className="flex flex-row border-t pt-4">
-              <h1 className='text min-w-[100px] text-md font-medium'>Total Price <span className='text-yellow'>₱{cartPriceState}</span></h1>
+              <h1 className='text min-w-[100px] text-md font-medium'>
+                Total Price <span className='text-yellow'>₱{cartPriceState.toLocaleString()}</span>
+              </h1>
               <DrawerClose asChild>
                 <Button type="submit" className="w-full" onClick={() => navigate("/checkout")}>Checkout</Button>
               </DrawerClose>
