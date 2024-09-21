@@ -7,11 +7,11 @@ import { useSelector } from "react-redux";
 import { format, getWeek, differenceInDays, differenceInWeeks } from "date-fns";
 import LoggedInOnly from "@src/layouts/LoggedInOnly";
 
-
 const Dashboard = () => {
   const [orderData, setOrderData] = useState([]);
   const [sellingData, setSellingData] = useState([]);
   const [chartData, setChartData] = useState([]);
+  const [statusData, setStatusData] = useState([]);
 
   const orders = useSelector(selectOrders);
 
@@ -45,10 +45,32 @@ const Dashboard = () => {
         return acc;
       }, {});
 
-      const sellingDataArray = Object.entries(productSales).map(
+      let sellingDataArray = Object.entries(productSales).map(
         ([name, purchases]) => ({
           products: name,
           purchases,
+        })
+      );
+
+      // Sort and get top 3 selling products
+      sellingDataArray = sellingDataArray
+        .sort((a, b) => b.purchases - a.purchases) // Sort by purchases in descending order
+        .slice(0, 3); // Get top 3 products
+
+      // Calculate status counts for the donut chart
+      const statusCount = filteredOrders.reduce((acc, order) => {
+        if (acc[order.status]) {
+          acc[order.status] += 1;
+        } else {
+          acc[order.status] = 1;
+        }
+        return acc;
+      }, {});
+
+      const statusDataArray = Object.entries(statusCount).map(
+        ([status, count]) => ({
+          status,
+          count,
         })
       );
 
@@ -94,32 +116,33 @@ const Dashboard = () => {
         .sort((a, b) => new Date(a.timePeriod) - new Date(b.timePeriod));
 
       console.log("Chart Data (Sorted):", chartDataArray);
-
+      
+      console.log("Selling Data:", sellingDataArray);
       setSellingData(sellingDataArray);
       setOrderData(filteredOrders);
       setChartData(chartDataArray);
+      setStatusData(statusDataArray); // Update statusData state
     }
   }, [orders]);
 
   return (
-    <LoggedInOnly forAdmin={true} forUser={false} >
+    <LoggedInOnly forAdmin={true} forUser={false}>
       <div className="navbar-spacing flex flex-col justify-center items-center gap-4 sm:gap-8">
         <h1 className="font-gothic text-7xl sm:text-9xl text-white text-center tracking-wide">
           DASHBOARD
         </h1>
         <div className="flex flex-col sm:flex-row gap-4 ">
           {/* Left Container */}
-          <OrderStatusChart orderData={orderData} />
+          <BestSellingChart sellingData={sellingData} /> {/* Pass statusData to OrderStatusChart */}
 
           {/* Right Container */}
           <div className="flex flex-col gap-4 justify-between">
             <AreaChartComponent data={chartData} />
-            <BestSellingChart sellingData={sellingData} />
+            <OrderStatusChart statusData={statusData} /> {/* Pass sellingData to BestSellingChart */}
           </div>
         </div>
       </div>
     </LoggedInOnly>
-    
   );
 };
 
