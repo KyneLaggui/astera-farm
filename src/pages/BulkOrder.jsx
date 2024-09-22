@@ -1,5 +1,9 @@
 import React, { useState } from "react";
 import emailjs from "emailjs-com";
+import { Label } from "@src/components/ui/label";
+import { Input } from "@src/components/ui/input";
+import { Checkbox } from "@src/components/ui/checkbox";
+import { Button } from "@src/components/ui/button";
 
 const BulkOrder = () => {
   const [formData, setFormData] = useState({
@@ -87,99 +91,88 @@ const BulkOrder = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-lg mx-auto p-4 space-y-6 navbar-spacing bg-yellow shadow-lg rounded-lg text-black"
+      className="max-w-lg mx-auto p-4 space-y-6 navbar-spacing  shadow-lg rounded-lg "
     >
       {/* Personal Information */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700">
-            First Name
-          </label>
-          <input
+          <Label>First Name</Label>
+          <Input
             type="text"
             name="firstName"
             value={formData.firstName}
             onChange={handleInputChange}
             required
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            className=""
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Last Name
-          </label>
-          <input
+          <Label>Last Name</Label>
+          <Input
             type="text"
             name="lastName"
             value={formData.lastName}
             onChange={handleInputChange}
             required
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            className=""
           />
         </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Mobile Number
-          </label>
-          <input
+          <Label className="">Mobile Number</Label>
+          <Input
             type="text"
             name="mobile"
             value={formData.mobile}
             onChange={handleInputChange}
             required
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            className=""
           />
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Email
-          </label>
-          <input
+          <Label>Email</Label>
+          <Input
             type="email"
             name="email"
             value={formData.email}
             onChange={handleInputChange}
             required
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            className=""
           />
         </div>
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Company (Optional)
-        </label>
-        <input
+        <Label>Company (Optional)</Label>
+        <Input
           type="text"
           name="company"
           value={formData.company}
           onChange={handleInputChange}
           placeholder="None"
-          className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          className=""
         />
       </div>
 
       {/* Order Products */}
       <div>
-        <h3 className="text-lg font-semibold">Select Products</h3>
+        <Label className="text-lg font-semibold">Select Products</Label>
         {products.map((product) => (
           <div key={product.id} className="flex items-center space-x-4">
-            <label className="flex items-center space-x-2">
-              <input
-                type="checkbox"
+            <Label className="flex items-center space-x-2">
+              <Checkbox
                 onChange={(e) =>
                   handleCheckboxChange(product.id, e.target.checked)
                 }
               />
               <span>{product.name}</span>
-            </label>
+            </Label>
             {product.isSelected && (
-              <input
+              <Input
                 type="number"
                 min="1"
                 value={product.quantity}
@@ -187,19 +180,16 @@ const BulkOrder = () => {
                   handleProductChange(product.id, e.target.value)
                 }
                 placeholder="Quantity"
-                className="mt-1 block w-20 text-black border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                className=""
               />
             )}
           </div>
         ))}
       </div>
 
-      <button
-        type="submit"
-        className="px-4 py-2 bg-blue-600 text-white rounded-md shadow-sm hover:bg-blue-700"
-      >
+      <Button type="submit" className="">
         Submit Order
-      </button>
+      </Button>
     </form>
   );
 };
