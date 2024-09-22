@@ -68,22 +68,26 @@ const BulkOrder = () => {
       orders: selectedProducts.join(", "),
     };
 
-    emailjs
-      .send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", emailData, "YOUR_USER_ID")
-      .then(
-        (result) => {
-          alert("Order sent successfully");
-        },
-        (error) => {
-          alert("Failed to send order, please try again");
-        }
-      );
+    const serviceID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+    const templateID = import.meta.env.VITE_EMAILJS_BULK_ORDER;
+    const userID = import.meta.env.VITE_EMAILJS_USER_ID;
+
+    emailjs.send(serviceID, templateID, emailData, userID).then(
+      (result) => {
+        alert("Order sent successfully");
+        console.log("Email sent successfully:", result.text);
+      },
+      (error) => {
+        alert("Failed to send order, please try again");
+        console.log(error);
+      }
+    );
   };
 
   return (
     <form
       onSubmit={handleSubmit}
-      className="max-w-lg mx-auto p-4 space-y-6 navbar-spacing bg-yellow shadow-lg rounded-lg"
+      className="max-w-lg mx-auto p-4 space-y-6 navbar-spacing bg-yellow shadow-lg rounded-lg text-black"
     >
       {/* Personal Information */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
