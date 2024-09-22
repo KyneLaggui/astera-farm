@@ -4,6 +4,7 @@ import { Label } from "@src/components/ui/label";
 import { Input } from "@src/components/ui/input";
 import { Checkbox } from "@src/components/ui/checkbox";
 import { Button } from "@src/components/ui/button";
+import { Card } from "@src/components/ui/card";
 
 const BulkOrder = () => {
   const [formData, setFormData] = useState({
@@ -89,108 +90,120 @@ const BulkOrder = () => {
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="max-w-lg mx-auto p-4 space-y-6 navbar-spacing  shadow-lg rounded-lg "
-    >
-      {/* Personal Information */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <Label>First Name</Label>
-          <Input
-            type="text"
-            name="firstName"
-            value={formData.firstName}
-            onChange={handleInputChange}
-            required
-            className=""
-          />
+    <div className="flex justify-center navbar-spacing">
+      <Card className="flex justify-between items-center p-8  max-w-[1200px] w-full">
+        <div className="flex flex-col gap-4 max-w-[600px]">
+          <h1 className="text-2xl font-semibold">Bulk Order Form</h1>
+          <p>
+            We welcome wholesale orders and corporate accounts (Restaurants,
+            Hotels, Commissaries, Food establishments, Country Clubs, etc.).
+            Please email us at sales@pedrofarms.com so we can attend to your
+            specific queries or possible preferential terms.
+          </p>
+          <p>Kindly indicate the following in your Order/ Query box : </p>
+          <p>
+            Specific Query or Order and Quantity, Delivery Address and Preferred
+            Mode of Payment.
+          </p>
+          <p>Astera Farms will reply within 24 hours.</p>
+          <p>Please feel free to call us at +63 915 889 5206.</p>
         </div>
-
-        <div>
-          <Label>Last Name</Label>
-          <Input
-            type="text"
-            name="lastName"
-            value={formData.lastName}
-            onChange={handleInputChange}
-            required
-            className=""
-          />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <Label className="">Mobile Number</Label>
-          <Input
-            type="text"
-            name="mobile"
-            value={formData.mobile}
-            onChange={handleInputChange}
-            required
-            className=""
-          />
-        </div>
-
-        <div>
-          <Label>Email</Label>
-          <Input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleInputChange}
-            required
-            className=""
-          />
-        </div>
-      </div>
-
-      <div>
-        <Label>Company (Optional)</Label>
-        <Input
-          type="text"
-          name="company"
-          value={formData.company}
-          onChange={handleInputChange}
-          placeholder="None"
-          className=""
-        />
-      </div>
-
-      {/* Order Products */}
-      <div>
-        <Label className="text-lg font-semibold">Select Products</Label>
-        {products.map((product) => (
-          <div key={product.id} className="flex items-center space-x-4">
-            <Label className="flex items-center space-x-2">
-              <Checkbox
-                onChange={(e) =>
-                  handleCheckboxChange(product.id, e.target.checked)
-                }
-              />
-              <span>{product.name}</span>
-            </Label>
-            {product.isSelected && (
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          {/* Personal Information */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label>First Name</Label>
               <Input
-                type="number"
-                min="1"
-                value={product.quantity}
-                onChange={(e) =>
-                  handleProductChange(product.id, e.target.value)
-                }
-                placeholder="Quantity"
+                type="text"
+                name="firstName"
+                value={formData.firstName}
+                onChange={handleInputChange}
+                required
                 className=""
               />
-            )}
+            </div>
+            <div>
+              <Label>Last Name</Label>
+              <Input
+                type="text"
+                name="lastName"
+                value={formData.lastName}
+                onChange={handleInputChange}
+                required
+                className=""
+              />
+            </div>
           </div>
-        ))}
-      </div>
-
-      <Button type="submit" className="">
-        Submit Order
-      </Button>
-    </form>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label className="">Mobile Number</Label>
+              <Input
+                type="text"
+                name="mobile"
+                value={formData.mobile}
+                onChange={handleInputChange}
+                required
+                className=""
+              />
+            </div>
+            <div>
+              <Label>Email</Label>
+              <Input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleInputChange}
+                required
+                className=""
+              />
+            </div>
+          </div>
+          <div>
+            <Label>Company (Optional)</Label>
+            <Input
+              type="text"
+              name="company"
+              value={formData.company}
+              onChange={handleInputChange}
+              placeholder="None"
+              className=""
+            />
+          </div>
+          {/* Order Products */}
+          <div>
+            <Label className="text-lg font-semibold">Select Products</Label>
+            {products.map((product) => (
+              <div key={product.id} className="flex items-center space-x-4">
+                <Label className="flex items-center space-x-2">
+                  <Checkbox
+                    checked={product.isSelected}
+                    onCheckedChange={(isChecked) =>
+                      handleCheckboxChange(product.id, isChecked)
+                    }
+                  />
+                  <span>{product.name}</span>
+                </Label>
+                {product.isSelected && (
+                  <Input
+                    type="number"
+                    min="1"
+                    value={product.quantity}
+                    onChange={(e) =>
+                      handleProductChange(product.id, e.target.value)
+                    }
+                    placeholder="Quantity"
+                    className=""
+                  />
+                )}
+              </div>
+            ))}
+          </div>
+          <Button type="submit" className="">
+            Submit Order
+          </Button>
+        </form>
+      </Card>
+    </div>
   );
 };
 
