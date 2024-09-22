@@ -5,6 +5,7 @@ import ChatWidget from "@src/components/ChatWidget";
 import Mars from "@src/assets/images/Planets/mars.png";
 import Moon from "@src/assets/images/Planets/moon.png";
 import LoggedInOnly from "@src/layouts/LoggedInOnly";
+import { CarouselLandingPage } from "@src/components/landing-page/CarouselLandingPage";
 
 const LandingPage = () => {
   const faqs = [
@@ -72,12 +73,17 @@ const LandingPage = () => {
           />
         </div>
         <div className="absolute lg:bottom-[-300px] lg:right-[-100px] bottom-[-300px] right-[-100px] ">
-          <img src={Moon} alt="Moon" className="object-contain w-full h-full " />
+          <img
+            src={Moon}
+            alt="Moon"
+            className="object-contain w-full h-full "
+          />
         </div>
 
         <div className="absolute inset-0 bg-black bg-opacity-55"></div>
         <div className="max-w-[1200px] flex flex-col gap-20 z-10">
-          <Title />
+          {/* <Title /> */}
+          <CarouselLandingPage />
           <OrderProcess />
           <ChatWidget faqs={faqs} />
         </div>
