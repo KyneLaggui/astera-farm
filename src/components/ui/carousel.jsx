@@ -1,4 +1,4 @@
-import * as React from "react";
+import React, { useState, useEffect, useCallback, forwardRef } from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 
@@ -216,10 +216,55 @@ const CarouselNext = React.forwardRef(
 );
 CarouselNext.displayName = "CarouselNext";
 
+const CarouselDots = forwardRef((props, ref) => {
+  const { api } = useCarousel();
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const numberOfSlides = api?.scrollSnapList().length || 0;
+
+  const updateCurrentSlide = useCallback(() => {
+    setCurrentSlide(api?.selectedScrollSnap() || 0);
+  }, [api]);
+
+  useEffect(() => {
+    if (api) {
+      api.on("select", updateCurrentSlide);
+      api.on("reInit", updateCurrentSlide);
+
+      return () => {
+        api.off("select", updateCurrentSlide);
+        api.off("reInit", updateCurrentSlide);
+      };
+    }
+  }, [api, updateCurrentSlide]);
+
+  if (numberOfSlides > 1) {
+    return (
+      <div ref={ref} className={`flex justify-center ${props.className}`}>
+        {Array.from({ length: numberOfSlides }, (_, i) => (
+          <Button
+            key={i}
+            className={`mx-1 h-2 w-2 rounded-full p-0 transition-transform duration-300 ease-out ${
+              i === currentSlide
+                ? "scale-125 transform bg-gray-500 hover:bg-gray-500"
+                : "bg-gray-300 hover:bg-gray-300"
+            }`}
+            aria-label={`Go to slide ${i + 1}`}
+            onClick={() => api?.scrollTo(i)}
+          />
+        ))}
+      </div>
+    );
+  } else {
+    return null;
+  }
+});
+CarouselDots.displayName = "CarouselDots";
+
 export {
   Carousel,
   CarouselContent,
   CarouselItem,
   CarouselPrevious,
   CarouselNext,
+  CarouselDots,
 };

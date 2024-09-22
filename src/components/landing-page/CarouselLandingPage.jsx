@@ -4,6 +4,7 @@ import { Card, CardContent } from "@src/components/ui/card";
 import {
   Carousel,
   CarouselContent,
+  CarouselDots,
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
@@ -14,7 +15,7 @@ export function CarouselLandingPage() {
     <Carousel
       plugins={[
         Autoplay({
-          delay: 2000,
+          delay: 3000,
           stopOnInteraction: false,
           stopOnMouseEnter: true,
         }),
@@ -40,6 +41,7 @@ export function CarouselLandingPage() {
           </CarouselItem>
         ))}
       </CarouselContent>
+      <CarouselDots className="mt-4" />
       <CarouselPrevious />
       <CarouselNext />
     </Carousel>
