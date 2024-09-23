@@ -16,6 +16,7 @@ import {
 } from "@src/components/ui/select";
 import { ScrollArea } from "@src/components/ui/scroll-area";
 import fetchAllProduct from "@src/custom-hooks/fetchAllProduct";
+import { toast } from "react-toastify";
 
 const BulkOrder = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -90,10 +91,10 @@ const BulkOrder = () => {
 
     const selectedProducts = products
       .filter((product) => product.isSelected && product.quantity)
-      .map((product) => `${product.name} x ${product.quantity}`);
+      .map((product) => `- ${product.name} x ${product.quantity}`);
 
     if (selectedProducts.length === 0) {
-      alert("Please select at least one product and provide quantities");
+      toast.error("Please select at least one product and provide quantities");
       return;
     }
 
@@ -113,12 +114,29 @@ const BulkOrder = () => {
 
     emailjs.send(serviceID, templateID, emailData, userID).then(
       (result) => {
-        alert("Order sent successfully");
-        console.log("Email sent successfully:", result.text);
+        toast.success("Order sent successfully");
+
+        // Reset the formData to its initial state
+        setFormData({
+          firstName: "",
+          lastName: "",
+          mobile: "",
+          email: "",
+          deliveryAddress: "",
+          paymentMethod: "",
+          orders: [],
+        });
+
+        setProducts((prevProducts) =>
+          prevProducts.map((product) => ({
+            ...product,
+            isSelected: false,
+            quantity: "",
+          }))
+        );
       },
       (error) => {
-        alert("Failed to send order, please try again");
-        console.log(error);
+        toast.error("Failed to send order, please try again");
       }
     );
   };
@@ -289,6 +307,7 @@ const BulkOrder = () => {
                             handleProductChange(product.id, e.target.value)
                           }
                           placeholder="Quantity"
+                          required
                         />
                       )}
                     </div>
