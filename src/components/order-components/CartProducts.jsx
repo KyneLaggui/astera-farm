@@ -17,7 +17,7 @@ import { toast } from 'react-toastify';
 
 const CartProducts = ({ image, title, amount, initialQuantity, productId }) => {
   const [quantity, setQuantity] = useState(initialQuantity);
-  const [loading, setLoading] = useState(false); // Track loading for both increment and decrement
+  const [loading, setLoading] = useState(false); // Track loading for all actions
   const [stock, setStock] = useState(null); // Store product stock
   const [emailState, setEmailState] = useState('');
   const [cartItemsState, setCartItemsState] = useState([]);
@@ -29,7 +29,6 @@ const CartProducts = ({ image, title, amount, initialQuantity, productId }) => {
     setQuantity(initialQuantity);
   }, [initialQuantity]);
 
-  // Fetch product stock when component mounts
   useEffect(() => {
     const fetchStock = async () => {
       try {
@@ -50,50 +49,69 @@ const CartProducts = ({ image, title, amount, initialQuantity, productId }) => {
   }, [productId]);
 
   const handleIncrement = async () => {
-    if (loading) return; // Prevent another click while loading
+    if (loading) return;
     if (stock !== null && quantity + 1 > stock) {
       toast.error(`Cannot add more than ${stock} items to the cart.`);
-      return; // Prevent exceeding stock
+      return;
     }
-    setLoading(true); // Lock all actions
+    setLoading(true);
 
     const result = await addToCart(cartItemsState, { id: productId, name: title, price: amount, cartQuantity: 1 }, email);
     if (result) {
-      dispatch(SET_CART(result.cartItems)); // Update Redux store with the updated cart
-      setQuantity(prevQuantity => prevQuantity + 1); // Update local state
+      dispatch(SET_CART(result.cartItems));
+      setQuantity(prevQuantity => prevQuantity + 1);
     }
 
-    setLoading(false); // Unlock after operation
+    setLoading(false);
   };
   
   const handleDecrement = async () => {
-    if (quantity > 1 && !loading) { // Prevent action if loading
-      setLoading(true); // Lock all actions
+    if (quantity > 1 && !loading) {
+      setLoading(true);
 
       const result = await decreaseCart(cartItemsState, { id: productId, name: title, price: amount, cartQuantity: 1 }, email);
       if (result) {
-        dispatch(SET_CART(result.cartItems)); // Update Redux store
-        setQuantity(prevQuantity => prevQuantity - 1); // Update local state
+        dispatch(SET_CART(result.cartItems));
+        setQuantity(prevQuantity => prevQuantity - 1);
       }
       
-      setLoading(false); // Unlock after operation
+      setLoading(false);
     }
   };
-  
-  const handleRemove = async() => {
-    if (loading) return; // Prevent another click while loading
-    setLoading(true); // Lock all actions
 
-    const result = await removeFromCart(cartItemsState, productId, email)
+  const handleRemove = async () => {
+    if (loading) return;
+    setLoading(true);
 
+    const result = await removeFromCart(cartItemsState, productId, email);
     if (result) {
-      dispatch(SET_CART(result.cartItems)); // Update Redux store with the updated cart
+      dispatch(SET_CART(result.cartItems));
     }
 
-    setLoading(false); // Unlock after operation
+    setLoading(false);
+  };
+
+  const handleQuantityChange = async (e) => {
+    let value = parseInt(e.target.value, 10);
+    if (isNaN(value) || value < 1) {
+      value = 1; // Minimum quantity is 1
+    } else if (stock !== null && value > stock) {
+      value = stock; // Maximum quantity is stock
+      toast.error(`Cannot exceed stock of ${stock} items.`);
+    }
+
+    setQuantity(value);
+    setLoading(true);
+
+    const result = await addToCart(cartItemsState, { id: productId, name: title, price: amount, cartQuantity: value - quantity }, email);
+    if (result) {
+      dispatch(SET_CART(result.cartItems));
+    }
+
+    setLoading(false);
   };
   
- useEffect(() => {
+  useEffect(() => {
     setEmailState(email);
   }, [email]);
 
@@ -120,25 +138,29 @@ const CartProducts = ({ image, title, amount, initialQuantity, productId }) => {
 
               <div className='flex flex-col sm:flex-row sm:gap-7 md:flex-col md:gap-4 gap-4 items-start sm:items-center md:items-start'>
                 <p className='text-md text-yellow'>₱{Number(amount) * Number(quantity)}</p>
-                <div className='flex justify-between items-center border max-h-[40px] max-w-[200px] rounded-full px-2 py-1 w-full'>
-                  <Plus 
-                    size={16} 
-                    onClick={handleIncrement} 
-                    className={`cursor-pointer ${loading ? 'opacity-50 cursor-not-allowed' : ''}`} 
-                    disabled={loading} // Disable while loading
-                  />
-                  <Input 
-                    type="number" 
-                    value={quantity} 
-                    readOnly 
-                    className="w-9 h-7 p-0 pl-2 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                  />
-                  <Minus 
-                    size={16} 
-                    onClick={handleDecrement} 
-                    className={`cursor-pointer ${loading ? 'opacity-50 cursor-not-allowed' : ''}`} 
-                    disabled={loading} // Disable while loading
-                  />
+                <div className='flex flex-col'>
+                  <div className='flex justify-between items-center border max-h-[40px] max-w-[200px] rounded-full px-2 py-1 w-full'>
+                    <Plus 
+                      size={16} 
+                      onClick={handleIncrement} 
+                      className={`cursor-pointer ${loading ? 'opacity-50 cursor-not-allowed' : ''}`} 
+                      disabled={loading}
+                    />
+                    <Input 
+                      type="number" 
+                      value={quantity} 
+                      onChange={handleQuantityChange} 
+                      className="w-9 h-7 p-0 pl-2 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      disabled={loading}
+                    />
+                    <Minus 
+                      size={16} 
+                      onClick={handleDecrement} 
+                      className={`cursor-pointer ${loading ? 'opacity-50 cursor-not-allowed' : ''}`} 
+                      disabled={loading}
+                    />
+                  </div>
+                  <p className='text-sm text-gray-500 mt-1'>Stock: {stock !== null ? stock : 'Loading...'}</p>
                 </div>
                 {quantity >= 30 && (
                   <TooltipProvider>
@@ -168,11 +190,10 @@ const CartProducts = ({ image, title, amount, initialQuantity, productId }) => {
             </div>
           </div>
 
-
           <CircleMinus 
             onClick={handleRemove} 
             className={`h-4 w-4 cursor-pointer text-red-500 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`} 
-            disabled={loading} // Disable while loading
+            disabled={loading}
           />
         </div>
       </CardContent>
