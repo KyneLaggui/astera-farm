@@ -106,6 +106,10 @@ const BulkOrder = () => {
       deliveryAddress: formData.deliveryAddress,
       paymentMethod: formData.paymentMethod,
       orders: selectedProducts.join("\n"),
+      main_logo:
+        "https://drive.google.com/uc?id=13Tf4IXSv872fMa7cCYrP_njtyb7R2FKL",
+      header_picture:
+        "https://drive.google.com/uc?id=1viVsod684bmklZ_W7De5lHZzXfBq-bWz",
     };
 
     const serviceID = import.meta.env.VITE_EMAILJS_SERVICE_ID;
