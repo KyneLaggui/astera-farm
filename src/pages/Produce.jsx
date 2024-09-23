@@ -4,11 +4,13 @@ import Product from "@src/components/produce-page/Product";
 import { CircleChevronRight } from "lucide-react";
 import Jupiter from "@src/assets/images/Planets/jupiter.png";
 import Moon from "@src/assets/images/Planets/moon.png";
+import { useNavigate } from "react-router-dom";
 
 const Produce = () => {
-  // const handleInstagramRedirect = () => {
-  //   window.open("https://www.instagram.com/asterafarmsph/", "_blank");
-  // };
+  const navigate = useNavigate();
+  const handleBulkOrder = () => {
+    navigate("/bulk-order");
+  };
 
   return (
     <div
@@ -51,9 +53,9 @@ const Produce = () => {
             care. So whether you're stocking up for your farm or fueling up your
             galactic garden, rest assured, your stellar order is in good hands!
           </p>
-          {/* <div
+          <div
             className="flex items-center py-2 sm:py-3 lg:py-3 px-4 sm:px-5 lg:px-5 justify-center text-green gap-2 sm:gap-3 lg:gap-3 rounded-full bg-yellow w-max font-spartan font-bold text-xl md:text-2xl xl:text-3xl hover:text-yellow hover:bg-green cursor-pointer"
-            onClick={handleInstagramRedirect}
+            onClick={handleBulkOrder}
           >
             <button className="mt-1">Click Here</button>
             <CircleChevronRight size={25} className="md:hidden" />
@@ -62,7 +64,7 @@ const Produce = () => {
               className="hidden md:block lg:hidden"
             />
             <CircleChevronRight size={35} className="hidden lg:block" />
-          </div> */}
+          </div>
         </div>
       </div>
     </div>
