@@ -13,6 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@src/components/ui/card";
+import ImageUpload from "@src/components/admin/imageUpload/ImageUpload";
 
 const Dashboard = () => {
   const [sellingData, setSellingData] = useState([]);
@@ -109,6 +110,7 @@ const Dashboard = () => {
         <h1 className="font-gothic text-7xl sm:text-9xl text-white text-center tracking-wide">
           DASHBOARD
         </h1>
+        <ImageUpload />
         <div className="flex sm:flex-row gap-4 w-full justify-center flex-wrap">
           <Card className="flex-grow">
             <CardHeader>
