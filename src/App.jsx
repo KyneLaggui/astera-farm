@@ -26,7 +26,8 @@ function App() {
           <Route path="/recommendations/recipes" element={<Pages.Recipes />} />
           <Route path="/recommendations/call-us" element={<Pages.CallUs />} />
           <Route path="/checkout-success" element={<Pages.Success />} />
-          <Route path="/reset-password" element={<Pages.ResetPassword />} />  
+          <Route path="/reset-password" element={<Pages.ResetPassword />} />
+          <Route path="/bulk-order" element={<Pages.BulkOrder />} />
           <Route path="admin">
             <Route path="products" element={<Pages.AdminProducts />} />
             <Route path="dashboard" element={<Pages.AdminDashboard />} />
