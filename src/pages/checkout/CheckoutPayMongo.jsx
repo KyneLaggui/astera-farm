@@ -59,7 +59,7 @@ const CheckoutPayMongo = () => {
                   show_line_items: true,
                   description: "This is the payment for Astera Farm.",
                   line_items: filteredItems,
-                  payment_method_types: ["billease", "gcash", "card", "dob", "dob_ubp", "grab_pay", "paymaya"],
+                  payment_method_types: ["billease", "gcash", "card", "grab_pay", "paymaya"],
                   cancel_url: "https://astera-farm.vercel.app/",
                   // success_url: "https://astera-farm.vercel.app/",
                   success_url: "http://localhost:5173/",
