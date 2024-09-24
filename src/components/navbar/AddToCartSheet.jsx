@@ -16,6 +16,7 @@ const AddToCartSheet = ({ cart }) => {
   const [cartState, setCartState] = useState([]);
   const [cartPriceState, setCartPriceState] = useState(0);
   const cartTotalAmount = useSelector(selectCartTotalAmount);
+  const cartItems = useSelector(selectCartItems);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -29,6 +30,19 @@ const AddToCartSheet = ({ cart }) => {
   useEffect(() => {
     setCartPriceState(cartTotalAmount);
   }, [cartTotalAmount]);
+
+  const handleCheckout = () => {
+    // Check for any product quantity exceeding 30
+    const isBulkOrder = cartItems.some(item => item.cartQuantity > 30);
+    // Check if the total cart amount exceeds 10,000
+    const isHighAmountOrder = cartTotalAmount > 10000;
+
+    if (isBulkOrder || isHighAmountOrder) {
+      navigate("/bulk-order");
+    } else {
+      navigate("/checkout");
+    }
+  };
 
   return (
     <>
@@ -63,7 +77,7 @@ const AddToCartSheet = ({ cart }) => {
                 Total Price <span className='text-yellow'>₱{cartPriceState.toLocaleString()}</span>
               </h1>
               <SheetClose asChild>
-                <Button type="submit" className="w-full" onClick={() => navigate("/checkout")}>Checkout</Button>
+                <Button type="submit" className="w-full" onClick={handleCheckout}>Checkout</Button>
               </SheetClose>
             </SheetFooter>
           </SheetContent>
@@ -99,7 +113,7 @@ const AddToCartSheet = ({ cart }) => {
                 Total Price <span className='text-yellow'>₱{cartPriceState.toLocaleString()}</span>
               </h1>
               <DrawerClose asChild>
-                <Button type="submit" className="w-full" onClick={() => navigate("/checkout")}>Checkout</Button>
+                <Button type="submit" className="w-full" onClick={handleCheckout}>Checkout</Button>
               </DrawerClose>
             </DrawerFooter>
           </DrawerContent>

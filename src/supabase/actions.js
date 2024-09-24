@@ -75,7 +75,7 @@ export const addToCart = async (cart, product, email) => {
   if (productIndex >= 0) {
     const updatedProduct = {
       ...cartItems[productIndex],
-      cartQuantity: Math.min(cartItems[productIndex].cartQuantity + product.cartQuantity, 29), // Limit to 29
+      cartQuantity: cartItems[productIndex].cartQuantity + product.cartQuantity, // Remove the limit
     };
 
     cartItems = [
@@ -84,7 +84,7 @@ export const addToCart = async (cart, product, email) => {
       ...cartItems.slice(productIndex + 1),
     ];
   } else {
-    const tempProduct = { ...product, cartQuantity: Math.min(product.cartQuantity, 29) };
+    const tempProduct = { ...product, cartQuantity: product.cartQuantity };
     cartItems.push(tempProduct);
   }
 
@@ -101,6 +101,7 @@ export const addToCart = async (cart, product, email) => {
 
   return { totalAmount: calculateCartTotalAmount(cartItems), cartItems };
 };
+
 
 
 export const decreaseCart = async (cart, product, email) => {
@@ -138,13 +139,6 @@ export const decreaseCart = async (cart, product, email) => {
   }
 };
 
-
-    // REMOVE_FROM_CART(state, action) {
-    //   state.cartItems = state.cartItems.filter((item) => item.id !== action.payload.id);
-    //   // Update total amount
-    //   state.cartTotalAmount = calculateCartTotalAmount(state.cartItems);
-    //   localStorage.setItem("cartItems", JSON.stringify(state.cartItems));
-    // },
 
 export const removeFromCart = async (cart, productId, email) => {
   // Make a shallow copy of the cart array to ensure immutability

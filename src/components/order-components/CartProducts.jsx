@@ -162,7 +162,7 @@ const CartProducts = ({ image, title, amount, initialQuantity, productId }) => {
                   </div>
                   <p className='text-sm text-gray-500 mt-1'>Stock: {stock !== null ? stock : 'Loading...'}</p>
                 </div>
-                {quantity >= 30 && (
+                {quantity > 30 && (
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild className="cursor-pointer">

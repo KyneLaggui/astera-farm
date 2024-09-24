@@ -17,6 +17,7 @@ import {
 import { ScrollArea } from "@src/components/ui/scroll-area";
 import fetchAllProduct from "@src/custom-hooks/fetchAllProduct";
 import { toast } from "react-toastify";
+import { z } from "zod";
 
 const BulkOrder = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -26,7 +27,7 @@ const BulkOrder = () => {
     mobile: "",
     email: "",
     deliveryAddress: "",
-    paymentMethod: "",
+    paymentMethod: "", // Ensure this is initialized as an empty string
     orders: [],
   });
 
@@ -89,23 +90,49 @@ const BulkOrder = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    // Define Zod schema
+    const formSchema = z.object({
+      firstName: z.string().min(1, "First name is required"),
+      lastName: z.string().min(1, "Last name is required"),
+      mobile: z
+        .string()
+        .regex(/^09\d{9}$/, "Invalid mobile number"),
+      email: z.string().email("Invalid email address"),
+      deliveryAddress: z.string().min(1, "Delivery address is required"),
+      paymentMethod: z.string().min(1, "Please select a payment method"),
+      orders: z
+        .array(
+          z.object({
+            name: z.string(),
+            quantity: z.string().min(1, "Quantity is required"),
+          })
+        )
+        .min(1, "Please select at least one product and provide quantities"),
+    });
+
+    // Extract selected products with quantity
     const selectedProducts = products
       .filter((product) => product.isSelected && product.quantity)
-      .map((product) => `- ${product.name} x ${product.quantity}`);
+      .map((product) => ({ name: product.name, quantity: product.quantity }));
 
-    if (selectedProducts.length === 0) {
-      toast.error("Please select at least one product and provide quantities");
+    // Validate the form data
+    const validation = formSchema.safeParse({
+      ...formData,
+      orders: selectedProducts,
+    });
+
+    if (!validation.success) {
+      // Show error messages using toast
+      validation.error.errors.forEach((err) => toast.error(err.message));
       return;
     }
 
+    // If validation is successful, proceed with email sending
     const emailData = {
-      firstName: formData.firstName,
-      lastName: formData.lastName,
-      mobile: formData.mobile,
-      email: formData.email,
-      deliveryAddress: formData.deliveryAddress,
-      paymentMethod: formData.paymentMethod,
-      orders: selectedProducts.join("\n"),
+      ...formData,
+      orders: selectedProducts
+        .map((product) => `- ${product.name} x ${product.quantity}`)
+        .join("\n"),
       main_logo:
         "https://drive.google.com/uc?id=13Tf4IXSv872fMa7cCYrP_njtyb7R2FKL",
       header_picture:
@@ -127,7 +154,7 @@ const BulkOrder = () => {
           mobile: "",
           email: "",
           deliveryAddress: "",
-          paymentMethod: "",
+          paymentMethod: "", // Reset to empty string
           orders: [],
         });
 
@@ -236,95 +263,88 @@ const BulkOrder = () => {
               />
             </div>
           </div>
+
           <div>
             <Label>Delivery Address</Label>
             <Input
               type="text"
               name="deliveryAddress"
               value={formData.deliveryAddress}
+              placeholder="Enter address"
               onChange={handleInputChange}
-              required
               className="mt-1"
-              placeholder="123 Block Bocaue Bulacan"
+              required
             />
           </div>
-          {/* Preferred Mode of Payment */}
+
+          {/* Payment Method */}
           <div>
-            <Label>Preferred Payment Method</Label>
+            <Label>Preferred Mode of Payment</Label>
             <Select
-              name="paymentMethod"
-              value={formData.paymentMethod}
+              value={formData.paymentMethod} // Bind the select value to the formData state
               onValueChange={handlePaymentMethodChange}
-              required
-              className="mt-1"
             >
-              <SelectTrigger>
-                <SelectValue placeholder="Select Payment Method" />
+              <SelectTrigger className="mt-1">
+                <SelectValue placeholder="Select a payment method">
+                  {formData.paymentMethod || ""}
+                </SelectValue>
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
                   <SelectLabel>Payment Methods</SelectLabel>
                   <SelectItem value="Gcash">Gcash</SelectItem>
-                  <SelectItem value="PayMaya">PayMaya</SelectItem>
-                  <SelectItem value="Card">Card</SelectItem>
-                  <SelectItem value="GrabPay">GrabPay</SelectItem>
-                  <SelectItem value="BillEase">BillEase</SelectItem>
+                  <SelectItem value="Bank Deposit">Bank Deposit</SelectItem>
+                  <SelectItem value="COD">Cash on Delivery</SelectItem>
                 </SelectGroup>
               </SelectContent>
             </Select>
           </div>
-          {/* Order Products */}
-          <div>
-            <div className="flex flex-col md:flex-row justify-between gap-4 mb-4 md:items-center">
-              <Label className="text-lg font-semibold text-nowrap">
-                Select Products
-              </Label>
-              <Input
-                type="text"
-                placeholder="Search Products"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className=""
-              />
-            </div>
-            <ScrollArea>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 max-h-[120px] px-4 h-full gap-4">
-                {filteredProducts.length > 0 ? (
-                  filteredProducts.map((product) => (
-                    <div key={product.id} className="flex flex-col space-y-2 ">
-                      <Label className="flex items-center space-x-2">
-                        <Checkbox
-                          checked={product.isSelected}
-                          onCheckedChange={(isChecked) =>
-                            handleCheckboxChange(product.id, isChecked)
-                          }
-                        />
-                        <span>{product.name}</span>
-                      </Label>
-                      {product.isSelected && (
-                        <Input
-                          type="number"
-                          min="1"
-                          className="w-full appearance-none [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                          value={product.quantity}
-                          onChange={(e) =>
-                            handleProductChange(product.id, e.target.value)
-                          }
-                          placeholder="Quantity"
-                          required
-                        />
-                      )}
-                    </div>
-                  ))
-                ) : (
-                  <div className="col-span-full text-center py-4">
-                    No products found
-                  </div>
-                )}
+
+          {/* Orders Section */}
+          <ScrollArea className="h-[300px] p-4 border rounded-md">
+            <Input
+              type="text"
+              placeholder="Search for products"
+              className="mb-4"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            {filteredProducts.map((product) => (
+              <div
+                key={product.id}
+                className="flex items-center justify-between mb-2 gap-2"
+              >
+                <div className="flex gap-2 items-center">
+                  <Checkbox
+                    id={product.id}
+                    checked={product.isSelected}
+                    onCheckedChange={(isSelected) =>
+                      handleCheckboxChange(product.id, isSelected)
+                    }
+                  />
+                  <Label htmlFor={product.id}>{product.name}</Label>
+                </div>
+                <div className="flex gap-2 items-center">
+                  <Label htmlFor={`quantity_${product.id}`}>Quantity:</Label>
+                  <Input
+                    type="text"
+                    id={`quantity_${product.id}`}
+                    className="w-[60px]"
+                    disabled={!product.isSelected}
+                    value={product.quantity}
+                    onChange={(e) =>
+                      handleProductChange(product.id, e.target.value)
+                    }
+                    placeholder="0"
+                  />
+                </div>
               </div>
-            </ScrollArea>
-          </div>
-          <Button type="submit">Submit Order</Button>
+            ))}
+          </ScrollArea>
+
+          <Button type="submit" className="mt-4 w-full">
+            Submit Order
+          </Button>
         </form>
       </Card>
     </div>
