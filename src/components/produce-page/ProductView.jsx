@@ -113,7 +113,7 @@ const ProductView = ({ isOpen, onClose, product }) => {
                     {product.sellMethod}
                   </p>
                   <h1 className="font-spartan font-bold text-4xl md:text-5xl xl:text-6xl uppercase tracking-wide">
-                    ₱{product.price}
+                    ₱{product.price.toFixed(2)}
                   </h1>
                   <p className="font-spartan sm:text-xl text-lg lg:text-2xl font-medium tracking-wider">
                     Stock: {product.stock} {/* Display stock */}
