@@ -53,11 +53,13 @@ const MobileMenu = ({ isMobileMenuOpen, toggleMobileMenu }) => {
             <a href="/admin/orders">Orders</a>
           </LoggedInOnlyComponent>
         </div>
-        <a href="/bulk-order" className="w-full">
-          <Button className="bg-yellow text-green w-full font-bakbak text-lg rounded-2xl hover:bg-green hover:text-yellow ">
-            Bulk Order
-          </Button>
-        </a>
+        <LoggedInOnlyComponent forAdmin={false} forUser={true}>
+          <a href="/bulk-order" className="w-full">
+            <Button className="bg-yellow text-green w-full font-bakbak text-lg rounded-2xl hover:bg-green hover:text-yellow ">
+              Bulk Order
+            </Button>
+          </a>
+        </LoggedInOnlyComponent>
       </div>
     </div>
   );
