@@ -39,7 +39,7 @@ const AddToCartSheet = ({ cart }) => {
     const isHighAmountOrder = cartTotalAmount > 10000;
 
     if (isBulkOrder || isHighAmountOrder) {
-      toast.info('Redirected to bulk order page.');
+      toast.info('Redirected to Bulk Order page.');
       navigate("/bulk-order");
     } else {
       navigate("/checkout");
@@ -76,7 +76,7 @@ const AddToCartSheet = ({ cart }) => {
             </ScrollArea>
             <SheetFooter className="border-t pt-4">
               <h1 className='text min-w-[100px] text-md font-medium'>
-                Total Price <span className='text-yellow'>₱{cartPriceState.toLocaleString()}</span>
+                Total Price <span className='text-yellow'>₱{Number(cartPriceState).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</span>
               </h1>
               <SheetClose asChild>
                 <Button type="submit" className="w-full" onClick={handleCheckout}>Checkout</Button>
@@ -109,10 +109,10 @@ const AddToCartSheet = ({ cart }) => {
                   />
                 ))}
               </div>
-            </ScrollArea>
+            </ScrollArea>            
             <DrawerFooter className="flex flex-row border-t pt-4">
               <h1 className='text min-w-[100px] text-md font-medium'>
-                Total Price <span className='text-yellow'>₱{cartPriceState.toLocaleString()}</span>
+                Total Price <span className='text-yellow'>₱{Number(cartPriceState).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</span>
               </h1>
               <DrawerClose asChild>
                 <Button type="submit" className="w-full" onClick={handleCheckout}>Checkout</Button>

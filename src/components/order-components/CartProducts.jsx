@@ -137,7 +137,7 @@ const CartProducts = ({ image, title, amount, initialQuantity, productId }) => {
               </h1>
 
               <div className='flex flex-col sm:flex-row sm:gap-7 md:flex-col md:gap-4 gap-4 items-start sm:items-center md:items-start'>
-                <p className='text-md text-yellow'>₱{Number(amount) * Number(quantity)}</p>
+                <p className='text-md text-yellow'>₱{(Number(amount) * Number(quantity)).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
                 <div className='flex flex-col'>
                   <div className='flex justify-between items-center border max-h-[40px] max-w-[200px] rounded-full px-2 py-1 w-full'>
                     <Plus 
@@ -146,19 +146,19 @@ const CartProducts = ({ image, title, amount, initialQuantity, productId }) => {
                       className={`cursor-pointer ${loading ? 'opacity-50 cursor-not-allowed' : ''}`} 
                       disabled={loading}
                     />
-                    <Input 
-                      type="number" 
-                      value={quantity} 
-                      onChange={handleQuantityChange} 
-                      className="w-9 h-7 p-0 pl-2 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                      disabled={loading}
-                    />
-                    <Minus 
-                      size={16} 
-                      onClick={handleDecrement} 
-                      className={`cursor-pointer ${loading ? 'opacity-50 cursor-not-allowed' : ''}`} 
-                      disabled={loading}
-                    />
+                   <Input 
+                    type="number" 
+                    value={quantity} 
+                    onChange={handleQuantityChange} 
+                    className="w-9 h-7 p-0 pl-2 bg-white text-black [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    disabled={loading}
+                  />
+                  <Minus 
+                    size={16} 
+                    onClick={handleDecrement} 
+                    className={`cursor-pointer ${loading ? 'opacity-50 cursor-not-allowed' : ''}`} 
+                    disabled={loading}
+                  /> 
                   </div>
                   <p className='text-sm text-gray-500 mt-1'>Stock: {stock !== null ? stock : 'Loading...'}</p>
                 </div>

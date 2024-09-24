@@ -55,7 +55,7 @@ const AreaChartComponent = ({ data, setCategory }) => { // Add setCategory as pr
       <CardHeader>
         {/* Displaying the total earnings beside the title */}
         <CardTitle>
-          Earnings: ₱{totalEarnings.toLocaleString()} {/* Format as currency */}
+          Earnings: ₱{totalEarnings.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
         </CardTitle>
         <CardDescription>
           Showing earnings for the selected period
