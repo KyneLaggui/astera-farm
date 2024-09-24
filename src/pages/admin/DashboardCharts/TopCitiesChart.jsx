@@ -9,6 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@src/components/ui/card";
+
 import {
   ChartContainer,
   ChartTooltip,
@@ -17,86 +18,86 @@ import {
 
 export const description = "A mixed bar chart";
 
-const chartData = [
-  { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-  { browser: "firefox", visitors: 187, fill: "var(--color-firefox)" },
-  { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
-  { browser: "other", visitors: 90, fill: "var(--color-other)" },
-];
-
-const chartConfig = {
-  visitors: {
-    label: "Visitors",
-  },
-  chrome: {
-    label: "Chrome",
-    color: "hsl(var(--chart-1))",
-  },
-  safari: {
-    label: "Safari",
-    color: "hsl(var(--chart-2))",
-  },
-  firefox: {
-    label: "Firefox",
-    color: "hsl(var(--chart-3))",
-  },
-  edge: {
-    label: "Edge",
-    color: "hsl(var(--chart-4))",
-  },
-  other: {
-    label: "Other",
-    color: "hsl(var(--chart-5))",
-  },
+// Function to generate a random color
+const getRandomColor = () => {
+  const letters = '0123456789ABCDEF';
+  let color = '#';
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
 };
 
-const TopCitiesChart = () => {
+// Function to create dynamic chart configuration and transform data
+const createChartConfigAndTransformData = (data) => {
+  const cityFrequencyMap = {};
+
+  // Accumulate frequency for each city
+  data.forEach(item => {
+    if (cityFrequencyMap[item.city]) {
+      cityFrequencyMap[item.city] += item.frequency;
+    } else {
+      cityFrequencyMap[item.city] = item.frequency;
+    }
+  });
+
+  const uniqueCities = Object.keys(cityFrequencyMap);
+  const transformedData = uniqueCities.map(city => ({
+    city,
+    frequency: cityFrequencyMap[city],
+  }));
+
+  const config = {};
+  uniqueCities.forEach(city => {
+    config[city] = {
+      label: city,
+      color: getRandomColor(), // Assign a random color for each city
+    };
+  });
+
+  return { config, transformedData }; // Return only config and transformedData
+};
+
+const TopCitiesChart = ({ data }) => {
+  const { config, transformedData } = createChartConfigAndTransformData(data);
+  console.log('transformedData', transformedData)
+  console.log('config', config)
+
   return (
-    <Card>
+    <Card className="">
       <CardHeader>
-        <CardTitle>Bar Chart - Mixed</CardTitle>
-        <CardDescription>The bar chart shows the top cities that has the most orders.</CardDescription>
+        <CardTitle>Top Cities</CardTitle>
+        <CardDescription>The bar chart shows the top cities that have the most orders.</CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig}>
+        <ChartContainer config={config}>
           <BarChart
             accessibilityLayer
-            data={chartData}
+            data={transformedData}
             layout="vertical"
             margin={{
               left: 0,
             }}
           >
             <YAxis
-              dataKey="browser"
+              dataKey="city"
               type="category"
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-              tickFormatter={(value) =>
-                chartConfig[value]?.label
-              }
+              tickFormatter={(value) => value}
             />
-            <XAxis dataKey="visitors" type="number" hide />
+            <XAxis type="number" />
             <ChartTooltip
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
             />
-            <Bar dataKey="visitors" layout="vertical" radius={5} />
+            {/* Render Bars for each city in the transformed data */}
+            <Bar dataKey="frequency" layout="vertical" radius={5} fill={'#FFE500'}/>
+            
           </BarChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter className="flex-col items-start gap-2 text-sm">
-        <div className="flex gap-2 font-medium leading-none">
-          Trending up by 5.2% this month <TrendingUp className="h-4 w-4" />
-        </div>
-        <div className="leading-none text-muted-foreground">
-          Showing total visitors for the last 6 months
-        </div>
-      </CardFooter>
     </Card>
   );
-}
+};
+
 
 export default TopCitiesChart;

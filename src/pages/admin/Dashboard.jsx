@@ -21,6 +21,7 @@ const Dashboard = () => {
   const [chartData, setChartData] = useState([]);
   const [statusData, setStatusData] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("week");
+  const [topCitiesData, setTopCitiesData] = useState([]); // State for top cities data
 
   const orders = useSelector(selectOrders);
 
@@ -38,6 +39,7 @@ const Dashboard = () => {
         totalEarnings,
         createdAt: order.createdAt,
         products: order.cart,
+        city: order.shippingAddress.city, // Assuming city is part of the order object
       };
     });
   }, [orders]);
@@ -65,6 +67,19 @@ const Dashboard = () => {
     const statusDataArray = Object.entries(statusCount).map(
       ([status, count]) => ({ status, count })
     );
+
+    // Calculate top cities based on order frequency
+    const cityFrequency = filteredOrders.reduce((acc, order) => {
+      acc[order.city] = (acc[order.city] || 0) + 1; // Increment count for the city
+      return acc;
+    }, {});
+
+    const topCities = Object.entries(cityFrequency)
+      .map(([city, frequency]) => ({ city, frequency }))
+      .sort((a, b) => b.frequency - a.frequency)
+      .slice(0, 5); // Get top 5 cities
+
+    setTopCitiesData(topCities); // Update state with top cities data
 
     const groupByDate = filteredOrders.reduce((acc, order) => {
       const orderDate = new Date(order.createdAt * 1000);
@@ -96,14 +111,18 @@ const Dashboard = () => {
     setStatusData(statusDataArray);
   }, [filteredOrders, selectedCategory]);
 
-  const totalEarnings = filteredOrders.reduce(
-    (acc, order) => acc + order.totalEarnings,
-    0
-  );
+const totalEarnings = filteredOrders.reduce(
+  (acc, order) => acc + order.totalEarnings,
+  0
+).toFixed(2); // Ensure total earnings is a decimal with 2 places
 
   const totalProductsSold = filteredOrders.reduce((acc, order) => {
     return acc + order.products.reduce((sum, product) => sum + product.quantity, 0);
   }, 0);
+
+  const averageOrderRevenue = filteredOrders.length > 0 
+  ? (totalEarnings / filteredOrders.length).toLocaleString() 
+  : '₱0.00'; // Display ₱0.00 if there are no orders
 
   return (
     <LoggedInOnly forAdmin={true} forUser={false}>
@@ -115,7 +134,7 @@ const Dashboard = () => {
           <Card className="flex-grow">
             <CardHeader>
               <CardTitle>Total Revenue</CardTitle>
-              <CardDescription className="text-yellow">₱{totalEarnings.toLocaleString()}</CardDescription>
+              <CardDescription className="text-yellow">&#8369;{parseFloat(totalEarnings).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</CardDescription>
             </CardHeader>
           </Card>
           <Card className="flex-grow">
@@ -132,17 +151,15 @@ const Dashboard = () => {
           </Card>
           <Card className="flex-grow">
             <CardHeader>
-              <CardTitle>Average Order Revenue</CardTitle>
-              <CardDescription className="text-yellow">{totalProductsSold}</CardDescription>
+              <CardTitle>Average Revenue</CardTitle>
+              <CardDescription className="text-yellow">&#8369;{averageOrderRevenue}</CardDescription>
             </CardHeader>
           </Card>
         </div>
         <div className="flex flex-col sm:flex-row gap-4 w-full justify-center flex-wrap lg:flex-nowrap">
-          <div className="flex-grow md:min-w-[330px]"> {/* Set a minimum width for TopCitiesChart */}
-            <TopCitiesChart />
-          </div>
-          <div className="flex-grow md:min-w-[330px]"> {/* Set a minimum width for BestSellingChart */}
-            <BestSellingChart sellingData={sellingData} />
+          <div className="flex gap-4 justify-between flex-grow md:min-w-[330px] flex-col"> {/* Set a minimum width for AreaChartComponent and OrderStatusChart */}
+            <BestSellingChart sellingData={sellingData} />            
+            <TopCitiesChart data={topCitiesData} /> {/* Pass top cities data */}
           </div>
           <div className="flex gap-4 justify-between flex-grow md:min-w-[330px] flex-col"> {/* Set a minimum width for AreaChartComponent and OrderStatusChart */}
             <AreaChartComponent data={chartData} setCategory={setSelectedCategory} />
