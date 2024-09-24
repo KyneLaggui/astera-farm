@@ -61,7 +61,7 @@ export const columns = [
         )}
       </p>
     ),
-    cell: ({ row }) => <TableCell>₱{row.original.total/100}</TableCell>,
+    cell: ({ row }) => <TableCell>₱{(row.original.total/100).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>,
   },
   {
     accessorKey: "paymentMethod",

@@ -261,7 +261,7 @@ const Checkout = () => {
                 Subtotal: ₱
                 {productData
                   .reduce((total, item) => total + item.price * item.quantity, 0)
-                  .toLocaleString()}
+                  .toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </CardDescription>
             </CardHeader>
             {productData.map((product) => (
@@ -271,7 +271,7 @@ const Checkout = () => {
               >
                 <h1 className="font-semibold text-lg">{product.name}</h1>
                 <p className="font-md text-sm text-yellow">
-                  Price: ₱{product.price}
+                  Price: ₱{product.price.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </p>
                 <p className="font-light text-sm text-muted-foreground">
                   Quantity: {product.quantity}
