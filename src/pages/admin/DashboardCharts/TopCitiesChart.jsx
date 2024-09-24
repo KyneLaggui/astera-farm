@@ -84,6 +84,9 @@ const TopCitiesChart = ({ data }) => {
             <YAxis
               dataKey="city"
               type="category"
+              tickLine={false}
+              axisLine={false}
+              tickMargin={10}
               tickFormatter={(value) => value}
             />
             <XAxis type="number" />
