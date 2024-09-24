@@ -177,13 +177,13 @@ const Navbar = () => {
         </div>
 
         <div className="flex items-center gap-4">
-          <LoggedInOnlyComponent forAdmin={false} forUser={true}>
+          <UserGuestOnlyComponent>
             <a href="/bulk-order" className="hidden lg:block">
               <Button className="bg-yellow text-green font-bakbak text-base px-4 lg:text-lg lg:px-6 rounded-full hover:bg-green hover:text-yellow ">
                 Bulk Order
               </Button>
             </a>
-          </LoggedInOnlyComponent>
+            </UserGuestOnlyComponent>
           <LoggedInOnlyComponent forAdmin={false} forUser={true}>
             <AddToCartSheet cart={cartState} />
           </LoggedInOnlyComponent>
