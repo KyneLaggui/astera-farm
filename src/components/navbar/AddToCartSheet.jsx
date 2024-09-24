@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 import { selectCartItems, selectCartTotalAmount, SET_CART } from '@src/redux/slice/cartSlice';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const AddToCartSheet = ({ cart }) => {
   const isDesktop = useMediaQuery({ query: "(min-width: 768px)" });
@@ -38,6 +39,7 @@ const AddToCartSheet = ({ cart }) => {
     const isHighAmountOrder = cartTotalAmount > 10000;
 
     if (isBulkOrder || isHighAmountOrder) {
+      toast.info('Redirected to bulk order page.');
       navigate("/bulk-order");
     } else {
       navigate("/checkout");
