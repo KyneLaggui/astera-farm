@@ -176,10 +176,13 @@ const ImageUpload = () => {
       {isLoading ? (
         <div className="text-center m-2">Loading...</div>
       ) : (
-        <CardContent className="flex flex-wrap gap-4">
+        <CardContent className="flex flex-wrap justify-center gap-4">
           {Array.from({ length: slotCount }).map((_, index) => (
-            <div key={index} className="relative w-40 h-40 border rounded">
-              <div className="relative w-40 h-40 border rounded">
+            <div
+              key={index}
+              className="relative w-full sm:w-40 h-40 border rounded"
+            >
+              <div className="relative w-full sm:w-40 h-40 border rounded">
                 {images[index] ? (
                   <>
                     <img
@@ -222,7 +225,7 @@ const ImageUpload = () => {
           ))}
           <div
             onClick={addSlot}
-            className="w-40 h-40 border rounded flex items-center justify-center cursor-pointer hover:bg-yellow group"
+            className="sm:w-40 h-40 border rounded flex items-center justify-center cursor-pointer w-full hover:bg-yellow group"
             style={{ position: "relative" }}
           >
             <span className="text-2xl font-bold text-yellow group-hover:text-white">
