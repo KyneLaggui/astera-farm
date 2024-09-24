@@ -16,8 +16,7 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "@src/components/ui/select"
-
+} from "@src/components/ui/select";
 
 const priceConfig = {
   earnings: {
@@ -37,7 +36,8 @@ const getUniqueMonths = (data) => {
   return [...new Set(data.map((entry) => entry.timePeriod.split("-")[0]))];
 };
 
-const AreaChartComponent = ({ data, setCategory }) => { // Add setCategory as prop
+const AreaChartComponent = ({ data, setCategory }) => {
+  // Add setCategory as prop
   const [selectedMonth, setSelectedMonth] = useState(""); // State to store selected month
 
   // Get unique months for the dropdown filter
@@ -51,11 +51,15 @@ const AreaChartComponent = ({ data, setCategory }) => { // Add setCategory as pr
   const totalEarnings = calculateTotalEarnings(filteredData); // Calculate total earnings for filtered data
 
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader>
         {/* Displaying the total earnings beside the title */}
         <CardTitle>
-          Earnings: ₱{totalEarnings.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          Earnings: ₱
+          {totalEarnings.toLocaleString("en-PH", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          })}
         </CardTitle>
         <CardDescription>
           Showing earnings for the selected period
@@ -64,7 +68,9 @@ const AreaChartComponent = ({ data, setCategory }) => { // Add setCategory as pr
       <CardContent>
         {/* Dropdown for selecting month */}
         <div style={{ marginBottom: "1rem" }}>
-          <Select onValueChange={(value) => setCategory(value)}> {/* Set category based on selection */}
+          <Select onValueChange={(value) => setCategory(value)}>
+            {" "}
+            {/* Set category based on selection */}
             <SelectTrigger className="w-[180px]">
               <SelectValue placeholder="Categorize By" />
             </SelectTrigger>
@@ -76,7 +82,7 @@ const AreaChartComponent = ({ data, setCategory }) => { // Add setCategory as pr
                 <SelectItem value="year">Year</SelectItem>
               </SelectGroup>
             </SelectContent>
-          </Select>         
+          </Select>
         </div>
         <ChartContainer config={priceConfig}>
           <AreaChart
@@ -86,18 +92,34 @@ const AreaChartComponent = ({ data, setCategory }) => { // Add setCategory as pr
           >
             <defs>
               <linearGradient id="colorEarnings" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor={priceConfig.earnings.color} stopOpacity={0.8} />
-                <stop offset="95%" stopColor={priceConfig.earnings.color} stopOpacity={0} />
+                <stop
+                  offset="5%"
+                  stopColor={priceConfig.earnings.color}
+                  stopOpacity={0.8}
+                />
+                <stop
+                  offset="95%"
+                  stopColor={priceConfig.earnings.color}
+                  stopOpacity={0}
+                />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" opacity={0.2} vertical={false} />
+            <CartesianGrid
+              strokeDasharray="3 3"
+              opacity={0.2}
+              vertical={false}
+            />
             <XAxis
               dataKey="timePeriod"
               tickLine={false}
               tickMargin={12}
               tickFormatter={(tick) => tick.slice(0, 4)} // Display only first 3 characters of the month
             />
-            <Tooltip content={<ChartTooltipContent color={priceConfig.earnings.color} />} />
+            <Tooltip
+              content={
+                <ChartTooltipContent color={priceConfig.earnings.color} />
+              }
+            />
             <Area
               type="monotone"
               dataKey="earnings"
