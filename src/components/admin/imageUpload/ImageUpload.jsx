@@ -174,7 +174,7 @@ const ImageUpload = () => {
         </CardDescription>
       </CardHeader>
       {isLoading ? (
-        <div>Loading...</div>
+        <div className="text-center m-2">Loading...</div>
       ) : (
         <CardContent className="flex flex-wrap gap-4">
           {Array.from({ length: slotCount }).map((_, index) => (
@@ -189,7 +189,7 @@ const ImageUpload = () => {
                     />
                     <CircleMinus
                       onClick={() => deleteSlot(index)}
-                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full"
+                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full z-20"
                     />
                     {/* <button
                       onClick={() => deleteSlot(index)}
