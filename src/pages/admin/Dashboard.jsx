@@ -2,9 +2,10 @@ import { useState, useEffect, useMemo } from "react";
 import OrderStatusChart from "@src/pages/admin/DashboardCharts/OrderStatusChart";
 import AreaChartComponent from "@src/pages/admin/DashboardCharts/AreaChartComponent";
 import BestSellingChart from "@src/pages/admin/DashboardCharts/BestSellingChart";
+import TopCitiesChart from "@src/pages/admin/DashboardCharts/TopCitiesChart";
 import { selectOrders } from "@src/redux/slice/ordersSlice";
 import { useSelector } from "react-redux";
-import { format, getWeek, differenceInDays, differenceInWeeks, getMonth, getYear } from "date-fns";
+import { format, getWeek, getYear } from "date-fns";
 import LoggedInOnly from "@src/layouts/LoggedInOnly";
 import {
   Card,
@@ -19,7 +20,7 @@ const Dashboard = () => {
   const [sellingData, setSellingData] = useState([]);
   const [chartData, setChartData] = useState([]);
   const [statusData, setStatusData] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("week"); // Add state for selected category
+  const [selectedCategory, setSelectedCategory] = useState("week");
 
   const orders = useSelector(selectOrders);
 
@@ -106,14 +107,14 @@ const Dashboard = () => {
 
   return (
     <LoggedInOnly forAdmin={true} forUser={false}>
-      <div className="navbar-spacing flex flex-col items-center justify-center gap-4 sm:gap-8 max-w-3xl mx-auto">
+      <div className="navbar-spacing flex flex-col items-center justify-center gap-4 sm:gap-8 max-w-6xl mx-auto">
         <h1 className="font-gothic text-7xl sm:text-9xl text-white text-center tracking-wide">
           DASHBOARD
         </h1>
         <div className="flex sm:flex-row gap-4 w-full justify-center flex-wrap">
           <Card className="flex-grow">
             <CardHeader>
-              <CardTitle>Total Earnings</CardTitle>
+              <CardTitle>Total Revenue</CardTitle>
               <CardDescription className="text-yellow">₱{totalEarnings.toLocaleString()}</CardDescription>
             </CardHeader>
           </Card>
@@ -129,13 +130,21 @@ const Dashboard = () => {
               <CardDescription className="text-yellow">{totalProductsSold}</CardDescription>
             </CardHeader>
           </Card>
+          <Card className="flex-grow">
+            <CardHeader>
+              <CardTitle>Average Order Revenue</CardTitle>
+              <CardDescription className="text-yellow">{totalProductsSold}</CardDescription>
+            </CardHeader>
+          </Card>
         </div>
-        <div className="flex flex-col sm:flex-row gap-4 w-full justify-center">
-          <div className="flex-grow md:min-w-[330px]"> {/* Set a minimum width for the chart */}
+        <div className="flex flex-col sm:flex-row gap-4 w-full justify-center flex-wrap lg:flex-nowrap">
+          <div className="flex-grow md:min-w-[330px]"> {/* Set a minimum width for TopCitiesChart */}
+            <TopCitiesChart />
+          </div>
+          <div className="flex-grow md:min-w-[330px]"> {/* Set a minimum width for BestSellingChart */}
             <BestSellingChart sellingData={sellingData} />
           </div>
-          <div className="flex flex-col gap-4 justify-between w-full">
-            {/* Pass selectedCategory as a prop to AreaChartComponent */}
+          <div className="flex gap-4 justify-between flex-grow md:min-w-[330px] flex-col"> {/* Set a minimum width for AreaChartComponent and OrderStatusChart */}
             <AreaChartComponent data={chartData} setCategory={setSelectedCategory} />
             <OrderStatusChart statusData={statusData} />
           </div>
