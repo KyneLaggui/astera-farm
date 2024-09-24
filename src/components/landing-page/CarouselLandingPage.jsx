@@ -11,27 +11,24 @@ import {
   CarouselPrevious,
 } from "@src/components/ui/carousel";
 
-
 export function CarouselLandingPage() {
   const [images, setImages] = useState([]);
 
   useEffect(() => {
     const fetchImages = async () => {
-      const { data, error } = await supabase
-        .storage
-        .from('slideshow')
-        .list('public/', { limit: 100, offset: 1 });
-      
+      const { data, error } = await supabase.storage
+        .from("slideshow")
+        .list("public/", { limit: 100, offset: 1 });
+
       if (error) {
         console.error("Error fetching images:", error);
       } else {
-        const imageUrls = data.map(file => {
-          console.log(file.name)
-          const { data } = supabase
-            .storage
-            .from('slideshow')
+        const imageUrls = data.map((file) => {
+          console.log(file.name);
+          const { data } = supabase.storage
+            .from("slideshow")
             .getPublicUrl(`public/${file.name}`);
-          
+
           return data.publicUrl;
         });
 
@@ -73,8 +70,12 @@ export function CarouselLandingPage() {
         ))}
       </CarouselContent>
       <CarouselDots className="mt-4" />
-      <CarouselPrevious />
-      <CarouselNext />
+      {images.length > 1 && (
+        <>
+          <CarouselPrevious />
+          <CarouselNext />
+        </>
+      )}
     </Carousel>
   );
 }
