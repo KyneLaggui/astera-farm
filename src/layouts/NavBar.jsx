@@ -61,9 +61,10 @@ const Navbar = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isRegisterLoginOpen, setIsRegisterLoginOpen] = useState(false);
   const [cartState, setCartState] = useState([]);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const isLoggedInRedux = useSelector(selectIsLoggedIn);
-  const isAdminRedux = useSelector(selectIsAdmin)
+  const isAdminRedux = useSelector(selectIsAdmin);
   const cart = useSelector(selectCartItems);
   const allOrders = fetchAllOrders();
 
@@ -90,7 +91,6 @@ const Navbar = () => {
   useEffect(() => {
     // This for listening to supabase auth state changes
     supabase.auth.onAuthStateChange((_event, session) => {
-
       if (session) {
         dispatch(
           SET_ACTIVE_USER({
@@ -106,10 +106,10 @@ const Navbar = () => {
             .eq("email", session.user.email)
             .maybeSingle();
           if (data) {
-            setCartState(data.cart);                      
+            setCartState(data.cart);
           } else {
             setCartState([]);
-            dispatch(SET_CART([]))  
+            dispatch(SET_CART([]));
           }
         };
 
@@ -127,6 +127,10 @@ const Navbar = () => {
   useEffect(() => {
     setCartState(cart);
   }, [cart]);
+
+  useEffect(() => {
+    setIsAdmin(isAdminRedux);
+  }, [isAdminRedux]);
 
   return (
     <div>
@@ -183,7 +187,7 @@ const Navbar = () => {
                 Bulk Order
               </Button>
             </a>
-            </UserGuestOnlyComponent>
+          </UserGuestOnlyComponent>
           <LoggedInOnlyComponent forAdmin={false} forUser={true}>
             <AddToCartSheet cart={cartState} />
           </LoggedInOnlyComponent>
@@ -191,7 +195,11 @@ const Navbar = () => {
           {isLoggedIn ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <CircleUserRound className="h-6 cursor-pointer text-yellow" />
+                <CircleUserRound
+                  className={`h-6 cursor-pointer text-yellow hover:text-white ${
+                    isAdmin ? "lg:min-w-[200px]" : ""
+                  }`}
+                />
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56 ">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>
