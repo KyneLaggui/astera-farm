@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Label, Pie, PieChart } from "recharts";
 import {
   Card,
@@ -31,27 +31,56 @@ const sellingConfig = {
 };
 
 const OrderStatusChart = ({ statusData }) => {
-  // Map the sorted data to dynamically assign colors
+  const [innerRadius, setInnerRadius] = useState(70);
+  const chartContainerRef = useRef(null);
+
+  useEffect(() => {
+    const updateInnerRadius = () => {
+      if (chartContainerRef.current) {
+        const containerWidth = chartContainerRef.current.offsetWidth;
+        if (containerWidth > 550) {
+          setInnerRadius(100);
+        } else if (containerWidth < 550 && containerWidth >= 400) {
+          setInnerRadius(80);
+        } else {
+          setInnerRadius(60);
+        }
+      }
+    };
+
+    updateInnerRadius();
+    window.addEventListener("resize", updateInnerRadius);
+
+    return () => {
+      window.removeEventListener("resize", updateInnerRadius);
+    };
+  }, []);
+
   const statusDataWithColors = statusData.map((item, index) => ({
     ...item,
     fill:
       sellingConfig.colors[index] ||
-      sellingConfig.colors[sellingConfig.colors.length - 1], // Assign color based on position, fallback to last color if more than colors available
+      sellingConfig.colors[sellingConfig.colors.length - 1],
   }));
 
   // Calculate the total number of statuses
-  const totalStatuses = statusData.reduce((total, item) => total + item.count, 0);
+  const totalStatuses = statusData.reduce(
+    (total, item) => total + item.count,
+    0
+  );
 
   return (
-    <Card className="flex flex-col">
+    <Card className="w-full" ref={chartContainerRef}>
       <CardHeader className="pb-0">
         <CardTitle>Order Status</CardTitle>
-        <CardDescription>Showing the status distribution of orders</CardDescription>
+        <CardDescription>
+          Showing the status distribution of orders
+        </CardDescription>
       </CardHeader>
       <CardContent className="flex-1 pb-0">
         <ChartContainer
           config={sellingConfig}
-          className="mx-auto aspect-square max-h-[250px]"
+          className="mx-auto aspect-square"
         >
           <PieChart>
             <ChartTooltip
@@ -62,7 +91,7 @@ const OrderStatusChart = ({ statusData }) => {
               data={statusDataWithColors}
               dataKey="count"
               nameKey="status"
-              innerRadius={60}
+              innerRadius={innerRadius}
               strokeWidth={5}
             >
               <Label
@@ -74,7 +103,7 @@ const OrderStatusChart = ({ statusData }) => {
                         y={viewBox.cy}
                         textAnchor="middle"
                         fill="var(--color-text)"
-                        className="font-sans font-medium fill-foreground"
+                        className="font-medium text-lg fill-foreground"
                       >
                         {totalStatuses}
                       </text>

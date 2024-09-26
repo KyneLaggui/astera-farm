@@ -1,5 +1,14 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@src/supabase/config"; // Adjust import path as needed
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@src/components/ui/card";
+import { Button } from "@src/components/ui/button";
+import { CircleMinus, X } from "lucide-react";
 
 const ImageUpload = () => {
   const [images, setImages] = useState([]);
@@ -17,11 +26,16 @@ const ImageUpload = () => {
           });
 
         if (error) {
-          console.error(`Error fetching image for slot ${index + 1}:`, error.message);
+          console.error(
+            `Error fetching image for slot ${index + 1}:`,
+            error.message
+          );
           return null;
         }
 
-        const matchingFile = data.find((file) => file.name.startsWith(`slot-${index + 1}`));
+        const matchingFile = data.find((file) =>
+          file.name.startsWith(`slot-${index + 1}`)
+        );
         if (matchingFile) {
           const { data: urlData } = await supabase.storage
             .from("slideshow")
@@ -54,19 +68,27 @@ const ImageUpload = () => {
       .list("public");
 
     if (listError) {
-      console.error(`Error checking existing image for slot ${index + 1}:`, listError.message);
+      console.error(
+        `Error checking existing image for slot ${index + 1}:`,
+        listError.message
+      );
       setIsLoading(false);
       return;
     }
 
-    const existingFile = existingFiles.find((file) => file.name.startsWith(`slot-${index + 1}`));
+    const existingFile = existingFiles.find((file) =>
+      file.name.startsWith(`slot-${index + 1}`)
+    );
     if (existingFile) {
       const { error: deleteError } = await supabase.storage
         .from("slideshow")
         .remove([`public/${existingFile.name}`]);
 
       if (deleteError) {
-        console.error(`Error deleting existing image for slot ${index + 1}:`, deleteError.message);
+        console.error(
+          `Error deleting existing image for slot ${index + 1}:`,
+          deleteError.message
+        );
         setIsLoading(false);
         return;
       }
@@ -77,13 +99,18 @@ const ImageUpload = () => {
       .upload(`public/${fileName}`, file);
 
     if (uploadError) {
-      console.error(`Error uploading image for slot ${index + 1}:`, uploadError.message);
+      console.error(
+        `Error uploading image for slot ${index + 1}:`,
+        uploadError.message
+      );
     } else {
       const { data: newUrlData } = await supabase.storage
         .from("slideshow")
         .getPublicUrl(`public/${fileName}`);
 
-      const timestampedUrl = `${newUrlData.publicUrl}?t=${new Date().toISOString()}`;
+      const timestampedUrl = `${
+        newUrlData.publicUrl
+      }?t=${new Date().toISOString()}`;
 
       setImages((prevImages) => {
         const updatedImages = [...prevImages];
@@ -97,7 +124,7 @@ const ImageUpload = () => {
 
   const addSlot = () => {
     setSlotCount((prevCount) => prevCount + 1);
-    setImages((prevImages) => [...prevImages, null]); // Add a new null slot for the new image
+    setImages((prevImages) => [...prevImages, null]);
   };
 
   const deleteSlot = async (index) => {
@@ -107,18 +134,26 @@ const ImageUpload = () => {
       .list("public");
 
     if (listError) {
-      console.error(`Error checking existing image for slot ${index + 1}:`, listError.message);
+      console.error(
+        `Error checking existing image for slot ${index + 1}:`,
+        listError.message
+      );
       return;
     }
 
-    const existingFile = existingFiles.find((file) => file.name.startsWith(fileName));
+    const existingFile = existingFiles.find((file) =>
+      file.name.startsWith(fileName)
+    );
     if (existingFile) {
       const { error: deleteError } = await supabase.storage
         .from("slideshow")
         .remove([`public/${existingFile.name}`]);
 
       if (deleteError) {
-        console.error(`Error deleting existing image for slot ${index + 1}:`, deleteError.message);
+        console.error(
+          `Error deleting existing image for slot ${index + 1}:`,
+          deleteError.message
+        );
         return;
       }
     }
@@ -127,19 +162,27 @@ const ImageUpload = () => {
       const updatedImages = prevImages.filter((_, i) => i !== index);
       return updatedImages;
     });
-    setSlotCount((prevCount) => prevCount - 1); // Decrease slot count
+    setSlotCount((prevCount) => prevCount - 1);
   };
 
   return (
-    <div className="image-upload-container">
-      <h2 className="text-xl font-bold mb-4">Slideshow Images</h2>
+    <Card className="w-full">
+      <CardHeader>
+        <CardTitle>Slideshow</CardTitle>
+        <CardDescription>
+          Showcase stunning images on the Astera Farm e-commerce landing page.
+        </CardDescription>
+      </CardHeader>
       {isLoading ? (
-        <div>Loading...</div>
+        <div className="text-center m-2">Loading...</div>
       ) : (
-        <div className="flex flex-wrap gap-4">
+        <CardContent className="flex flex-wrap justify-center gap-4">
           {Array.from({ length: slotCount }).map((_, index) => (
-            <div key={index} className="relative w-40 h-40 border rounded">
-              <div className="relative w-40 h-40 border rounded">
+            <div
+              key={index}
+              className="relative w-full sm:w-40 h-40 border rounded"
+            >
+              <div className="relative w-full sm:w-40 h-40 border rounded">
                 {images[index] ? (
                   <>
                     <img
@@ -147,12 +190,16 @@ const ImageUpload = () => {
                       alt={`Slot ${index + 1}`}
                       className="w-full h-full object-cover rounded"
                     />
-                    <button
+                    <CircleMinus
+                      onClick={() => deleteSlot(index)}
+                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full z-20"
+                    />
+                    {/* <button
                       onClick={() => deleteSlot(index)}
                       className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 z-20 w-7 text-sm" // Added z-index
                     >
-                      X
-                    </button>
+                      <X />
+                    </button> */}
                     <input
                       type="file"
                       accept="image/*"
@@ -176,17 +223,19 @@ const ImageUpload = () => {
               />
             </div>
           ))}
-           <div
+          <div
             onClick={addSlot}
-            className="w-40 h-40 border rounded flex items-center justify-center cursor-pointer hover:bg-blue-100"
-            style={{ position: 'relative' }}
+            className="sm:w-40 h-40 border rounded flex items-center justify-center cursor-pointer w-full hover:bg-yellow group"
+            style={{ position: "relative" }}
           >
-            <span className="text-2xl font-bold text-blue-500">+</span>
+            <span className="text-2xl font-bold text-yellow group-hover:text-white">
+              +
+            </span>
             <span className="sr-only">Add Slot</span>
           </div>
-        </div>
-      )}     
-    </div>
+        </CardContent>
+      )}
+    </Card>
   );
 };
 
