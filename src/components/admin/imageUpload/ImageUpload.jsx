@@ -9,6 +9,7 @@ import {
 } from "@src/components/ui/card";
 import { CircleMinus } from "lucide-react";
 import ConfirmSlideDelete from "@src/components/admin/modal/ConfirmSlideDelete"; // Adjust import path as needed
+import { toast } from "react-toastify";
 
 const ImageUpload = () => {
   const [images, setImages] = useState([]);
@@ -85,6 +86,16 @@ const ImageUpload = () => {
     setIsDeleteDialogOpen(false);
   };
 
+  const handleDeletion = (index) => {
+    if (images.length < 2) {
+      toast.error("You must have at least one image in the slideshow.");
+      return;
+    }
+
+    setDeleteIndex(index);
+    setIsDeleteDialogOpen(true);
+  }
+
   // const deleteSlot = async (index) => {
   //   const fileUrl = images[index];
   //   const fileName = fileUrl.split('/').pop().split('?')[0]; // Extract file name from the URL
@@ -126,10 +137,7 @@ const ImageUpload = () => {
                     className="w-full h-full object-cover rounded"
                   />
                   <CircleMinus
-                    onClick={() => {
-                      setDeleteIndex(index);
-                      setIsDeleteDialogOpen(true);
-                    }}
+                    onClick={() => handleDeletion(index)}
                     className="absolute top-1 right-1 bg-red-500 text-white rounded-full z-20 cursor-pointer"
                   />
                  <ConfirmSlideDelete 

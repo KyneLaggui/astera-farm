@@ -50,7 +50,6 @@ import {
           <AlertDialogHeader>
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              <h1>{slotIndex}</h1>
               This action cannot be undone. This will permanently delete your
               slide image and remove data from the servers.
             </AlertDialogDescription>
