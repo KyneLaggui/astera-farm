@@ -1,25 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
-import { useDispatch, useSelector } from 'react-redux';
-import { Card, CardContent } from '@src/components/ui/card';
-import { CircleMinus, Minus, Plus } from 'lucide-react';
-import { Input } from '@src/components/ui/input';
-import { REMOVE_FROM_CART, SET_CART, selectCartItems } from '@src/redux/slice/cartSlice';
-import { selectEmail } from '@src/redux/slice/authSlice';
-import { addToCart, decreaseCart, removeFromCart, getProductStock } from '@src/supabase/actions';
+import React, { useState, useEffect } from "react";
+import PropTypes from "prop-types";
+import { useDispatch, useSelector } from "react-redux";
+import { Card, CardContent } from "@src/components/ui/card";
+import { CircleMinus, Minus, Plus } from "lucide-react";
+import { Input } from "@src/components/ui/input";
+import {
+  REMOVE_FROM_CART,
+  SET_CART,
+  selectCartItems,
+} from "@src/redux/slice/cartSlice";
+import { selectEmail } from "@src/redux/slice/authSlice";
+import {
+  addToCart,
+  decreaseCart,
+  removeFromCart,
+  getProductStock,
+} from "@src/supabase/actions";
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@src/components/ui/tooltip";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
 
 const CartProducts = ({ image, title, amount, initialQuantity, productId }) => {
   const [quantity, setQuantity] = useState(initialQuantity);
   const [loading, setLoading] = useState(false); // Track loading for all actions
   const [stock, setStock] = useState(null); // Store product stock
-  const [emailState, setEmailState] = useState('');
+  const [emailState, setEmailState] = useState("");
   const [cartItemsState, setCartItemsState] = useState([]);
   const email = useSelector(selectEmail);
   const dispatch = useDispatch();
@@ -56,25 +65,33 @@ const CartProducts = ({ image, title, amount, initialQuantity, productId }) => {
     }
     setLoading(true);
 
-    const result = await addToCart(cartItemsState, { id: productId, name: title, price: amount, cartQuantity: 1 }, email);
+    const result = await addToCart(
+      cartItemsState,
+      { id: productId, name: title, price: amount, cartQuantity: 1 },
+      email
+    );
     if (result) {
       dispatch(SET_CART(result.cartItems));
-      setQuantity(prevQuantity => prevQuantity + 1);
+      setQuantity((prevQuantity) => prevQuantity + 1);
     }
 
     setLoading(false);
   };
-  
+
   const handleDecrement = async () => {
     if (quantity > 1 && !loading) {
       setLoading(true);
 
-      const result = await decreaseCart(cartItemsState, { id: productId, name: title, price: amount, cartQuantity: 1 }, email);
+      const result = await decreaseCart(
+        cartItemsState,
+        { id: productId, name: title, price: amount, cartQuantity: 1 },
+        email
+      );
       if (result) {
         dispatch(SET_CART(result.cartItems));
-        setQuantity(prevQuantity => prevQuantity - 1);
+        setQuantity((prevQuantity) => prevQuantity - 1);
       }
-      
+
       setLoading(false);
     }
   };
@@ -103,14 +120,23 @@ const CartProducts = ({ image, title, amount, initialQuantity, productId }) => {
     setQuantity(value);
     setLoading(true);
 
-    const result = await addToCart(cartItemsState, { id: productId, name: title, price: amount, cartQuantity: value - quantity }, email);
+    const result = await addToCart(
+      cartItemsState,
+      {
+        id: productId,
+        name: title,
+        price: amount,
+        cartQuantity: value - quantity,
+      },
+      email
+    );
     if (result) {
       dispatch(SET_CART(result.cartItems));
     }
 
     setLoading(false);
   };
-  
+
   useEffect(() => {
     setEmailState(email);
   }, [email]);
@@ -136,31 +162,43 @@ const CartProducts = ({ image, title, amount, initialQuantity, productId }) => {
                 {title}
               </h1>
 
-              <div className='flex flex-col sm:flex-row sm:gap-7 md:flex-col md:gap-4 gap-4 items-start sm:items-center md:items-start'>
-                <p className='text-md text-yellow'>₱{(Number(amount) * Number(quantity)).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
-                <div className='flex flex-col'>
-                  <div className='flex justify-between items-center border max-h-[40px] max-w-[200px] rounded-full px-2 py-1 w-full'>
-                    <Plus 
-                      size={16} 
-                      onClick={handleIncrement} 
-                      className={`cursor-pointer ${loading ? 'opacity-50 cursor-not-allowed' : ''}`} 
+              <div className="flex flex-col sm:flex-row sm:gap-7 md:flex-col md:gap-4 gap-4 items-start sm:items-center md:items-start">
+                <p className="text-md text-yellow">
+                  ₱
+                  {(Number(amount) * Number(quantity)).toLocaleString("en-PH", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
+                </p>
+                <div className="flex flex-col">
+                  <div className="flex justify-between items-center border max-h-[40px] max-w-[200px] rounded-full bg-white px-2 py-1 w-full">
+                    <Plus
+                      size={16}
+                      onClick={handleIncrement}
+                      className={`cursor-pointer text-black ${
+                        loading ? "opacity-50 cursor-not-allowed" : ""
+                      }`}
                       disabled={loading}
                     />
-                   <Input 
-                    type="number" 
-                    value={quantity} 
-                    onChange={handleQuantityChange} 
-                    className="w-9 h-7 p-0 pl-2 bg-white text-black [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                    disabled={loading}
-                  />
-                  <Minus 
-                    size={16} 
-                    onClick={handleDecrement} 
-                    className={`cursor-pointer ${loading ? 'opacity-50 cursor-not-allowed' : ''}`} 
-                    disabled={loading}
-                  /> 
+                    <Input
+                      type="number"
+                      value={quantity}
+                      onChange={handleQuantityChange}
+                      className="w-9 h-7 p-0 pl-2 bg-white text-black [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      disabled={loading}
+                    />
+                    <Minus
+                      size={16}
+                      onClick={handleDecrement}
+                      className={`cursor-pointer text-black  ${
+                        loading ? "opacity-50 cursor-not-allowed" : ""
+                      }`}
+                      disabled={loading}
+                    />
                   </div>
-                  <p className='text-sm text-gray-500 mt-1'>Stock: {stock !== null ? stock : 'Loading...'}</p>
+                  <p className="text-sm text-gray-500 mt-1">
+                    Stock: {stock !== null ? stock : "Loading..."}
+                  </p>
                 </div>
                 {quantity > 30 && (
                   <TooltipProvider>
@@ -190,9 +228,11 @@ const CartProducts = ({ image, title, amount, initialQuantity, productId }) => {
             </div>
           </div>
 
-          <CircleMinus 
-            onClick={handleRemove} 
-            className={`h-4 w-4 cursor-pointer text-red-500 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`} 
+          <CircleMinus
+            onClick={handleRemove}
+            className={`h-4 w-4 cursor-pointer text-red-500 ${
+              loading ? "opacity-50 cursor-not-allowed" : ""
+            }`}
             disabled={loading}
           />
         </div>
