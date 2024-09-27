@@ -15,7 +15,7 @@ import { useDispatch } from 'react-redux';
 import { DELETE_PRODUCT } from '@src/redux/slice/productsSlice';
 import { toast } from 'react-toastify';
   
-const ConfirmProductDelete = ({ product, onProductUpdated, isDeleteDialogOpen, onDialogClose }) => {
+const ConfirmProductDelete = ({ product, isDeleteDialogOpen, onDialogClose }) => {
     const dispatch = useDispatch();
 
     const handleDelete = async () => {
