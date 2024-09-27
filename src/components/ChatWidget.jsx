@@ -144,7 +144,10 @@ const ChatWidget = ({ faqs }) => {
             </ScrollArea>
           </div>
 
-          <Button className="w-full flex gap-2" onClick={openFacebookMessenger}>
+          <Button
+            className="w-full flex gap-2 mt-2"
+            onClick={openFacebookMessenger}
+          >
             <img
               src={Messenger}
               alt="messenger-icon"
