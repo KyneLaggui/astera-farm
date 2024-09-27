@@ -17,6 +17,9 @@ const capitalizeFirstLetter = (str) => {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 };
 
+const formatCurrency = (value) => 
+  value.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
 // Define the shape of data and columns
 export const columns = [
   {
@@ -68,7 +71,7 @@ export const columns = [
         )}
       </p>
     ),
-    cell: ({ row }) => <TableCell>{row.original.price}</TableCell>,
+    cell: ({ row }) => <TableCell>&#8369;{formatCurrency(row.original.price)}</TableCell>,
   },
   {
     accessorKey: "stock",
