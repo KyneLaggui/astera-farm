@@ -60,8 +60,6 @@ const createChartConfigAndTransformData = (data) => {
 
 const TopCitiesChart = ({ data }) => {
   const { config, transformedData } = createChartConfigAndTransformData(data);
-  console.log("transformedData", transformedData);
-  console.log("config", config);
 
   return (
     <Card className="w-full flex flex-col justify-between pb-6">

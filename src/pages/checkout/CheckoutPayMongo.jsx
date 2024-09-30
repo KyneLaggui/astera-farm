@@ -75,7 +75,6 @@ const CheckoutPayMongo = () => {
           });           
   
           const checkoutSessionJSON = await checkoutSession.json();                  
-          console.log(checkoutSessionJSON);
 
           window.location.href = checkoutSessionJSON.data.attributes.checkout_url
           

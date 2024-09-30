@@ -41,7 +41,6 @@ export const signInWithEmailAndPassword = async (email, password) => {
 export const signOut = async () => {
   toast.success("Logged out successfully!");
   const logOut = await supabase.auth.signOut({ scope: 'local' });
-  console.log(logOut)
 };
 
 export const editProfile = async (email, username) => {
@@ -52,7 +51,6 @@ export const editProfile = async (email, username) => {
   })
   .eq('email', email)
   
-  console.log(data)
   if (error) {
     return null
   } else {
