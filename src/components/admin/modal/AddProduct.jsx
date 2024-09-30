@@ -68,12 +68,14 @@ function AddProduct({ isAddDialogOpen, onDialogClose }) {
     attributes: z
       .array(z.string())
       .min(1, { message: "At least one attribute is required" }), // Ensures the array is not empty
-  });
+    stock: z.number().min(0, "Stock must be a non-negative number"), // Stock validation
+    });
 
   const handleSubmit = async () => {
     const validationResult = productSchema.safeParse({
       ...newProduct,
       attributes,
+      stock: isNaN(newProduct.stock) ? 0 : Number(newProduct.stock) 
     });
 
     if (!validationResult.success) {
@@ -91,6 +93,7 @@ function AddProduct({ isAddDialogOpen, onDialogClose }) {
         price: newProduct.price,
         sell_method: newProduct.sellMethod,
         attributes: attributes,
+        stock: isNaN(newProduct.stock) ? 0 : Number(newProduct.stock) 
       })
       .select()
       .single();
@@ -111,7 +114,7 @@ function AddProduct({ isAddDialogOpen, onDialogClose }) {
         });
 
         toast.success("Product added successfully!");
-
+      console.log('stock: ', insertResult)
       dispatch(
         ADD_PRODUCT({
           product: {
@@ -121,6 +124,7 @@ function AddProduct({ isAddDialogOpen, onDialogClose }) {
             sellMethod: insertResult.data.sell_method,
             attributes: insertResult.data.attributes,
             price: insertResult.data.price,
+            stock: isNaN(insertResult.data.stock) ? 0 : Number(insertResult.data.stock) 
           },
         })
       );
@@ -239,6 +243,20 @@ function AddProduct({ isAddDialogOpen, onDialogClose }) {
                   <p className="text-red-500 text-sm mt-2">
                     {errors.sellMethod}
                   </p>
+                )}
+              </div>
+              <div className="mb-4">
+                <label className="block">Stock</label>
+                <Input
+                  id="stock"
+                  name="stock"
+                  type="number"
+                  placeholder="Enter stock quantity"
+                  className="mt-2"
+                  onChange={onInputHandleChange}
+                />
+                {errors.stock && (
+                  <p className="text-red-500 text-sm mt-2">{errors.stock}</p>
                 )}
               </div>
               <div className="mb-4">

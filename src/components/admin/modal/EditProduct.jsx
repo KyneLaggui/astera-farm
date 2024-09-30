@@ -83,10 +83,11 @@ function EditProductDialog({
       .min(0, { message: "Price must be a non-negative number" }), // Ensures price is >= 0
     description: z.string().min(1, "Description is required"),
     sellMethod: z.string().min(1, "Sell method is required"),
+    stock: z.number().min(0, "Stock must be a non-negative number"), // Stock validation
   });
 
   const handleSubmit = async () => {
-    const validationResult = productSchema.safeParse(editProduct);
+    const validationResult = productSchema.safeParse({ ...editProduct, stock: isNaN(editProduct.stock) ? 0 : Number(editProduct.stock) });
 
     if (!validationResult.success) {
       const fieldErrors = validationResult.error.formErrors.fieldErrors;
@@ -101,16 +102,19 @@ function EditProductDialog({
       price: editProduct.price,
       sell_method: editProduct.sellMethod,
       attributes: attributes,
+      stock: isNaN(editProduct.stock) ? 0 : Number(editProduct.stock)
     };
 
     const updateResult = await supabase
       .from("product")
       .update(updateData)
       .eq("id", product.id);
-
+    
     if (updateResult.error) {
       toast.error("Error updating product");
       return null;
+    } else {
+      toast.success("Product details updated successfully!");
     }
 
       if (editProduct.productIcon) {
@@ -130,11 +134,11 @@ function EditProductDialog({
             upsert: true,
           });
 
-          toast.success("Product updated successfully!");
+          toast.success("Product icon updated successfully!");
         } else {
           toast.error("Error updating product");
         }
-      }
+      } 
 
     // Dispatch the updated product to Redux
     dispatch(
@@ -145,6 +149,7 @@ function EditProductDialog({
         productIcon: editProduct.productIcon
           ? editProduct.productIcon
           : product.productIcon,
+        stock: isNaN(editProduct.stock) ? 0 : Number(editProduct.stock),
       })
     );
 
@@ -260,6 +265,21 @@ function EditProductDialog({
                   <p className="text-red-500 text-sm mt-2">
                     {errors.sellMethod}
                   </p>
+                )}
+              </div>
+              <div className="mb-4">
+                <label className="block">Stock</label>
+                <Input
+                  id="stock"
+                  name="stock"
+                  type="number"
+                  placeholder="Enter stock quantity"
+                  className="mt-2"
+                  value={editProduct.stock || ""} // Set initial value to empty string if undefined
+                  onChange={onInputHandleChange}
+                />
+                {errors.stock && (
+                  <p className="text-red-500 text-sm mt-2">{errors.stock}</p>
                 )}
               </div>
               <div className="mb-4">

@@ -46,6 +46,14 @@ const ProductView = ({ isOpen, onClose, product }) => {
     setLoading(true); // Lock the action while adding
 
     const validQuantity = Math.max(1, parseInt(quantity)); // Ensure quantity is at least 1
+    
+    // Check if quantity exceeds the available stock
+    if (validQuantity > product.stock) {
+      toast.error(`Cannot add more than ${product.stock} items to the cart.`); // Show error message
+      setLoading(false); // Unlock the action
+      return;
+    }
+
     const productWithQuantity = {
       ...product,
       cartQuantity: validQuantity,
@@ -105,8 +113,11 @@ const ProductView = ({ isOpen, onClose, product }) => {
                     {product.sellMethod}
                   </p>
                   <h1 className="font-spartan font-bold text-4xl md:text-5xl xl:text-6xl uppercase tracking-wide">
-                    ₱{product.price}
+                    ₱{product.price.toFixed(2)}
                   </h1>
+                  <p className="font-spartan sm:text-xl text-lg lg:text-2xl font-medium tracking-wider">
+                    Stock: {product.stock} {/* Display stock */}
+                  </p>
                 </div>
 
                 {/* Desktop add to cart */}
@@ -173,6 +184,7 @@ ProductView.propTypes = {
     attributes: PropTypes.arrayOf(PropTypes.string).isRequired,
     sellMethod: PropTypes.string.isRequired,
     price: PropTypes.number.isRequired,
+    stock: PropTypes.number.isRequired, // Add stock to prop types
   }),
 };
 

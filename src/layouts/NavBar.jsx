@@ -61,8 +61,10 @@ const Navbar = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isRegisterLoginOpen, setIsRegisterLoginOpen] = useState(false);
   const [cartState, setCartState] = useState([]);
+  const [isAdmin, setIsAdmin] = useState(false);
 
   const isLoggedInRedux = useSelector(selectIsLoggedIn);
+  const isAdminRedux = useSelector(selectIsAdmin);
   const cart = useSelector(selectCartItems);
   const allOrders = fetchAllOrders();
 
@@ -89,8 +91,6 @@ const Navbar = () => {
   useEffect(() => {
     // This for listening to supabase auth state changes
     supabase.auth.onAuthStateChange((_event, session) => {
-      console.log(session);
-
       if (session) {
         dispatch(
           SET_ACTIVE_USER({
@@ -104,12 +104,12 @@ const Navbar = () => {
             .from("cart")
             .select("cart")
             .eq("email", session.user.email)
-            .single();
-          if (error) {
+            .maybeSingle();
+          if (data) {
+            setCartState(data.cart);
+          } else {
             setCartState([]);
             dispatch(SET_CART([]));
-          } else {
-            setCartState(data.cart);
           }
         };
 
@@ -127,6 +127,10 @@ const Navbar = () => {
   useEffect(() => {
     setCartState(cart);
   }, [cart]);
+
+  useEffect(() => {
+    setIsAdmin(isAdminRedux);
+  }, [isAdminRedux]);
 
   return (
     <div>
@@ -177,12 +181,13 @@ const Navbar = () => {
         </div>
 
         <div className="flex items-center gap-4">
-          <a href="/bulk-order" className="hidden lg:block">
-            <Button className="bg-yellow text-green font-bakbak text-base px-4 lg:text-lg lg:px-6 rounded-full hover:bg-green hover:text-yellow ">
-              Bulk Order
-            </Button>
-          </a>
-
+          <UserGuestOnlyComponent>
+            <a href="/bulk-order" className="hidden lg:block">
+              <Button className="bg-yellow text-green font-bakbak text-base px-4 lg:text-lg lg:px-6 rounded-full hover:bg-green hover:text-yellow ">
+                Bulk Order
+              </Button>
+            </a>
+          </UserGuestOnlyComponent>
           <LoggedInOnlyComponent forAdmin={false} forUser={true}>
             <AddToCartSheet cart={cartState} />
           </LoggedInOnlyComponent>
@@ -190,7 +195,11 @@ const Navbar = () => {
           {isLoggedIn ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <CircleUserRound className="h-6 cursor-pointer text-yellow" />
+                <CircleUserRound
+                  className={`h-6 cursor-pointer text-yellow hover:text-white ${
+                    isAdmin ? "lg:min-w-[200px]" : ""
+                  }`}
+                />
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56 ">
                 <DropdownMenuLabel>My Account</DropdownMenuLabel>

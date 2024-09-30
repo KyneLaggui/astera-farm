@@ -17,6 +17,9 @@ const capitalizeFirstLetter = (str) => {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 };
 
+const formatCurrency = (value) => 
+  value.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
 // Define the shape of data and columns
 export const columns = [
   {
@@ -68,7 +71,24 @@ export const columns = [
         )}
       </p>
     ),
-    cell: ({ row }) => <TableCell>{row.original.price}</TableCell>,
+    cell: ({ row }) => <TableCell>&#8369;{formatCurrency(row.original.price)}</TableCell>,
+  },
+  {
+    accessorKey: "stock",
+    header: ({ column }) => (
+      <p
+        className="flex items-center gap-1 cursor-pointer hover:text-red-500"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Stock
+        {column.getIsSorted() === "asc" ? (
+          <ArrowUp className="h-3 w-3" />
+        ) : (
+          <ArrowDown className="h-3 w-3" />
+        )}
+      </p>
+    ),
+    cell: ({ row }) => <TableCell>{row.original.stock}</TableCell>,
   },
   {
     accessorKey: "description",

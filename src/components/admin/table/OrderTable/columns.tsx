@@ -61,7 +61,7 @@ export const columns = [
         )}
       </p>
     ),
-    cell: ({ row }) => <TableCell>₱{row.original.total/100}</TableCell>,
+    cell: ({ row }) => <TableCell>₱{(row.original.total/100).toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</TableCell>,
   },
   {
     accessorKey: "paymentMethod",
@@ -84,27 +84,27 @@ export const columns = [
       );
     },
   },  
-  {
-    accessorKey: "type",
-    header: ({ column }) => (
-      <p className="flex items-center gap-1 cursor-pointer hover:text-red-500"
-      onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-        Type
-        {column.getIsSorted() === "asc" ? (
-          <ArrowUp className="h-3 w-3" />
-        ) : (
-          <ArrowDown className="h-3 w-3" />
-        )}
-      </p>
-    ),
-    cell: ({ row }) => {  
-      return (
-        <TableCell>
-          {row.original.type}
-        </TableCell>
-      );
-    },
-  },  
+  // {
+  //   accessorKey: "type",
+  //   header: ({ column }) => (
+  //     <p className="flex items-center gap-1 cursor-pointer hover:text-red-500"
+  //     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
+  //       Type
+  //       {column.getIsSorted() === "asc" ? (
+  //         <ArrowUp className="h-3 w-3" />
+  //       ) : (
+  //         <ArrowDown className="h-3 w-3" />
+  //       )}
+  //     </p>
+  //   ),
+  //   cell: ({ row }) => {  
+  //     return (
+  //       <TableCell>
+  //         {row.original.type}
+  //       </TableCell>
+  //     );
+  //   },
+  // },  
   {
     accessorKey: "status",
     header: ({ column }) => (

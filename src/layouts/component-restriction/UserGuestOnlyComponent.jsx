@@ -23,7 +23,7 @@ const UserGuestOnlyComponent = ({ children }) => {
         }
       } else {
         setIsLoggedIn(false);
-
+        setIsAdmin(false);
       }
       
       setIsLoading(false);

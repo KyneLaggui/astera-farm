@@ -9,29 +9,42 @@ import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, Dr
 import { useSelector } from 'react-redux';
 import { selectCartItems, selectCartTotalAmount, SET_CART } from '@src/redux/slice/cartSlice';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from "react-router-dom"
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const AddToCartSheet = ({ cart }) => {
   const isDesktop = useMediaQuery({ query: "(min-width: 768px)" });
   const [cartState, setCartState] = useState([]);
   const [cartPriceState, setCartPriceState] = useState(0);
-  // const cartItems = useSelector(selectCartItems);
   const cartTotalAmount = useSelector(selectCartTotalAmount);
+  const cartItems = useSelector(selectCartItems);
   const navigate = useNavigate();
-  const dispatch = useDispatch()
-
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (cart) {
       setCartState(cart);
       dispatch(SET_CART(cart));
     }
-  }, [cart])
+  }, [cart]);
 
   useEffect(() => {
     setCartPriceState(cartTotalAmount);
-  
-  }, [cartTotalAmount])
+  }, [cartTotalAmount]);
+
+  const handleCheckout = () => {
+    // Check for any product quantity exceeding 30
+    const isBulkOrder = cartItems.some(item => item.cartQuantity > 30);
+    // Check if the total cart amount exceeds 10,000
+    const isHighAmountOrder = cartTotalAmount > 10000;
+
+    if (isBulkOrder || isHighAmountOrder) {
+      toast.info('Redirected to Bulk Order page.');
+      navigate("/bulk-order");
+    } else {
+      navigate("/checkout");
+    }
+  };
 
   return (
     <>
@@ -62,9 +75,11 @@ const AddToCartSheet = ({ cart }) => {
               </div>
             </ScrollArea>
             <SheetFooter className="border-t pt-4">
-              <h1 className='text min-w-[100px] text-md font-medium'>Total Price <span className='text-yellow'>₱{cartPriceState}</span></h1>
+              <h1 className='text min-w-[100px] text-md font-medium'>
+                Total Price <span className='text-yellow'>₱{Number(cartPriceState).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</span>
+              </h1>
               <SheetClose asChild>
-                <Button type="submit" className="w-full" onClick={() => navigate("/checkout")}>Checkout</Button>
+                <Button type="submit" className="w-full" onClick={handleCheckout}>Checkout</Button>
               </SheetClose>
             </SheetFooter>
           </SheetContent>
@@ -94,11 +109,13 @@ const AddToCartSheet = ({ cart }) => {
                   />
                 ))}
               </div>
-            </ScrollArea>
+            </ScrollArea>            
             <DrawerFooter className="flex flex-row border-t pt-4">
-              <h1 className='text min-w-[100px] text-md font-medium'>Total Price <span className='text-yellow'>₱{cartPriceState}</span></h1>
+              <h1 className='text min-w-[100px] text-md font-medium'>
+                Total Price <span className='text-yellow'>₱{Number(cartPriceState).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',')}</span>
+              </h1>
               <DrawerClose asChild>
-                <Button type="submit" className="w-full" onClick={() => navigate("/checkout")}>Checkout</Button>
+                <Button type="submit" className="w-full" onClick={handleCheckout}>Checkout</Button>
               </DrawerClose>
             </DrawerFooter>
           </DrawerContent>

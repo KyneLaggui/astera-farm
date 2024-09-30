@@ -34,6 +34,9 @@ const formatDate = (dateString) => {
 const calculateTotalAmount = (products) =>
   products.reduce((sum, product) => sum + product.price * product.quantity, 0);
 
+const formatCurrency = (value) => 
+  value.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
 const OrderCard = ({ order }) => {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -47,7 +50,7 @@ const OrderCard = ({ order }) => {
           <div className="flex flex-col">
             <h1 className="font-semibold text-lg">Order ID: {order.orderId}</h1>
             <p className="font-md text-sm text-yellow">
-              Total: ₱{calculateTotalAmount(order.products)}
+              Total: ₱{formatCurrency(calculateTotalAmount(order.products))}
             </p>
             <p className="font-light text-sm text-green-50 mt-1">
               {order.status === "Delivered"
@@ -71,7 +74,7 @@ const OrderCard = ({ order }) => {
             </Badge>
           </div>
           <p className="font-md text-sm text-yellow">
-            Total: ₱{calculateTotalAmount(order.products)}
+            Total: ₱{formatCurrency(calculateTotalAmount(order.products))}
           </p>
 
           <p className="text-sm font-light text-muted-foreground">
@@ -91,7 +94,7 @@ const OrderCard = ({ order }) => {
                 >
                   <h1 className="font-semibold text-lg">{product.name}</h1>
                   <p className="font-md text-sm text-yellow">
-                    Price: ₱{product.price}
+                    Price: ₱{formatCurrency(product.price)}
                   </p>
                   <p className="font-light text-sm text-muted-foreground">
                     Quantity: {product.quantity}
