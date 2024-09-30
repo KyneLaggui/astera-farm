@@ -24,7 +24,6 @@ export function CarouselLandingPage() {
         console.error("Error fetching images:", error);
       } else {
         const imageUrls = data.map((file) => {
-          console.log(file.name);
           const { data } = supabase.storage
             .from("slideshow")
             .getPublicUrl(`public/${file.name}`);

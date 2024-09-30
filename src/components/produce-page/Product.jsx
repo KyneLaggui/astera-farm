@@ -53,14 +53,6 @@ const Product = () => {
     }
   }, [fetchedProducts]);
 
-  // useEffect(() => {
-  //   console.log(allOrders)
-  // }, [allOrders]);
-
-  // useEffect(() => {
-  //   console.log(bestSellers)
-  // }, [bestSellers]);
-
   const isBestSeller = (product) => {
     // Check if the current product is in the top 3 best sellers
     return bestSellers.some((bestSeller) => bestSeller.name === product.name);

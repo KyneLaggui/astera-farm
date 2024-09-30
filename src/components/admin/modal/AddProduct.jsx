@@ -102,7 +102,6 @@ function AddProduct({ isAddDialogOpen, onDialogClose }) {
       toast.error("Error inserting new product.");
       return null;
     } else {
-      console.log(newProduct);
       const logo = newProduct.productIcon;
       const logoFileExt = logo.name.split(".").pop();
 
@@ -114,7 +113,6 @@ function AddProduct({ isAddDialogOpen, onDialogClose }) {
         });
 
         toast.success("Product added successfully!");
-      console.log('stock: ', insertResult)
       dispatch(
         ADD_PRODUCT({
           product: {

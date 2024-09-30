@@ -155,7 +155,6 @@ const Checkout = () => {
 
   useEffect(() => {
     if (shippingAddress) {
-      console.log(shippingAddress);
       const allShippingAddress = shippingAddress.map((address) => ({
         id: address.id,
         recipientName: address.recipient_name,
