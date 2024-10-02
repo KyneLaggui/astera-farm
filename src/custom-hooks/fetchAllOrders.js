@@ -3,6 +3,7 @@ import { SET_ORDERS } from '@src/redux/slice/ordersSlice';
 import { useDispatch } from 'react-redux';
 import { supabase } from '@src/supabase/config';
 import { UPDATE_PRODUCT } from '@src/redux/slice/productsSlice';
+import additionalOrders from '@src/data/additionalOrders';
 
 const fetchAllOrders = () => {
   const [allOrders, setAllOrders] = useState([]);
@@ -56,7 +57,7 @@ const fetchAllOrders = () => {
 
         const validCarts = extractValidCarts(result);
 
-        const mergedOrders = [];
+        let mergedOrders = [];
 
         for (const order of validCarts) {
           const { data: existingOrder, error } = await supabase
@@ -164,10 +165,11 @@ const fetchAllOrders = () => {
           }
 
           mergedOrders.push(mergedOrder);
-        }
+        }                    
 
+        mergedOrders = [...mergedOrders, ...additionalOrders];
+      
         // Set valid carts to state
-        console.log(mergedOrders);
         setAllOrders(mergedOrders);
         dispatch(SET_ORDERS(mergedOrders)); // Dispatch to Redux
       }
@@ -180,3 +182,5 @@ const fetchAllOrders = () => {
 };
 
 export default fetchAllOrders;
+
+
