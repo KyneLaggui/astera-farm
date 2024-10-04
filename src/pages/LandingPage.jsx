@@ -81,7 +81,7 @@ const LandingPage = () => {
         </div>
 
         <div className="absolute inset-0 bg-black bg-opacity-55"></div>
-        <div className="max-w-[1200px] flex flex-col gap-20 z-10">
+        <div className="max-w-[1200px] w-full flex flex-col gap-20 z-10">
           {/* <Title /> */}
           <CarouselLandingPage />
           <OrderProcess />
