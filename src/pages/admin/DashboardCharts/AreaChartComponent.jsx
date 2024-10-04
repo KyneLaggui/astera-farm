@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Area, AreaChart, CartesianGrid, XAxis, Tooltip } from "recharts";
 import {
   Card,
@@ -36,9 +36,10 @@ const getUniqueMonths = (data) => {
   return [...new Set(data.map((entry) => entry.timePeriod.split("-")[0]))];
 };
 
-const AreaChartComponent = ({ data, setCategory }) => {
+const AreaChartComponent = ({ data, setCategory, selectedCategory }) => {
   // Add setCategory as prop
   const [selectedMonth, setSelectedMonth] = useState(""); // State to store selected month
+  const [slices, setSlices] = useState(3); // State to store the number of slices
 
   // Get unique months for the dropdown filter
   const uniqueMonths = getUniqueMonths(data);
@@ -49,6 +50,17 @@ const AreaChartComponent = ({ data, setCategory }) => {
     : data;
 
   const totalEarnings = calculateTotalEarnings(filteredData); // Calculate total earnings for filtered data
+
+  useEffect(() => {
+    if (selectedCategory === "week") {
+      // Set slices to 3 if the category is week
+      setSlices(8);
+    } else if (selectedCategory === 'month') {
+      setSlices(3)
+    } else {
+      setSlices(4)
+    }
+  }, [selectedCategory])
 
   return (
     <Card className="w-full">
@@ -77,9 +89,9 @@ const AreaChartComponent = ({ data, setCategory }) => {
             <SelectContent>
               <SelectGroup>
                 <SelectLabel>Period</SelectLabel>
-                <SelectItem value="week">Week</SelectItem>
-                <SelectItem value="month">Month</SelectItem>
-                <SelectItem value="year">Year</SelectItem>
+                <SelectItem value="week" className="cursor-pointer">Week</SelectItem>
+                <SelectItem value="month" className="cursor-pointer">Month</SelectItem>
+                <SelectItem value="year" className="cursor-pointer">Year</SelectItem>
               </SelectGroup>
             </SelectContent>
           </Select>
@@ -113,7 +125,7 @@ const AreaChartComponent = ({ data, setCategory }) => {
               dataKey="timePeriod"
               tickLine={false}
               tickMargin={12}
-              tickFormatter={(tick) => tick.slice(0, 4)} // Display only first 3 characters of the month
+              tickFormatter={(tick) => tick.slice(0, slices)} // Display only first 3 characters of the month
             />
             <Tooltip
               content={
