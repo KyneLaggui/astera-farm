@@ -48,11 +48,11 @@ export function CarouselLandingPage() {
         }),
       ]}
     >
-      <CarouselContent className="w-full h-full">
+      <CarouselContent className="w-full h-full ml-0">
         {images.map((image, index) => (
           <CarouselItem
             key={index}
-            className="flex justify-center items-center w-full"
+            className="flex justify-center items-center w-full pl-0"
           >
             <div className="w-full h-auto">
               <Card className="w-full rounded-lg">
