@@ -294,6 +294,8 @@ const BulkOrder = () => {
                   <SelectLabel>Payment Methods</SelectLabel>
                   <SelectItem value="Gcash">Gcash</SelectItem>
                   <SelectItem value="Bank Deposit">Bank Deposit</SelectItem>
+                  <SelectItem value="PayMaya">PayMaya</SelectItem>
+                  <SelectItem value="BillEase">BillEase</SelectItem>
                   <SelectItem value="COD">Cash on Delivery</SelectItem>
                 </SelectGroup>
               </SelectContent>
