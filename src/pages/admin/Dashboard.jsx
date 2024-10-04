@@ -178,6 +178,7 @@ const Dashboard = () => {
               <AreaChartComponent
                 data={chartData}
                 setCategory={setSelectedCategory}
+                selectedCategory={selectedCategory}
               />
             </div>
             <div className="flex-grow flex justify-center">
