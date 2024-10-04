@@ -60,8 +60,6 @@ const createChartConfigAndTransformData = (data) => {
 
 const TopCitiesChart = ({ data }) => {
   const { config, transformedData } = createChartConfigAndTransformData(data);
-  console.log("transformedData", transformedData);
-  console.log("config", config);
 
   return (
     <Card className="w-full flex flex-col justify-between pb-6">
@@ -78,7 +76,7 @@ const TopCitiesChart = ({ data }) => {
             data={transformedData}
             layout="vertical"
             margin={{
-              left: 0,
+              left: 20,
             }}
           >
             <YAxis
@@ -86,7 +84,7 @@ const TopCitiesChart = ({ data }) => {
               type="category"
               tickLine={false}
               axisLine={false}
-              tickMargin={10}
+              tickMargin={6}
               tickFormatter={(value) => value}
             />
             <XAxis type="number" />

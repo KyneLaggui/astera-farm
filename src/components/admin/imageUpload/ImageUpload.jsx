@@ -7,163 +7,110 @@ import {
   CardHeader,
   CardTitle,
 } from "@src/components/ui/card";
-import { Button } from "@src/components/ui/button";
-import { CircleMinus, X } from "lucide-react";
+import { CircleMinus } from "lucide-react";
+import ConfirmSlideDelete from "@src/components/admin/modal/ConfirmSlideDelete"; // Adjust import path as needed
+import { toast } from "react-toastify";
 
 const ImageUpload = () => {
   const [images, setImages] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [slotCount, setSlotCount] = useState(5); // Initial slot count
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [deleteIndex, setDeleteIndex] = useState(null);
+
 
   const fetchImages = async () => {
     setIsLoading(true);
+    
+    // Fetch all images from the "slideshow/public" folder
+    const { data: files, error } = await supabase.storage
+      .from("slideshow")
+      .list("public");
+
+
+    if (error) {
+      console.error("Error fetching images:", error.message);
+      setIsLoading(false);
+      return;
+    }
+
+    // Map through the files and get their public URLs
     const imageUrls = await Promise.all(
-      Array.from({ length: slotCount }, async (_, index) => {
-        const { data, error } = await supabase.storage
+      files.map(async (file) => {
+        const { data: urlData } = await supabase.storage
           .from("slideshow")
-          .list("public", {
-            limit: 1000,
-          });
+          .getPublicUrl(`public/${file.name}`);
 
-        if (error) {
-          console.error(
-            `Error fetching image for slot ${index + 1}:`,
-            error.message
-          );
-          return null;
-        }
-
-        const matchingFile = data.find((file) =>
-          file.name.startsWith(`slot-${index + 1}`)
-        );
-        if (matchingFile) {
-          const { data: urlData } = await supabase.storage
-            .from("slideshow")
-            .getPublicUrl(`public/${matchingFile.name}`);
-          return `${urlData.publicUrl}?t=${new Date().toISOString()}`;
-        }
-
-        return null;
+        return `${urlData.publicUrl}?t=${new Date().toISOString()}`;
       })
     );
 
-    setImages(imageUrls);
+    setImages(imageUrls.slice(1));
     setIsLoading(false);
   };
 
   useEffect(() => {
     fetchImages();
-  }, [slotCount]);
+  }, []);
 
-  const handleUpload = async (event, index) => {
+  const handleUpload = async (event) => {
     const file = event.target.files[0];
     if (!file) return;
 
     setIsLoading(true);
     const fileExtension = file.name.split(".").pop();
-    const fileName = `slot-${index + 1}.${fileExtension}`;
-
-    const { data: existingFiles, error: listError } = await supabase.storage
-      .from("slideshow")
-      .list("public");
-
-    if (listError) {
-      console.error(
-        `Error checking existing image for slot ${index + 1}:`,
-        listError.message
-      );
-      setIsLoading(false);
-      return;
-    }
-
-    const existingFile = existingFiles.find((file) =>
-      file.name.startsWith(`slot-${index + 1}`)
-    );
-    if (existingFile) {
-      const { error: deleteError } = await supabase.storage
-        .from("slideshow")
-        .remove([`public/${existingFile.name}`]);
-
-      if (deleteError) {
-        console.error(
-          `Error deleting existing image for slot ${index + 1}:`,
-          deleteError.message
-        );
-        setIsLoading(false);
-        return;
-      }
-    }
+    const fileName = `image-${new Date().getTime()}.${fileExtension}`;
 
     const { error: uploadError } = await supabase.storage
       .from("slideshow")
       .upload(`public/${fileName}`, file);
 
     if (uploadError) {
-      console.error(
-        `Error uploading image for slot ${index + 1}:`,
-        uploadError.message
-      );
-    } else {
-      const { data: newUrlData } = await supabase.storage
-        .from("slideshow")
-        .getPublicUrl(`public/${fileName}`);
-
-      const timestampedUrl = `${
-        newUrlData.publicUrl
-      }?t=${new Date().toISOString()}`;
-
-      setImages((prevImages) => {
-        const updatedImages = [...prevImages];
-        updatedImages[index] = timestampedUrl;
-        return updatedImages;
-      });
+      console.error("Error uploading image:", uploadError.message);
+      setIsLoading(false);
+      return;
     }
+
+    // Fetch new URL for uploaded image
+    const { data: newUrlData } = await supabase.storage
+      .from("slideshow")
+      .getPublicUrl(`public/${fileName}`);
+
+    const timestampedUrl = `${newUrlData.publicUrl}?t=${new Date().toISOString()}`;
+
+    setImages((prevImages) => [...prevImages, timestampedUrl]);
 
     setIsLoading(false);
   };
 
-  const addSlot = () => {
-    setSlotCount((prevCount) => prevCount + 1);
-    setImages((prevImages) => [...prevImages, null]);
+  const handleDeleteDialogClose = () => {
+    setIsDeleteDialogOpen(false);
   };
 
-  const deleteSlot = async (index) => {
-    const fileName = `slot-${index + 1}`;
-    const { data: existingFiles, error: listError } = await supabase.storage
-      .from("slideshow")
-      .list("public");
-
-    if (listError) {
-      console.error(
-        `Error checking existing image for slot ${index + 1}:`,
-        listError.message
-      );
+  const handleDeletion = (index) => {
+    if (images.length < 2) {
+      toast.error("You must have at least one image in the slideshow.");
       return;
     }
 
-    const existingFile = existingFiles.find((file) =>
-      file.name.startsWith(fileName)
-    );
-    if (existingFile) {
-      const { error: deleteError } = await supabase.storage
-        .from("slideshow")
-        .remove([`public/${existingFile.name}`]);
+    setDeleteIndex(index);
+    setIsDeleteDialogOpen(true);
+  }
 
-      if (deleteError) {
-        console.error(
-          `Error deleting existing image for slot ${index + 1}:`,
-          deleteError.message
-        );
-        return;
-      }
-    }
+  // const deleteSlot = async (index) => {
+  //   const fileUrl = images[index];
+  //   const fileName = fileUrl.split('/').pop().split('?')[0]; // Extract file name from the URL
 
-    setImages((prevImages) => {
-      const updatedImages = prevImages.filter((_, i) => i !== index);
-      return updatedImages;
-    });
-    setSlotCount((prevCount) => prevCount - 1);
-  };
+  //   const { error: deleteError } = await supabase.storage
+  //     .from("slideshow")
+  //     .remove([`public/${fileName}`]);
+
+  //   if (deleteError) {
+  //     console.error("Error deleting image:", deleteError.message);
+  //     return;
+  //   }
+
+  //   setImages((prevImages) => prevImages.filter((_, i) => i !== index));
+  // };
 
   return (
     <Card className="w-full">
@@ -177,62 +124,54 @@ const ImageUpload = () => {
         <div className="text-center m-2">Loading...</div>
       ) : (
         <CardContent className="flex flex-wrap justify-center gap-4">
-          {Array.from({ length: slotCount }).map((_, index) => (
+          {images.map((imageUrl, index) => (
             <div
               key={index}
               className="relative w-full sm:w-40 h-40 border rounded"
             >
-              <div className="relative w-full sm:w-40 h-40 border rounded">
-                {images[index] ? (
-                  <>
-                    <img
-                      src={images[index]}
-                      alt={`Slot ${index + 1}`}
-                      className="w-full h-full object-cover rounded"
-                    />
-                    <CircleMinus
-                      onClick={() => deleteSlot(index)}
-                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full z-20"
-                    />
-                    {/* <button
-                      onClick={() => deleteSlot(index)}
-                      className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 z-20 w-7 text-sm" // Added z-index
-                    >
-                      <X />
-                    </button> */}
-                    <input
-                      type="file"
-                      accept="image/*"
-                      className="absolute inset-0 opacity-0 cursor-pointer"
-                      onChange={(event) => handleUpload(event, index)}
-                      style={{ zIndex: 10 }} // Set a lower z-index
-                    />
-                  </>
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-gray-500">
-                    No Image
-                  </div>
-                )}
-              </div>
+              {imageUrl ? (
+                <>
+                  <img
+                    src={imageUrl}
+                    alt={`Image ${index + 1}`}
+                    className="w-full h-full object-cover rounded"
+                  />
+                  <CircleMinus
+                    onClick={() => handleDeletion(index)}
+                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full z-20 cursor-pointer"
+                  />
+                 <ConfirmSlideDelete 
+                  slotIndex={deleteIndex}
+                  setImages={setImages}
+                  images={images}
+                  isDeleteDialogOpen={isDeleteDialogOpen}
+                  onDialogClose={handleDeleteDialogClose}
+                />
 
-              <input
-                type="file"
-                accept="image/*"
-                className="absolute inset-0 opacity-0 cursor-pointer"
-                onChange={(event) => handleUpload(event, index)}
-              />
+                </>
+              ) : (
+                <div className="w-full h-full flex items-center justify-center text-gray-500">
+                  No Image
+                </div>
+              )}             
             </div>
           ))}
           <div
-            onClick={addSlot}
             className="sm:w-40 h-40 border rounded flex items-center justify-center cursor-pointer w-full hover:bg-yellow group"
             style={{ position: "relative" }}
           >
+            <input
+              type="file"
+              accept="image/*"
+              className="absolute inset-0 opacity-0 cursor-pointer"
+              onChange={handleUpload}
+            />
             <span className="text-2xl font-bold text-yellow group-hover:text-white">
               +
             </span>
             <span className="sr-only">Add Slot</span>
           </div>
+         
         </CardContent>
       )}
     </Card>
