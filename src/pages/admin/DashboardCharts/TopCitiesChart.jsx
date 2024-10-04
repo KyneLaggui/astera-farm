@@ -76,7 +76,7 @@ const TopCitiesChart = ({ data }) => {
             data={transformedData}
             layout="vertical"
             margin={{
-              left: 0,
+              left: 20,
             }}
           >
             <YAxis
@@ -84,7 +84,7 @@ const TopCitiesChart = ({ data }) => {
               type="category"
               tickLine={false}
               axisLine={false}
-              tickMargin={10}
+              tickMargin={6}
               tickFormatter={(value) => value}
             />
             <XAxis type="number" />
