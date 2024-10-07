@@ -138,7 +138,7 @@ const Dashboard = () => {
           <Card className="flex-grow">
             <CardHeader>
               <CardTitle>Total Revenue</CardTitle>
-              <CardDescription className="text-yellow">
+              <CardDescription className="text-yellow-500">
                 &#8369;
                 {parseFloat(totalEarnings).toLocaleString(undefined, {
                   minimumFractionDigits: 2,
@@ -150,7 +150,7 @@ const Dashboard = () => {
           <Card className="flex-grow">
             <CardHeader>
               <CardTitle>Total Orders</CardTitle>
-              <CardDescription className="text-yellow">
+              <CardDescription className="text-yellow-500 ">
                 {filteredOrders.length}
               </CardDescription>
             </CardHeader>
@@ -158,7 +158,7 @@ const Dashboard = () => {
           <Card className="flex-grow">
             <CardHeader>
               <CardTitle>Products Sold</CardTitle>
-              <CardDescription className="text-yellow">
+              <CardDescription className="text-yellow-500">
                 {totalProductsSold}
               </CardDescription>
             </CardHeader>
@@ -166,7 +166,7 @@ const Dashboard = () => {
           <Card className="flex-grow">
             <CardHeader>
               <CardTitle>Average Revenue</CardTitle>
-              <CardDescription className="text-yellow">
+              <CardDescription className="text-yellow-500">
                 &#8369;{averageOrderRevenue}
               </CardDescription>
             </CardHeader>
