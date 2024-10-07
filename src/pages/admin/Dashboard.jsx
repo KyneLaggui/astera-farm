@@ -14,7 +14,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@src/components/ui/card";
-import ImageUpload from "@src/components/admin/imageUpload/ImageUpload";
 
 const Dashboard = () => {
   const [sellingData, setSellingData] = useState([]);
@@ -194,8 +193,6 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-
-        <ImageUpload />
       </div>
     </LoggedInOnly>
   );
