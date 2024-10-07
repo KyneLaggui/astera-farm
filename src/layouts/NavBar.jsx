@@ -135,7 +135,11 @@ const Navbar = () => {
   return (
     <div>
       {/* Navbar */}
-      <nav className="bg-black text-yellow flex items-center justify-between lg:justify-around p-4 fixed top-0 left-0 w-full z-50">
+      <nav
+        className={` flex items-center justify-between lg:justify-around p-4 fixed top-0 left-0 w-full z-50 ${
+          isAdmin ? "bg-green text-yellow" : "bg-black text-yellow"
+        }`}
+      >
         <div className="flex items-center space-x-4">
           <a href="/">
             <img src={MainLogo} alt="Logo" className="h-12" />
@@ -176,6 +180,11 @@ const Navbar = () => {
           <LoggedInOnlyComponent forAdmin={true} forUser={false}>
             <a href="/admin/orders" className="hover:text-white">
               Orders
+            </a>
+          </LoggedInOnlyComponent>
+          <LoggedInOnlyComponent forAdmin={true} forUser={false}>
+            <a href="/admin/slideshow" className="hover:text-white">
+              Slideshow
             </a>
           </LoggedInOnlyComponent>
         </div>

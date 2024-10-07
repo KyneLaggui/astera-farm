@@ -14,7 +14,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@src/components/ui/card";
-import ImageUpload from "@src/components/admin/imageUpload/ImageUpload";
 
 const Dashboard = () => {
   const [sellingData, setSellingData] = useState([]);
@@ -131,7 +130,7 @@ const Dashboard = () => {
   return (
     <LoggedInOnly forAdmin={true} forUser={false}>
       <div className="navbar-spacing flex flex-col items-center justify-center gap-4 sm:gap-8 max-w-6xl mx-auto">
-        <h1 className="font-gothic text-7xl sm:text-9xl text-white text-center tracking-wide">
+        <h1 className="font-gothic text-7xl sm:text-9xl text-center tracking-wide">
           DASHBOARD
         </h1>
         <div className="flex sm:flex-row gap-4 w-full justify-center flex-wrap">
@@ -194,8 +193,6 @@ const Dashboard = () => {
             </div>
           </div>
         </div>
-
-        <ImageUpload />
       </div>
     </LoggedInOnly>
   );

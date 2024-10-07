@@ -115,7 +115,7 @@ const ImageUpload = () => {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>Slideshow</CardTitle>
+        <CardTitle>Content Management</CardTitle>
         <CardDescription>
           Showcase stunning images on the Astera Farm e-commerce landing page.
         </CardDescription>

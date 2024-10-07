@@ -32,6 +32,7 @@ function App() {
             <Route path="products" element={<Pages.AdminProducts />} />
             <Route path="dashboard" element={<Pages.AdminDashboard />} />
             <Route path="orders" element={<Pages.Orders />} />
+            <Route path="slideshow" element={<Pages.SlideShowEdit />} />
           </Route>
         </Routes>
       </div>
