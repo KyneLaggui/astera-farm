@@ -69,13 +69,13 @@ function AddProduct({ isAddDialogOpen, onDialogClose }) {
       .array(z.string())
       .min(1, { message: "At least one attribute is required" }), // Ensures the array is not empty
     stock: z.number().min(0, "Stock must be a non-negative number"), // Stock validation
-    });
+  });
 
   const handleSubmit = async () => {
     const validationResult = productSchema.safeParse({
       ...newProduct,
       attributes,
-      stock: isNaN(newProduct.stock) ? 0 : Number(newProduct.stock) 
+      stock: isNaN(newProduct.stock) ? 0 : Number(newProduct.stock),
     });
 
     if (!validationResult.success) {
@@ -93,7 +93,7 @@ function AddProduct({ isAddDialogOpen, onDialogClose }) {
         price: newProduct.price,
         sell_method: newProduct.sellMethod,
         attributes: attributes,
-        stock: isNaN(newProduct.stock) ? 0 : Number(newProduct.stock) 
+        stock: isNaN(newProduct.stock) ? 0 : Number(newProduct.stock),
       })
       .select()
       .single();
@@ -112,7 +112,7 @@ function AddProduct({ isAddDialogOpen, onDialogClose }) {
           upsert: true,
         });
 
-        toast.success("Product added successfully!");
+      toast.success("Product added successfully!");
       dispatch(
         ADD_PRODUCT({
           product: {
@@ -122,7 +122,9 @@ function AddProduct({ isAddDialogOpen, onDialogClose }) {
             sellMethod: insertResult.data.sell_method,
             attributes: insertResult.data.attributes,
             price: insertResult.data.price,
-            stock: isNaN(insertResult.data.stock) ? 0 : Number(insertResult.data.stock) 
+            stock: isNaN(insertResult.data.stock)
+              ? 0
+              : Number(insertResult.data.stock),
           },
         })
       );
@@ -270,7 +272,7 @@ function AddProduct({ isAddDialogOpen, onDialogClose }) {
                   />
                   <Button
                     variant="default"
-                    className="mt-2"
+                    className="mt-2 bg-green hover:bg-green-950"
                     onClick={handleAttributeAdd}
                     type="button"
                   >
@@ -305,7 +307,11 @@ function AddProduct({ isAddDialogOpen, onDialogClose }) {
               <DialogClose asChild>
                 <Button variant="outline">Cancel</Button>
               </DialogClose>
-              <Button variant="default" className="ml-2" onClick={handleSubmit}>
+              <Button
+                variant="default"
+                className="ml-2 bg-green hover:bg-green-950"
+                onClick={handleSubmit}
+              >
                 Save
               </Button>
             </DialogFooter>
