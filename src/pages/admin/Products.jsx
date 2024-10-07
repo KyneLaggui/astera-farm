@@ -6,9 +6,9 @@ import { useNavigate } from "react-router-dom";
 
 const Products = () => {
   return (
-    <LoggedInOnly forAdmin={true} forUser={false} >
-      <div className="flex flex-col sm:items-center justify-center gap-8 bg-black navbar-spacing">
-        <h1 className="font-gothic text-7xl sm:text-9xl text-white text-center tracking-wide">
+    <LoggedInOnly forAdmin={true} forUser={false}>
+      <div className="flex flex-col sm:items-center justify-center gap-8 navbar-spacing">
+        <h1 className="font-gothic text-7xl sm:text-9xl text-center tracking-wide">
           PRODUCTS
         </h1>
         <ProductTable />
