@@ -29,8 +29,12 @@ function DataTableToolbar({ table, allData }) {
           }
           className="max-w-sm"
         />
-        <Button size="sm" className=" ml-auto" onClick={handleDialogOpen}>
-          <div className="flex items-center gap-2">
+        <Button
+          size="sm"
+          className="ml-auto bg-green hover:bg-green-950"
+          onClick={handleDialogOpen}
+        >
+          <div className="flex items-center gap-2 ">
             Add Product
             <Plus className="h-4 w-4" />
           </div>
