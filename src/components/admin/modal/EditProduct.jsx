@@ -43,7 +43,7 @@ function EditProductDialog({
       const fetchProductImage = async () => {
         const imageUrl = await fetchProductUrl(product.id);
         setImagePreview(`${imageUrl}?t=${new Date().toISOString()}`);
-      }
+      };
 
       fetchProductImage();
     }
@@ -87,7 +87,10 @@ function EditProductDialog({
   });
 
   const handleSubmit = async () => {
-    const validationResult = productSchema.safeParse({ ...editProduct, stock: isNaN(editProduct.stock) ? 0 : Number(editProduct.stock) });
+    const validationResult = productSchema.safeParse({
+      ...editProduct,
+      stock: isNaN(editProduct.stock) ? 0 : Number(editProduct.stock),
+    });
 
     if (!validationResult.success) {
       const fieldErrors = validationResult.error.formErrors.fieldErrors;
@@ -102,14 +105,14 @@ function EditProductDialog({
       price: editProduct.price,
       sell_method: editProduct.sellMethod,
       attributes: attributes,
-      stock: isNaN(editProduct.stock) ? 0 : Number(editProduct.stock)
+      stock: isNaN(editProduct.stock) ? 0 : Number(editProduct.stock),
     };
 
     const updateResult = await supabase
       .from("product")
       .update(updateData)
       .eq("id", product.id);
-    
+
     if (updateResult.error) {
       toast.error("Error updating product");
       return null;
@@ -117,28 +120,31 @@ function EditProductDialog({
       toast.success("Product details updated successfully!");
     }
 
-      if (editProduct.productIcon) {
-        const logoFileExt = editProduct.productIcon.name.split(".").pop();
+    if (editProduct.productIcon) {
+      const logoFileExt = editProduct.productIcon.name.split(".").pop();
 
-        const imageUrl = await fetchProductIconPath(product.id);
-        const { data, error } = await supabase
-        .storage
-        .from('products')
-        .remove([`${imageUrl}`])
+      const imageUrl = await fetchProductIconPath(product.id);
+      const { data, error } = await supabase.storage
+        .from("products")
+        .remove([`${imageUrl}`]);
 
-        if (!error) {
-          await supabase.storage
+      if (!error) {
+        await supabase.storage
           .from("products")
-          .upload(`public/${product.id}.${logoFileExt}`, editProduct.productIcon, {
-            cacheControl: "0",
-            upsert: true,
-          });
+          .upload(
+            `public/${product.id}.${logoFileExt}`,
+            editProduct.productIcon,
+            {
+              cacheControl: "0",
+              upsert: true,
+            }
+          );
 
-          toast.success("Product icon updated successfully!");
-        } else {
-          toast.error("Error updating product");
-        }
-      } 
+        toast.success("Product icon updated successfully!");
+      } else {
+        toast.error("Error updating product");
+      }
+    }
 
     // Dispatch the updated product to Redux
     dispatch(
@@ -153,8 +159,8 @@ function EditProductDialog({
       })
     );
 
-      onProductUpdated();      
-    };
+    onProductUpdated();
+  };
 
   const handleAttributeAdd = () => {
     if (attributeInput.trim() !== "") {
@@ -295,7 +301,7 @@ function EditProductDialog({
                   />
                   <Button
                     variant="default"
-                    className="mt-2"
+                    className="mt-2 bg-green hover:bg-green-950"
                     onClick={handleAttributeAdd}
                     type="button"
                   >
@@ -325,7 +331,11 @@ function EditProductDialog({
               <DialogClose asChild>
                 <Button variant="outline">Cancel</Button>
               </DialogClose>
-              <Button variant="default" className="ml-2" onClick={handleSubmit}>
+              <Button
+                variant="default"
+                className="ml-2 bg-green hover:bg-green-950"
+                onClick={handleSubmit}
+              >
                 Save Changes
               </Button>
             </DialogFooter>
