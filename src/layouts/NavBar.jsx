@@ -182,6 +182,11 @@ const Navbar = () => {
               Orders
             </a>
           </LoggedInOnlyComponent>
+          <LoggedInOnlyComponent forAdmin={true} forUser={false}>
+            <a href="/admin/slideshow" className="hover:text-white">
+              Slideshow
+            </a>
+          </LoggedInOnlyComponent>
         </div>
 
         <div className="flex items-center gap-4">

@@ -52,6 +52,9 @@ const MobileMenu = ({ isMobileMenuOpen, toggleMobileMenu }) => {
           <LoggedInOnlyComponent forAdmin={true} forUser={false}>
             <a href="/admin/orders">Orders</a>
           </LoggedInOnlyComponent>
+          <LoggedInOnlyComponent forAdmin={true} forUser={false}>
+            <a href="/admin/slideshow">Slideshow</a>
+          </LoggedInOnlyComponent>
         </div>
         <UserGuestOnlyComponent>
           <a href="/bulk-order" className="w-full">
