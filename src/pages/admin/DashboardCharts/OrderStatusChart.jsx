@@ -106,7 +106,7 @@ const OrderStatusChart = ({ statusData }) => {
               dataKey="count"
               nameKey="status"
               innerRadius={innerRadius}
-              strokeWidth={1}
+              strokeWidth={0.8}
               stroke="#455700"
             >             
               {/* Add LabelList here to display status names */}
