@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis } from "recharts";
 import {
   Card,
@@ -21,9 +21,35 @@ const ordersConfig = {
 };
 
 const BestSellingChart = ({ sellingData }) => {
+  const [fontSize, setFontSize] = useState("14px");
+
   const truncateLabel = (label) => {
     return label.length > 10 ? `${label.substring(0, 7)}...` : label;
   };
+
+  const updateFontSize = () => {
+    const width = window.innerWidth;
+    // Example font size logic based on screen width
+    if (width < 400) {
+      setFontSize("8px"); // Small screens
+    } else if (width < 900) {
+      setFontSize("10px"); // Medium screens
+    } else {
+      setFontSize("14px"); // Large screens
+    }
+  };
+
+  useEffect(() => {
+    // Set initial font size
+    updateFontSize();
+    // Add resize event listener
+    window.addEventListener("resize", updateFontSize);
+    
+    // Cleanup event listener on unmount
+    return () => {
+      window.removeEventListener("resize", updateFontSize);
+    };
+  }, []);
 
   return (
     <Card className="w-full">
@@ -45,7 +71,7 @@ const BestSellingChart = ({ sellingData }) => {
               tickLine={false}
               tickMargin={10}
               axisLine={false}
-              style={{ fontSize: "14px" }}
+              style={{ fontSize }} // Use dynamic font size
               interval={0} // Show all labels
               angle={0} // Rotate labels
               tickFormatter={truncateLabel} // Truncate long
