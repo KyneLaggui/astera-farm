@@ -69,19 +69,19 @@ const OrderStatusChart = ({ statusData }) => {
     0
   );
 
-  const renderCustomizedLabel = (props) => {
-    const { x, y, width, height, value } = props;
-    const radius = 10;
+  // const renderCustomizedLabel = (props) => {
+  //   const { x, y, width, height, value } = props;
+  //   const radius = 10;
   
-    return (
-      <g>
-        <circle cx={x + width / 2} cy={y - radius} r={radius} fill="#8884d8" />
-        <text x={x + width / 2} y={y - radius} fill="#fff" textAnchor="middle" dominantBaseline="middle">
-          {value.split(' ')[1]}
-        </text>
-      </g>
-    );
-  };
+  //   return (
+  //     <g>
+  //       <circle cx={x + width / 2} cy={y - radius} r={radius} fill="#8884d8" />
+  //       <text x={x + width / 2} y={y - radius} fill="#fff" textAnchor="middle" dominantBaseline="middle">
+  //         {value.split(' ')[1]}
+  //       </text>
+  //     </g>
+  //   );
+  // };
 
   return (
     <Card className="w-full" ref={chartContainerRef}>
@@ -106,8 +106,8 @@ const OrderStatusChart = ({ statusData }) => {
               dataKey="count"
               nameKey="status"
               innerRadius={innerRadius}
-              strokeWidth={0.8}
-              stroke="#455700"
+              // strokeWidth={1}
+              // stroke="#455700"
             >             
               {/* Add LabelList here to display status names */}
               <Label
@@ -128,7 +128,7 @@ const OrderStatusChart = ({ statusData }) => {
                   return null;
                 }}
               />          
-              <LabelList dataKey="status" offset={1} />
+              {/* <LabelList dataKey="status" offset={1} /> */}
 
             </Pie>
           </PieChart>
