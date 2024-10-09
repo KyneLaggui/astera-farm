@@ -96,22 +96,6 @@ const ImageUpload = () => {
     setIsDeleteDialogOpen(true);
   }
 
-  // const deleteSlot = async (index) => {
-  //   const fileUrl = images[index];
-  //   const fileName = fileUrl.split('/').pop().split('?')[0]; // Extract file name from the URL
-
-  //   const { error: deleteError } = await supabase.storage
-  //     .from("slideshow")
-  //     .remove([`public/${fileName}`]);
-
-  //   if (deleteError) {
-  //     console.error("Error deleting image:", deleteError.message);
-  //     return;
-  //   }
-
-  //   setImages((prevImages) => prevImages.filter((_, i) => i !== index));
-  // };
-
   return (
     <Card className="w-full">
       <CardHeader>

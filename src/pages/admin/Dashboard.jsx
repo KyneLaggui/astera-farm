@@ -24,6 +24,18 @@ const Dashboard = () => {
 
   const orders = useSelector(selectOrders);
 
+  const formatNumberShort = (number) => {
+    if (Math.abs(number) >= 1.0e9) {
+      return (number / 1.0e9).toFixed(2) + "b";
+    } else if (Math.abs(number) >= 1.0e6) {
+      return (number / 1.0e6).toFixed(2) + "m";
+    } else if (Math.abs(number) >= 1.0e3) {
+      return (number / 1.0e3).toFixed(2) + "k";
+    } else {
+      return number.toFixed(2);
+    }
+  };
+
   const filteredOrders = useMemo(() => {
     if (!orders || orders.length === 0) return [];
     return orders.map((order) => {
@@ -63,7 +75,7 @@ const Dashboard = () => {
     const sellingDataArray = Object.entries(productSales)
       .map(([name, purchases]) => ({ products: name, purchases }))
       .sort((a, b) => b.purchases - a.purchases)
-      .slice(0, 3);
+      .slice(0, 5);
 
     const statusDataArray = Object.entries(statusCount).map(
       ([status, count]) => ({ status, count })
@@ -137,19 +149,16 @@ const Dashboard = () => {
           <Card className="flex-grow">
             <CardHeader>
               <CardTitle>Total Revenue</CardTitle>
-              <CardDescription className="text-yellow-500">
+              <CardDescription className="text-yellow-500 text-2xl">
                 &#8369;
-                {parseFloat(totalEarnings).toLocaleString(undefined, {
-                  minimumFractionDigits: 2,
-                  maximumFractionDigits: 2,
-                })}
+                {formatNumberShort(parseFloat(totalEarnings))}
               </CardDescription>
             </CardHeader>
           </Card>
           <Card className="flex-grow">
             <CardHeader>
               <CardTitle>Total Orders</CardTitle>
-              <CardDescription className="text-yellow-500 ">
+              <CardDescription className="text-yellow-500  text-2xl">
                 {filteredOrders.length}
               </CardDescription>
             </CardHeader>
@@ -157,7 +166,7 @@ const Dashboard = () => {
           <Card className="flex-grow">
             <CardHeader>
               <CardTitle>Products Sold</CardTitle>
-              <CardDescription className="text-yellow-500">
+              <CardDescription className="text-yellow-500 text-2xl">
                 {totalProductsSold}
               </CardDescription>
             </CardHeader>
@@ -165,7 +174,7 @@ const Dashboard = () => {
           <Card className="flex-grow">
             <CardHeader>
               <CardTitle>Average Revenue</CardTitle>
-              <CardDescription className="text-yellow-500">
+              <CardDescription className="text-yellow-500 text-2xl">
                 &#8369;{averageOrderRevenue}
               </CardDescription>
             </CardHeader>
