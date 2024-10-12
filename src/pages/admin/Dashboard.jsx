@@ -143,7 +143,7 @@ const Dashboard = () => {
     <LoggedInOnly forAdmin={true} forUser={false}>
       <div className="navbar-spacing flex flex-col items-center justify-center gap-4 sm:gap-8 max-w-6xl mx-auto">
         <h1 className="font-gothic text-7xl sm:text-9xl text-center tracking-wide">
-          DASHBOARD
+          PERFORMANCE OVERVIEW
         </h1>
         <div className="flex sm:flex-row gap-4 w-full justify-center flex-wrap">
           <Card className="flex-grow">
