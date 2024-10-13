@@ -106,8 +106,8 @@ const OrderStatusChart = ({ statusData }) => {
               dataKey="count"
               nameKey="status"
               innerRadius={innerRadius}
-              // strokeWidth={1}
-              // stroke="#455700"
+              strokeWidth={1}
+              stroke="#455700"
             >             
               {/* Add LabelList here to display status names */}
               <Label
@@ -128,7 +128,7 @@ const OrderStatusChart = ({ statusData }) => {
                   return null;
                 }}
               />          
-              {/* <LabelList dataKey="status" offset={1} /> */}
+              <LabelList dataKey="status" offset={1} /> 
 
             </Pie>
           </PieChart>
