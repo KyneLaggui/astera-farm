@@ -169,7 +169,7 @@ const Navbar = () => {
           </UserGuestOnlyComponent>
           <LoggedInOnlyComponent forAdmin={true} forUser={false}>
             <a href="/admin/dashboard" className="hover:text-white">
-              Dashboard
+              Overview
             </a>
           </LoggedInOnlyComponent>
           <LoggedInOnlyComponent forAdmin={true} forUser={false}>
@@ -206,7 +206,7 @@ const Navbar = () => {
               <DropdownMenuTrigger asChild>
                 <CircleUserRound
                   className={`h-6 cursor-pointer text-yellow hover:text-white ${
-                    isAdmin ? "lg:min-w-[200px]" : ""
+                    isAdmin ? "lg:min-w-[100px]" : ""
                   }`}
                 />
               </DropdownMenuTrigger>

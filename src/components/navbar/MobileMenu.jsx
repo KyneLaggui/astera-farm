@@ -44,7 +44,7 @@ const MobileMenu = ({ isMobileMenuOpen, toggleMobileMenu }) => {
             <a href="/recommendations">Recommendations</a>
           </UserGuestOnlyComponent>
           <LoggedInOnlyComponent forAdmin={true} forUser={false}>
-            <a href="/admin/dashboard">Dashboard</a>
+            <a href="/admin/dashboard">Overview</a>
           </LoggedInOnlyComponent>
           <LoggedInOnlyComponent forAdmin={true} forUser={false}>
             <a href="/admin/products">Products</a>
@@ -62,7 +62,7 @@ const MobileMenu = ({ isMobileMenuOpen, toggleMobileMenu }) => {
               Bulk Order
             </Button>
           </a>
-          </UserGuestOnlyComponent>
+        </UserGuestOnlyComponent>
       </div>
     </div>
   );
