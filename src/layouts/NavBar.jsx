@@ -287,10 +287,15 @@ const Navbar = () => {
       <MobileMenu
         isMobileMenuOpen={isMobileMenuOpen}
         toggleMobileMenu={toggleMobileMenu}
+        isAdmin={isAdmin}
       />
 
       {/* Edit Profile Dialog */}
-      <EditProfileDialog isOpen={isDialogOpen} onClose={handleDialogClose} />
+      <EditProfileDialog
+        isOpen={isDialogOpen}
+        onClose={handleDialogClose}
+        isAdmin={isAdmin}
+      />
     </div>
   );
 };

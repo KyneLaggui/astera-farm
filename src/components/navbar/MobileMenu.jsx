@@ -3,15 +3,19 @@ import LoggedInOnlyComponent from "@src/layouts/component-restriction/LoggedInOn
 import UserGuestOnlyComponent from "@src/layouts/component-restriction/UserGuestOnlyComponent";
 import { Button } from "@src/components/ui/button";
 
-const MobileMenu = ({ isMobileMenuOpen, toggleMobileMenu }) => {
+const MobileMenu = ({ isMobileMenuOpen, toggleMobileMenu, isAdmin }) => {
   return (
     <div
-      className={`z-30 fixed inset-0 bg-black text-yellow transform transition-transform ${
+      className={`z-30 fixed inset-0 text-yellow ${
+        isAdmin ? "bg-green" : "bg-black"
+      } transform transition-transform ${
         isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
       } lg:hidden`}
     >
       <button
-        className="absolute top-4 right-4 text-yellow"
+        className={`absolute top-4 right-4 ${
+          isAdmin ? "text-black" : "text-yellow"
+        }`}
         onClick={toggleMobileMenu}
       >
         <svg
