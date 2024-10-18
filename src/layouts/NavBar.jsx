@@ -241,7 +241,7 @@ const Navbar = () => {
                   <CircleUserRound className="h-6 cursor-pointer text-yellow hover:text-white" />
                 </DialogTrigger>
                 <DialogContent
-                  className="w-[400px]"
+                  className="max-w-[425px]"
                   onOpenAutoFocus={(e) => e.preventDefault()}
                 >
                   <Tabs defaultValue="login">
