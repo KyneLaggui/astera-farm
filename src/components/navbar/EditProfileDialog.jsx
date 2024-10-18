@@ -1,20 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@src/components/ui/dialog";
-import { Input } from '@src/components/ui/input';
-import { Label } from '@src/components/ui/label';
-import { Button } from '@src/components/ui/button';
-import { Check, EyeIcon, EyeOffIcon, Pencil } from 'lucide-react';
-import { editProfile } from '@src/supabase/actions';
-import FetchUserProfile from '@src/custom-hooks/fetchUserProfile';
-import { useNavigate } from 'react-router-dom';
-import { supabase } from '@src/supabase/config';
-import { toast } from 'react-toastify';
+import React, { useEffect, useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogDescription,
+} from "@src/components/ui/dialog";
+import { Input } from "@src/components/ui/input";
+import { Label } from "@src/components/ui/label";
+import { Button } from "@src/components/ui/button";
+import { Check, EyeIcon, EyeOffIcon, Pencil } from "lucide-react";
+import { editProfile } from "@src/supabase/actions";
+import FetchUserProfile from "@src/custom-hooks/fetchUserProfile";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@src/supabase/config";
+import { toast } from "react-toastify";
 
-const EditProfileDialog = ({ isOpen, onClose }) => {
+const EditProfileDialog = ({ isOpen, onClose, isAdmin }) => {
   const [profile, setProfile] = useState({
-    username: '',
-    email: '',
-    password: '',
+    username: "",
+    email: "",
+    password: "",
   });
 
   const [editableFields, setEditableFields] = useState({
@@ -28,7 +33,7 @@ const EditProfileDialog = ({ isOpen, onClose }) => {
   const navigate = useNavigate();
 
   const handleEditClick = (field) => {
-    setEditableFields(prevState => ({
+    setEditableFields((prevState) => ({
       ...prevState,
       [field]: !prevState[field],
     }));
@@ -36,35 +41,37 @@ const EditProfileDialog = ({ isOpen, onClose }) => {
 
   const handleChange = (e) => {
     const { id, value } = e.target;
-    setProfile(prevProfile => ({
+    setProfile((prevProfile) => ({
       ...prevProfile,
       [id]: value,
     }));
   };
-  
-  const handleEditPassword = async() => {
-    const result = await supabase.auth.resetPasswordForEmail(profile.email, {
-      redirectTo: 'https://astera-farm.vercel.app/reset-password',
-    })
-    toast.success('Password reset link sent to your email.');
-  }
 
-  const handleSubmit = async(e) => {
+  const handleEditPassword = async () => {
+    const result = await supabase.auth.resetPasswordForEmail(profile.email, {
+      redirectTo: "https://astera-farm.vercel.app/reset-password",
+    });
+    toast.success("Password reset link sent to your email.");
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const { email, username } = profile;
     const result = await editProfile(email, username);
     if (result) {
-      toast.success('Profile updated successfully!');
-      onClose()      
+      toast.success("Profile updated successfully!");
+      onClose();
     } else {
-      toast.error('An error occurred when updating profile details. Please try again.');
+      toast.error(
+        "An error occurred when updating profile details. Please try again."
+      );
     }
-  }
+  };
 
   const getInputClass = (isEditable) => {
-    return isEditable 
+    return isEditable
       ? "border p-2 focus:outline-none"
-      : "border-none p-2 bg-transparent focus:outline-none focus-visible:ring-transparent cursor-text"; 
+      : "border-none p-2 bg-transparent focus:outline-none focus-visible:ring-transparent cursor-text";
   };
 
   useEffect(() => {
@@ -75,69 +82,97 @@ const EditProfileDialog = ({ isOpen, onClose }) => {
         password: userData.password,
       });
     }
-
-  }, [userData])
+  }, [userData]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="w-[400px] p-4 flex flex-col gap-4" onOpenAutoFocus={(e) => e.preventDefault()}>
+      <DialogContent
+        className="max-w-[425px] p-4 flex flex-col gap-4"
+        onOpenAutoFocus={(e) => e.preventDefault()}
+      >
         <DialogTitle>My Profile</DialogTitle>
-        <DialogDescription>View and update your personal details here.</DialogDescription>
+        <DialogDescription>
+          View and update your personal details here.
+        </DialogDescription>
         <div className="flex flex-col gap-4">
           <div className="space-y-1">
             <Label htmlFor="username">Username</Label>
             <div className="flex items-center space-x-2">
-              <Input 
-                id="username" 
-                type="text" 
-                value={profile.username} 
-                onChange={handleChange} 
-                readOnly={!editableFields.username} 
+              <Input
+                id="username"
+                type="text"
+                value={profile.username}
+                onChange={handleChange}
+                readOnly={!editableFields.username}
                 className={getInputClass(editableFields.username)}
               />
-              <Button onClick={() => handleEditClick('username')}>
-                {editableFields.username ? <Check size={16} /> : <Pencil size={16} />}
+              <Button
+                onClick={() => handleEditClick("username")}
+                className={`${isAdmin ? "bg-green" : ""}`}
+              >
+                {editableFields.username ? (
+                  <Check size={16} />
+                ) : (
+                  <Pencil size={16} />
+                )}
               </Button>
             </div>
           </div>
           <div className="space-y-1">
             <Label htmlFor="email">Email</Label>
-            <Input 
-              id="email" 
-              type="email" 
-              value={profile.email} 
-              readOnly 
+            <Input
+              id="email"
+              type="email"
+              value={profile.email}
+              readOnly
               className="border-none p-2 bg-transparent focus:outline-none cursor-default focus-visible:ring-transparent"
             />
           </div>
           <div className="space-y-1">
             <Label htmlFor="password">Password</Label>
             <div className="relative flex items-center space-x-2">
-                <div className="relative w-full">
-                    <Input 
-                            id="password" 
-                            type={showPassword ? "text" : "password"} 
-                            value={profile.password} 
-                            onChange={handleChange} 
-                            readOnly={!editableFields.password} 
-                            className={`${getInputClass(editableFields.password)} pr-10`} 
-                        />
-                    {editableFields.password && (
-                        <button 
-                        type="button" 
-                        className="absolute inset-y-0 right-1 flex items-center"
-                        onClick={() => setShowPassword(!showPassword)}
-                        >
-                        {showPassword ? <EyeOffIcon className="h-5 w-5" /> : <EyeIcon className="h-5 w-5" />}
-                        </button>
+              <div className="relative w-full">
+                <Input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  value={profile.password}
+                  onChange={handleChange}
+                  readOnly={!editableFields.password}
+                  className={`${getInputClass(editableFields.password)} pr-10`}
+                />
+                {editableFields.password && (
+                  <button
+                    type="button"
+                    className="absolute inset-y-0 right-1 flex items-center"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? (
+                      <EyeOffIcon className="h-5 w-5" />
+                    ) : (
+                      <EyeIcon className="h-5 w-5" />
                     )}
-                </div>
-              <Button onClick={handleEditPassword}>
-                {editableFields.password ? <Check size={16} /> : <Pencil size={16} />}
+                  </button>
+                )}
+              </div>
+              <Button
+                onClick={handleEditPassword}
+                className={`${isAdmin ? "bg-green" : ""}`}
+              >
+                {editableFields.password ? (
+                  <Check size={16} />
+                ) : (
+                  <Pencil size={16} />
+                )}
               </Button>
             </div>
           </div>
-          <Button type="submit" className="w-full" onClick={handleSubmit}>Save Changes</Button>
+          <Button
+            type="submit"
+            onClick={handleSubmit}
+            className={`w-full ${isAdmin ? "bg-green" : ""}`}
+          >
+            Save Changes
+          </Button>
         </div>
       </DialogContent>
     </Dialog>
