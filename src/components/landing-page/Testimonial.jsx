@@ -13,37 +13,42 @@ const testimonials = [
   {
     id: 1,
     name: "Joseph Jason S. Buhain",
-    content: "Great platform, really helped me improve my skills!",
-    footer: "Software Engineer",
-    rating: 4.5,
+    content:
+      "The platform's interactive courses and projects have been instrumental in my growth as a Software Engineer.",
+    role: "Software Engineer",
+    company: "Tech Innovations Inc.",
   },
   {
     id: 2,
     name: "Michaela Tan",
-    content: "Amazing experience, the community is very supportive!",
-    footer: "Product Designer",
-    rating: 5,
+    content:
+      "An amazing experience! The supportive community has helped me refine my design skills tremendously.",
+    role: "Product Designer",
+    company: "Creative Solutions Co.",
   },
   {
     id: 3,
     name: "Luis R. Martinez",
-    content: "The best learning experience I've had in a while.",
-    footer: "Frontend Developer",
-    rating: 4,
+    content:
+      "This platform provides the perfect balance of theory and practice. Highly recommend it for skill-building.",
+    role: "Frontend Developer",
+    company: "Web Architects Ltd.",
   },
   {
     id: 4,
     name: "Amanda Smith",
-    content: "I really enjoyed the resources and guidance provided.",
-    footer: "UX Researcher",
-    rating: 3.5,
+    content:
+      "Great resources and mentorship for UX. Helped me gain invaluable insights into design thinking.",
+    role: "UX Researcher",
+    company: "User Experience Dynamics.",
   },
   {
     id: 5,
     name: "Sarah Lee",
-    content: "Fantastic platform for growth and networking.",
-    footer: "Data Analyst",
-    rating: 4.2,
+    content:
+      "Fantastic for professional growth! The hands-on projects have been especially useful for real-world applications.",
+    role: "Data Analyst",
+    company: "Insightful Analytics.",
   },
 ];
 
@@ -53,7 +58,7 @@ export function Testimonial() {
       opts={{ loop: true }}
       plugins={[
         Autoplay({
-          delay: 3000,
+          delay: 2000,
           stopOnInteraction: false,
           stopOnMouseEnter: true,
         }),
@@ -69,8 +74,8 @@ export function Testimonial() {
               <TestimonialCard
                 name={testimonial.name}
                 content={testimonial.content}
-                footer={testimonial.footer}
-                rating={testimonial.rating}
+                role={testimonial.role}
+                company={testimonial.company}
               />
             </div>
           </CarouselItem>
