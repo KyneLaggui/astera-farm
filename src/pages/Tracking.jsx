@@ -129,8 +129,8 @@ const Tracking = () => {
             <ScrollArea>
               <div className="flex flex-col gap-4 max-h-[500px]">
                 {filteredOrders.length > 0 ? (
-                  filteredOrders.map((order) => (
-                    <OrderCard key={order.orderId} order={order} />
+                  filteredOrders.map((order, i) => (
+                    <OrderCard key={i} order={order} />
                   ))
                 ) : (
                   <div className="flex flex-col justify-center items-center">
