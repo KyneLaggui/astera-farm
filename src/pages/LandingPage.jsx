@@ -6,6 +6,7 @@ import Mars from "@src/assets/images/Planets/mars.png";
 import Moon from "@src/assets/images/Planets/moon.png";
 import LoggedInOnly from "@src/layouts/LoggedInOnly";
 import { CarouselLandingPage } from "@src/components/landing-page/CarouselLandingPage";
+import Testimonial from "@src/components/landing-page/Testimonial";
 
 const LandingPage = () => {
   const faqs = [
@@ -84,6 +85,7 @@ const LandingPage = () => {
         <div className="max-w-[1200px] w-full flex flex-col gap-20 z-10">
           {/* <Title /> */}
           <CarouselLandingPage />
+          <Testimonial />
           <OrderProcess />
           <ChatWidget faqs={faqs} />
         </div>
