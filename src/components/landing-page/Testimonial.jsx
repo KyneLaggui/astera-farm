@@ -8,6 +8,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@src/components/ui/carousel";
+import TestimonialDialog from "@src/components/landing-page/TestimonialDialog";
 
 const testimonials = [
   {
@@ -54,36 +55,40 @@ const testimonials = [
 
 export function Testimonial() {
   return (
-    <Carousel
-      opts={{ loop: true }}
-      plugins={[
-        Autoplay({
-          delay: 2000,
-          stopOnInteraction: false,
-          stopOnMouseEnter: true,
-        }),
-      ]}
-    >
-      <CarouselContent className="">
-        {testimonials.map((testimonial) => (
-          <CarouselItem
-            key={testimonial.id}
-            className="md:basis-1/2 lg:basis-1/3"
-          >
-            <div className="p-1">
-              <TestimonialCard
-                name={testimonial.name}
-                content={testimonial.content}
-                role={testimonial.role}
-                company={testimonial.company}
-              />
-            </div>
-          </CarouselItem>
-        ))}
-      </CarouselContent>
-      {/* <CarouselPrevious />
-      <CarouselNext /> */}
-    </Carousel>
+    <div className="flex flex-col gap-2">
+      {/*TODO: Add an If else statement to show testimonial dialog if the user is logged in and also not yet created a testimony */}
+      <TestimonialDialog />
+      <Carousel
+        opts={{ loop: true }}
+        plugins={[
+          Autoplay({
+            delay: 2000,
+            stopOnInteraction: false,
+            stopOnMouseEnter: true,
+          }),
+        ]}
+      >
+        <CarouselContent className="">
+          {testimonials.map((testimonial) => (
+            <CarouselItem
+              key={testimonial.id}
+              className="md:basis-1/2 lg:basis-1/3"
+            >
+              <div className="p-1">
+                <TestimonialCard
+                  name={testimonial.name}
+                  content={testimonial.content}
+                  role={testimonial.role}
+                  company={testimonial.company}
+                />
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        {/* <CarouselPrevious />
+        <CarouselNext /> */}
+      </Carousel>
+    </div>
   );
 }
 
