@@ -8,8 +8,33 @@ import {
 } from "@src/components/ui/card";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Quote } from "lucide-react";
+import { Star } from "lucide-react";
 
-const TestimonialCard = ({ name, content, role, company }) => {
+const StarRating = ({ rating }) => {
+  const stars = [];
+  for (let i = 1; i <= 5; i++) {
+    if (rating >= i) {
+      stars.push(
+        <Star key={i} color="#FFEB39" fill="#FFEB39" className="h-5" />
+      );
+    } else if (rating >= i - 0.5) {
+      stars.push(
+        <Star
+          key={i}
+          color="yellow"
+          fill="yellow"
+          opacity="0.5"
+          className="h-5"
+        />
+      );
+    } else {
+      stars.push(<Star key={i} color="#A1A1AA" className="h-5" />);
+    }
+  }
+  return <div className="flex">{stars}</div>;
+};
+
+const TestimonialCard = ({ name, content, role, company, rating }) => {
   return (
     <Card className="flex-grow ">
       {/* <VisuallyHidden>
@@ -25,6 +50,10 @@ const TestimonialCard = ({ name, content, role, company }) => {
         <div className="flex flex-col">
           <p className="text-yellow text-lg font-medium">{name}</p>
           <p className="text-muted-foreground text-sm">{`${role} at ${company}`}</p>
+          <div className="flex items-center gap-2 mt-1">
+            <StarRating rating={rating} />
+            <p className="text-sm">{rating} stars</p>
+          </div>
         </div>
       </CardContent>
       {/* <VisuallyHidden>

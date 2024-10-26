@@ -18,6 +18,7 @@ const testimonials = [
       "The platform's interactive courses and projects have been instrumental in my growth as a Software Engineer.",
     role: "Software Engineer",
     company: "Tech Innovations Inc.",
+    rating: 4.5,
   },
   {
     id: 2,
@@ -26,6 +27,7 @@ const testimonials = [
       "An amazing experience! The supportive community has helped me refine my design skills tremendously.",
     role: "Product Designer",
     company: "Creative Solutions Co.",
+    rating: 5,
   },
   {
     id: 3,
@@ -34,6 +36,7 @@ const testimonials = [
       "This platform provides the perfect balance of theory and practice. Highly recommend it for skill-building.",
     role: "Frontend Developer",
     company: "Web Architects Ltd.",
+    rating: 4,
   },
   {
     id: 4,
@@ -42,6 +45,7 @@ const testimonials = [
       "Great resources and mentorship for UX. Helped me gain invaluable insights into design thinking.",
     role: "UX Researcher",
     company: "User Experience Dynamics.",
+    rating: 3.5,
   },
   {
     id: 5,
@@ -50,6 +54,7 @@ const testimonials = [
       "Fantastic for professional growth! The hands-on projects have been especially useful for real-world applications.",
     role: "Data Analyst",
     company: "Insightful Analytics.",
+    rating: 4.5,
   },
 ];
 
@@ -80,6 +85,7 @@ export function Testimonial() {
                   content={testimonial.content}
                   role={testimonial.role}
                   company={testimonial.company}
+                  rating={testimonial.rating}
                 />
               </div>
             </CarouselItem>
