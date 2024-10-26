@@ -45,6 +45,24 @@ const StarRatingInput = ({ initialRating = 0, onRatingChange }) => {
 const TestimonialDialog = () => {
   const [testimonial, setTestimonial] = useState("");
   const [rating, setRating] = useState(0);
+  const [company, setCompany] = useState("");
+  const [role, setRole] = useState("");
+  const [isCompanyRequired, setIsCompanyRequired] = useState(false);
+  const [isRoleRequired, setIsRoleRequired] = useState(false);
+
+  const handleCompanyChange = (e) => {
+    const value = e.target.value;
+    setCompany(value);
+    setIsRoleRequired(value !== "");
+  };
+
+  const handleRoleChange = (e) => {
+    const value = e.target.value;
+    setRole(value);
+    setIsCompanyRequired(value !== "");
+  };
+
+  const isAnyFieldFilled = company !== "" || role !== "";
 
   const handleTextChange = (e) => {
     const words = e.target.value.split(" ");
@@ -71,28 +89,50 @@ const TestimonialDialog = () => {
         </DialogHeader>
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
-            <Label htmlFor="name">Name</Label>
+            <Label htmlFor="name" variant="required">
+              Name
+            </Label>
             <Input id="name" placeholder="John Doe" />
           </div>
           <div className="flex flex-col gap-2">
-            <Label>Rating</Label>
+            <Label variant="required">Rating</Label>
             <StarRatingInput rating={rating} onRatingChange={setRating} />
           </div>
           <div className="flex flex-col gap-2">
-            <Label variant="optional" htmlFor="company">
+            <Label
+              variant={!isAnyFieldFilled ? "optional" : "required"}
+              htmlFor="company"
+            >
               Company
             </Label>
-            <Input id="company" placeholder="ABC Companies" />
+            <Input
+              id="company"
+              placeholder="ABC Companies"
+              value={company}
+              onChange={handleCompanyChange}
+              required={isCompanyRequired}
+            />
           </div>
           <div className="flex flex-col gap-2">
-            <Label variant="optional" htmlFor="role">
+            <Label
+              variant={!isAnyFieldFilled ? "optional" : "required"}
+              htmlFor="role"
+            >
               Role
             </Label>
-            <Input id="role" placeholder="CEO" />
+            <Input
+              id="role"
+              placeholder="CEO"
+              value={role}
+              onChange={handleRoleChange}
+              required={isRoleRequired}
+            />
           </div>
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <Label htmlFor="testimonial">Testimonial</Label>
+              <Label htmlFor="testimonial" variant="required">
+                Testimonial
+              </Label>
               <p className="text-sm text-muted-foreground">
                 {wordCount}/15 words
               </p>
