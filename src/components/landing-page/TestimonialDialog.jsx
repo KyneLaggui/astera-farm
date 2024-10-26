@@ -12,12 +12,57 @@ import { Button } from "@src/components/ui/button";
 import { Input } from "@src/components/ui/input";
 import { Label } from "@src/components/ui/label";
 import { Textarea } from "@src/components/ui/textarea";
+import { Star } from "lucide-react";
 
 {
   /*TODO: Create a CRUD Function, validations, and also just fetch the name of the Logged In user instead of typing */
 }
+
+const StarRatingInput = ({ initialRating = 0, onRatingChange }) => {
+  const [rating, setRating] = useState(initialRating);
+
+  const handleClick = (index) => {
+    const newRating = index;
+    setRating(newRating);
+    onRatingChange(newRating);
+  };
+
+  return (
+    <div className="flex gap-1">
+      {[1, 2, 3, 4, 5].map((index) => (
+        <Star
+          key={index}
+          onClick={() => handleClick(index)}
+          color={rating >= index ? "#FFEB39" : "#A1A1AA"}
+          fill={rating >= index ? "#FFEB39" : "none"}
+          className="h-5 cursor-pointer"
+        />
+      ))}
+    </div>
+  );
+};
+
 const TestimonialDialog = () => {
   const [testimonial, setTestimonial] = useState("");
+  const [rating, setRating] = useState(0);
+  const [company, setCompany] = useState("");
+  const [role, setRole] = useState("");
+  const [isCompanyRequired, setIsCompanyRequired] = useState(false);
+  const [isRoleRequired, setIsRoleRequired] = useState(false);
+
+  const handleCompanyChange = (e) => {
+    const value = e.target.value;
+    setCompany(value);
+    setIsRoleRequired(value !== "");
+  };
+
+  const handleRoleChange = (e) => {
+    const value = e.target.value;
+    setRole(value);
+    setIsCompanyRequired(value !== "");
+  };
+
+  const isAnyFieldFilled = company !== "" || role !== "";
 
   const handleTextChange = (e) => {
     const words = e.target.value.split(" ");
@@ -44,20 +89,50 @@ const TestimonialDialog = () => {
         </DialogHeader>
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
-            <Label htmlFor="name">Name</Label>
+            <Label htmlFor="name" variant="required">
+              Name
+            </Label>
             <Input id="name" placeholder="John Doe" />
           </div>
           <div className="flex flex-col gap-2">
-            <Label htmlFor="company">Company</Label>
-            <Input id="company" placeholder="ABC Companies" />
+            <Label variant="required">Rating</Label>
+            <StarRatingInput rating={rating} onRatingChange={setRating} />
           </div>
           <div className="flex flex-col gap-2">
-            <Label htmlFor="role">Role</Label>
-            <Input id="role" placeholder="CEO" />
+            <Label
+              variant={!isAnyFieldFilled ? "optional" : "required"}
+              htmlFor="company"
+            >
+              Company
+            </Label>
+            <Input
+              id="company"
+              placeholder="ABC Companies"
+              value={company}
+              onChange={handleCompanyChange}
+              required={isCompanyRequired}
+            />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Label
+              variant={!isAnyFieldFilled ? "optional" : "required"}
+              htmlFor="role"
+            >
+              Role
+            </Label>
+            <Input
+              id="role"
+              placeholder="CEO"
+              value={role}
+              onChange={handleRoleChange}
+              required={isRoleRequired}
+            />
           </div>
           <div className="flex flex-col gap-2">
             <div className="flex justify-between items-center">
-              <Label htmlFor="testimonial">Testimonial</Label>
+              <Label htmlFor="testimonial" variant="required">
+                Testimonial
+              </Label>
               <p className="text-sm text-muted-foreground">
                 {wordCount}/15 words
               </p>
@@ -66,6 +141,7 @@ const TestimonialDialog = () => {
               id="testimonial"
               placeholder="Share your experience with us..."
               onChange={handleTextChange}
+              value={testimonial}
             />
           </div>
         </div>

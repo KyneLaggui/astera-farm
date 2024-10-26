@@ -76,11 +76,10 @@ const Tracking = () => {
             quantity: product.quantity,
           })),
         }));
-  
+
       setOrderData(filteredOrders);
     }
   }, [orders, userId]);
-  
 
   return (
     <LoggedInOnly forUser={true} forAdmin={false}>
@@ -100,10 +99,8 @@ const Tracking = () => {
         </div>
         <Card className="w-full max-w-[700px] min-h-[600px] z-10">
           <VisuallyHidden>
-            <CardTitle>Create project</CardTitle>
-            <CardDescription>
-              Deploy your new project in one-click.
-            </CardDescription>
+            <CardTitle></CardTitle>
+            <CardDescription></CardDescription>
           </VisuallyHidden>
           <CardContent className="flex flex-col py-6 gap-4">
             <div className="flex w-full flex-col sm:flex-row items-end sm:justify-between gap-4">

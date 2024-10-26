@@ -34,8 +34,11 @@ const formatDate = (dateString) => {
 const calculateTotalAmount = (products) =>
   products.reduce((sum, product) => sum + product.price * product.quantity, 0);
 
-const formatCurrency = (value) => 
-  value.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const formatCurrency = (value) =>
+  value.toLocaleString("en-PH", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 
 const OrderCard = ({ order }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -45,10 +48,12 @@ const OrderCard = ({ order }) => {
       <DialogTrigger asChild>
         <Card
           key={order.orderId}
-          className="flex justify-between items-start p-4 cursor-pointer"
+          className="flex flex-col gap-2 sm:flex-row sm:justify-between items-start p-4 cursor-pointer"
         >
           <div className="flex flex-col">
-            <h1 className="font-semibold text-lg">Order ID: {order.orderId}</h1>
+            <h1 className="font-semibold break-all text-lg">
+              Order ID: {order.orderId}
+            </h1>
             <p className="font-md text-sm text-yellow">
               Total: ₱{formatCurrency(calculateTotalAmount(order.products))}
             </p>
@@ -65,11 +70,11 @@ const OrderCard = ({ order }) => {
       </DialogTrigger>
       <DialogContent className="p-4 pt-10">
         <DialogHeader className="flex flex-col items-start">
-          <div className="flex justify-between w-full">
-            <DialogTitle className="text-xl">
+          <div className="flex flex-col items-start sm:flex-row gap-2 justify-between sm:items-center w-full">
+            <DialogTitle className="text-lg break-all text-start ">
               Order ID: {order.orderId}
             </DialogTitle>
-            <Badge className="max-h-[20px] text-nowrap">
+            <Badge className="max-h-[20px] max-w-fit text-nowrap">
               {statusLabels[order.status] || "Unknown Status"}
             </Badge>
           </div>

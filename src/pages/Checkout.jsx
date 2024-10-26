@@ -29,8 +29,9 @@ import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectEmail } from "@src/redux/slice/authSlice";
 import { selectCartItems } from "@src/redux/slice/cartSlice";
-import { set } from "zod";
 import { toast } from "react-toastify";
+import { ScrollArea } from "@src/components/ui/scroll-area";
+import Voucher from "@src/components/checkout/Voucher";
 
 const Checkout = () => {
   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -254,29 +255,48 @@ const Checkout = () => {
             ))}
           </div>
           <Card className="p-4 sm:min-h-full w-full flex flex-col gap-4">
-            <CardHeader className="px-0 pt-1 sm:text-end">
+            <CardHeader className="px-0 pt-1 pb-1 sm:text-end">
               <CardTitle>Checkout Summary</CardTitle>
               <CardDescription className="text-yellow text-md">
                 Subtotal: ₱
                 {productData
-                  .reduce((total, item) => total + item.price * item.quantity, 0)
-                  .toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                  .reduce(
+                    (total, item) => total + item.price * item.quantity,
+                    0
+                  )
+                  .toLocaleString("en-PH", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
               </CardDescription>
             </CardHeader>
-            {productData.map((product) => (
-              <Card
-                key={product.id}
-                className="p-4 flex flex-col max-h-[100px]"
-              >
-                <h1 className="font-semibold text-lg">{product.name}</h1>
-                <p className="font-md text-sm text-yellow">
-                  Price: ₱{product.price.toLocaleString('en-PH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </p>
-                <p className="font-light text-sm text-muted-foreground">
-                  Quantity: {product.quantity}
-                </p>
-              </Card>
-            ))}
+            <ScrollArea>
+              <div className="max-h-[300px] flex flex-col gap-2">
+                {productData.map((product) => (
+                  <Card
+                    key={product.id}
+                    className="p-4 flex flex-col max-h-[100px]"
+                  >
+                    <h1 className="font-semibold text-lg">{product.name}</h1>
+                    <p className="font-md text-sm text-yellow">
+                      Price: ₱
+                      {product.price.toLocaleString("en-PH", {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
+                    </p>
+                    <p className="font-light text-sm text-muted-foreground">
+                      Quantity: {product.quantity}
+                    </p>
+                  </Card>
+                ))}
+              </div>
+            </ScrollArea>
+            <ScrollArea>
+              <div className="max-h-[300px] flex flex-col gap-2">
+                <Voucher />
+              </div>
+            </ScrollArea>
           </Card>
         </CardContent>
         <CardFooter>
