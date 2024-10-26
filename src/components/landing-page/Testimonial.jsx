@@ -18,7 +18,7 @@ const testimonials = [
       "The platform's interactive courses and projects have been instrumental in my growth as a Software Engineer.",
     role: "Software Engineer",
     company: "Tech Innovations Inc.",
-    rating: 4.5,
+    rating: 4,
   },
   {
     id: 2,
@@ -45,7 +45,7 @@ const testimonials = [
       "Great resources and mentorship for UX. Helped me gain invaluable insights into design thinking.",
     role: "UX Researcher",
     company: "User Experience Dynamics.",
-    rating: 3.5,
+    rating: 3,
   },
   {
     id: 5,
@@ -54,7 +54,7 @@ const testimonials = [
       "Fantastic for professional growth! The hands-on projects have been especially useful for real-world applications.",
     role: "Data Analyst",
     company: "Insightful Analytics.",
-    rating: 4.5,
+    rating: 4,
   },
 ];
 

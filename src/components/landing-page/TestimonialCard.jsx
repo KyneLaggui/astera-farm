@@ -17,18 +17,8 @@ const StarRating = ({ rating }) => {
       stars.push(
         <Star key={i} color="#FFEB39" fill="#FFEB39" className="h-5" />
       );
-    } else if (rating >= i - 0.5) {
-      stars.push(
-        <Star
-          key={i}
-          color="yellow"
-          fill="yellow"
-          opacity="0.5"
-          className="h-5"
-        />
-      );
     } else {
-      stars.push(<Star key={i} color="#A1A1AA" className="h-5" />);
+      stars.push(<Star key={i} color="#A1A1AA" fill="none" className="h-5" />);
     }
   }
   return <div className="flex">{stars}</div>;
