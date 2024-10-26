@@ -18,6 +18,7 @@ const Label = React.forwardRef(
       {variant === "optional" && (
         <span className="text-muted-foreground ml-1">(optional)</span>
       )}
+      {variant === "required" && <span className="text-red-500 ml-1">*</span>}
     </LabelPrimitive.Root>
   )
 );
