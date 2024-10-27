@@ -25,6 +25,7 @@ module.exports = {
         galindo: ["Galindo", "sans-serif"],
         lato: ["Lato", "sans-serif"],
         shrikhand: ["Shrikhand", "sans-serif"],
+        arapey: ["Arapey", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
