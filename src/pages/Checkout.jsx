@@ -28,10 +28,11 @@ import fetchUserShippingAddress from "@src/custom-hooks/fetchUserShippingAddress
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectEmail } from "@src/redux/slice/authSlice";
-import { selectCartItems } from "@src/redux/slice/cartSlice";
+import { selectCartItems, selectCartTotalAmount, selectCartTotalQuantity,  } from "@src/redux/slice/cartSlice";
 import { toast } from "react-toastify";
 import { ScrollArea } from "@src/components/ui/scroll-area";
 import Voucher from "@src/components/checkout/Voucher";
+import fetchAllVouchers from "@src/custom-hooks/fetchAllVouchers";
 
 const Checkout = () => {
   const [selectedAddress, setSelectedAddress] = useState(null);
@@ -40,12 +41,21 @@ const Checkout = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [addressToDelete, setAddressToDelete] = useState(null);
   const [userEmailState, setUserEmailState] = useState("");
+  const [filteredVouchers, setFilteredVouchers] = useState([]);
+  const [actualReducedAmount, setActualReducedAmount] = useState(0);
 
   const userEmail = useSelector(selectEmail);
   const userCart = useSelector(selectCartItems);
+  const cartTotalAmount = useSelector(selectCartTotalAmount);
+  const cartTotalQuantity = useSelector(selectCartTotalQuantity);
+
+  const [discountedTotal, setDiscountedTotal] = useState(cartTotalAmount);
+
   const navigate = useNavigate();
 
   const shippingAddress = fetchUserShippingAddress();
+  const { vouchers: fetchedVouchers } = fetchAllVouchers(); // Fetch products from Supabase
+
   const [addressData, setAddressData] = useState([]);
   const [productData, setProductData] = useState([]);
 
@@ -140,7 +150,23 @@ const Checkout = () => {
       : fullAddress;
   };
 
+  // Helper function to calculate discounted total
+  const calculateDiscountedTotal = (total) => {
+    if (filteredVouchers.length > 0) {
+      const { percentage_discount } = filteredVouchers[0];
+
+      if (percentage_discount) {
+        return total * ((100 - percentage_discount) / 100); // Apply percentage discount
+      } 
+      // No action needed for free_shipping
+    }
+    return total;
+  };
+
+
   const proceedToPayment = () => {
+    const { percentage_discount } = filteredVouchers[0];
+
     if (!selectedAddress) {
       toast.error("Please select an address to proceed.");
     } else {
@@ -148,7 +174,8 @@ const Checkout = () => {
         state: {
           shippingAddress: addressData.find(
             (addr) => addr.id === selectedAddress
-          ),
+          ),         
+          discountFactor: ((100 - percentage_discount) / 100),
         },
       });
     }
@@ -182,11 +209,38 @@ const Checkout = () => {
         name: item.name,
         price: item.price,
         quantity: item.cartQuantity,
-      }));
+      }));       
 
       setProductData(userCartData);
     }
+
   }, [userCart]);
+
+
+  useEffect(() => {
+    if (fetchedVouchers) {
+      const eligibleVoucher = fetchedVouchers
+        .filter(voucher =>
+          cartTotalAmount >= voucher.total_amount_threshold &&
+          cartTotalQuantity >= voucher.products_bought_threshold
+        )
+        .reduce((maxVoucher, currentVoucher) =>
+          currentVoucher.total_amount_threshold > (maxVoucher?.total_amount_threshold || 0)
+            ? currentVoucher
+            : maxVoucher,
+          null
+        );
+  
+      setFilteredVouchers(eligibleVoucher ? [eligibleVoucher] : []);    
+    }
+
+  }, [cartTotalAmount, cartTotalQuantity, userCart, fetchedVouchers]);
+
+  useEffect(() => {
+    const totalAfterDiscount = calculateDiscountedTotal(cartTotalAmount);
+    setDiscountedTotal(totalAfterDiscount);
+    setActualReducedAmount(cartTotalAmount - totalAfterDiscount); // Calculate the actual reduced amount
+  }, [cartTotalAmount, filteredVouchers]); // Depend on cartTotalAmount and filteredVouchers
 
   return (
     <div
@@ -257,7 +311,7 @@ const Checkout = () => {
           <Card className="p-4 sm:min-h-full w-full flex flex-col gap-4">
             <CardHeader className="px-0 pt-1 pb-1 sm:text-end">
               <CardTitle>Checkout Summary</CardTitle>
-              <CardDescription className="text-yellow text-md">
+              <CardDescription className="text-yellow font-thin text-md">
                 Subtotal: ₱
                 {productData
                   .reduce(
@@ -268,6 +322,14 @@ const Checkout = () => {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
                   })}
+                  <br/>
+                  <span className="font-bold">
+                  Final Total: ₱
+                    {discountedTotal.toLocaleString("en-PH", {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
+                  </span>                 
               </CardDescription>
             </CardHeader>
             <ScrollArea>
@@ -294,7 +356,9 @@ const Checkout = () => {
             </ScrollArea>
             <ScrollArea>
               <div className="max-h-[300px] flex flex-col gap-2">
-                <Voucher />
+                {filteredVouchers.map((voucher) => (
+                  <Voucher voucher={voucher} />                
+                ))}  
               </div>
             </ScrollArea>
           </Card>

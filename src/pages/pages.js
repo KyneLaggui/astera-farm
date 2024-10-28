@@ -16,6 +16,7 @@ import Orders from "@src/pages/admin/Orders";
 import ResetPassword from "@src/pages/ResetPassword";
 import BulkOrder from "@src/pages/BulkOrder";
 import SlideShowEdit from "@src/pages/admin/SlideShowEdit";
+import Vouchers from "@src/pages/admin/Vouchers";
 
 export const Pages = {
   LandingPage,
@@ -36,6 +37,7 @@ export const Pages = {
   ResetPassword,
   BulkOrder,
   SlideShowEdit,
+  Vouchers,
 };
 
 export default Pages;

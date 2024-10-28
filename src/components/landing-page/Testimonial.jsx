@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import TestimonialCard from "@src/components/landing-page/TestimonialCard";
 import Autoplay from "embla-carousel-autoplay";
 import {
@@ -9,91 +9,70 @@ import {
   CarouselPrevious,
 } from "@src/components/ui/carousel";
 import TestimonialDialog from "@src/components/landing-page/TestimonialDialog";
-
-const testimonials = [
-  {
-    id: 1,
-    name: "Joseph Jason S. Buhain",
-    content:
-      "The platform's interactive courses and projects have been instrumental in my growth as a Software Engineer.",
-    role: "Software Engineer",
-    company: "Tech Innovations Inc.",
-    rating: 4,
-  },
-  {
-    id: 2,
-    name: "Michaela Tan",
-    content:
-      "An amazing experience! The supportive community has helped me refine my design skills tremendously.",
-    role: "Product Designer",
-    company: "Creative Solutions Co.",
-    rating: 5,
-  },
-  {
-    id: 3,
-    name: "Luis R. Martinez",
-    content:
-      "This platform provides the perfect balance of theory and practice. Highly recommend it for skill-building.",
-    role: "Frontend Developer",
-    company: "Web Architects Ltd.",
-    rating: 4,
-  },
-  {
-    id: 4,
-    name: "Amanda Smith",
-    content:
-      "Great resources and mentorship for UX. Helped me gain invaluable insights into design thinking.",
-    role: "UX Researcher",
-    company: "User Experience Dynamics.",
-    rating: 3,
-  },
-  {
-    id: 5,
-    name: "Sarah Lee",
-    content:
-      "Fantastic for professional growth! The hands-on projects have been especially useful for real-world applications.",
-    role: "Data Analyst",
-    company: "Insightful Analytics.",
-    rating: 4,
-  },
-];
+import LoggedInOnlyComponent from "@src/layouts/component-restriction/LoggedInOnlyComponent";
+import useFetchAllTestimonies from "@src/custom-hooks/fetchAllTestimonial";
 
 export function Testimonial() {
+  const { testimonies, setTestimonies, loading, error } = useFetchAllTestimonies();
+
+  const updateTestimonies = (updatedTestimony) => {
+    setTestimonies((prevTestimonies) => {
+      const existingTestimonyIndex = prevTestimonies.findIndex(
+        (t) => t.email === updatedTestimony.email
+      );
+      if (existingTestimonyIndex !== -1) {
+        return prevTestimonies.map((t, index) =>
+          index === existingTestimonyIndex ? updatedTestimony : t
+        );
+      } else {
+        return [...prevTestimonies, updatedTestimony];
+      }
+    });
+  };
+
   return (
     <div className="flex flex-col gap-2">
-      {/*TODO: Add an If else statement to show testimonial dialog if the user is logged in and also not yet created a testimony */}
-      <TestimonialDialog />
-      <Carousel
-        opts={{ loop: true }}
-        plugins={[
-          Autoplay({
-            delay: 2000,
-            stopOnInteraction: false,
-            stopOnMouseEnter: true,
-          }),
-        ]}
-      >
-        <CarouselContent className="">
-          {testimonials.map((testimonial) => (
-            <CarouselItem
-              key={testimonial.id}
-              className="md:basis-1/2 lg:basis-1/3"
-            >
-              <div className="p-1">
-                <TestimonialCard
-                  name={testimonial.name}
-                  content={testimonial.content}
-                  role={testimonial.role}
-                  company={testimonial.company}
-                  rating={testimonial.rating}
+      <LoggedInOnlyComponent forUser={true} forAdmin={false}>        
+        <TestimonialDialog updateTestimonies={updateTestimonies} />        
+      </LoggedInOnlyComponent>
+
+      {loading && <p>Loading testimonials...</p>}
+      {error && <p>Error: {error}</p>}
+
+      {!loading && !error && testimonies.length > 0 && (
+        <Carousel
+          opts={{ loop: true }}
+          plugins={[
+            Autoplay({
+              delay: 2000,
+              stopOnInteraction: false,
+              stopOnMouseEnter: true,
+            }),
+          ]}
+        >
+          <CarouselContent>
+            {testimonies.map((testimonial) => (
+              <CarouselItem
+                key={testimonial.id}
+                className="md:basis-1/2 lg:basis-1/3"
+              >
+                <div className="p-1">
+                  <TestimonialCard
+                    name={testimonial.name}
+                    content={testimonial.description}
+                    role={testimonial.role}
+                    company={testimonial.company}
+                    rating={testimonial.rating}
                 />
-              </div>
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-        {/* <CarouselPrevious />
-        <CarouselNext /> */}
-      </Carousel>
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          {/* Uncomment if navigation arrows are needed */}
+          {/* <CarouselPrevious />
+          <CarouselNext /> */}
+        </Carousel>
+      )}
     </div>
   );
 }

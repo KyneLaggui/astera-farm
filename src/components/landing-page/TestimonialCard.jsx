@@ -39,7 +39,11 @@ const TestimonialCard = ({ name, content, role, company, rating }) => {
 
         <div className="flex flex-col">
           <p className="text-yellow text-lg font-medium">{name}</p>
-          <p className="text-muted-foreground text-sm">{`${role} at ${company}`}</p>
+          {
+            role && company && (
+              <p className="text-muted-foreground text-sm">{`${role} at ${company}`}</p>
+            )
+          }
           <div className="flex items-center gap-2 mt-1">
             <StarRating rating={rating} />
             <p className="text-sm">{rating} stars</p>
