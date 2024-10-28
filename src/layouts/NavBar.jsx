@@ -54,6 +54,7 @@ import AddToCartSheet from "@src/components/navbar/AddToCartSheet";
 import fetchAllOrders from "@src/custom-hooks/fetchAllOrders";
 import { SET_CART, selectCartItems } from "@src/redux/slice/cartSlice";
 import { Button } from "@src/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -66,6 +67,7 @@ const Navbar = () => {
   const isLoggedInRedux = useSelector(selectIsLoggedIn);
   const isAdminRedux = useSelector(selectIsAdmin);
   const cart = useSelector(selectCartItems);
+  const navigate = useNavigate();
   const allOrders = fetchAllOrders();
 
   const toggleMobileMenu = () => {
@@ -87,6 +89,11 @@ const Navbar = () => {
   const handleRegisterLoginClose = () => {
     setIsRegisterLoginOpen(false);
   };
+
+  const handleSignout = async () => {
+    await signOut();
+    navigate("/");
+  }
 
   useEffect(() => {
     // This for listening to supabase auth state changes
@@ -183,6 +190,11 @@ const Navbar = () => {
             </a>
           </LoggedInOnlyComponent>
           <LoggedInOnlyComponent forAdmin={true} forUser={false}>
+            <a href="/admin/vouchers" className="hover:text-white">
+              Vouchers
+            </a>
+          </LoggedInOnlyComponent>
+          <LoggedInOnlyComponent forAdmin={true} forUser={false}>
             <a href="/admin/slideshow" className="hover:text-white">
               Slideshow
             </a>
@@ -223,7 +235,7 @@ const Navbar = () => {
                   </DropdownMenuItem>
                   <DropdownMenuItem
                     className="flex items-center cursor-pointer"
-                    onClick={signOut}
+                    onClick={handleSignout}
                   >
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Logout</span>
@@ -235,7 +247,7 @@ const Navbar = () => {
             <>
               <Dialog
                 open={isRegisterLoginOpen}
-                onOpenChange={setIsRegisterLoginOpen}
+                onOpenChange={setIsRegisterLoginOpen}                
               >
                 <DialogTrigger>
                   <CircleUserRound className="h-6 cursor-pointer text-yellow hover:text-white" />

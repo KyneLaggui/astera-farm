@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -12,6 +12,10 @@ import { Button } from "@src/components/ui/button";
 import { Input } from "@src/components/ui/input";
 import { Label } from "@src/components/ui/label";
 import { Textarea } from "@src/components/ui/textarea";
+import { selectEmail } from "@src/redux/slice/authSlice";
+import { useSelector } from "react-redux";
+import { supabase } from "@src/supabase/config";
+import { toast } from "react-toastify";
 import { Star } from "lucide-react";
 
 {
@@ -42,43 +46,99 @@ const StarRatingInput = ({ initialRating = 0, onRatingChange }) => {
   );
 };
 
-const TestimonialDialog = () => {
-  const [testimonial, setTestimonial] = useState("");
-  const [rating, setRating] = useState(0);
-  const [company, setCompany] = useState("");
-  const [role, setRole] = useState("");
-  const [isCompanyRequired, setIsCompanyRequired] = useState(false);
-  const [isRoleRequired, setIsRoleRequired] = useState(false);
+const TestimonialDialog = ({ updateTestimonies }) => {
+  const [formData, setFormData] = useState({
+    name: "",
+    company: "",
+    role: "",
+    description: "",
+    email: "",
+    rating: 0, // Include rating here
+  });
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [isAnyFieldFilled, setIsAnyFieldFilled] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const email = useSelector(selectEmail);  
 
-  const handleCompanyChange = (e) => {
-    const value = e.target.value;
-    setCompany(value);
-    setIsRoleRequired(value !== "");
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [id]: value,
+    }));
   };
 
-  const handleRoleChange = (e) => {
-    const value = e.target.value;
-    setRole(value);
-    setIsCompanyRequired(value !== "");
+  const handleRatingChange = (newRating) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      rating: newRating,
+    }));
   };
 
-  const isAnyFieldFilled = company !== "" || role !== "";
-
-  const handleTextChange = (e) => {
+  const handleTestimonialChange = (e) => {
     const words = e.target.value.split(" ");
-    if (words.length <= 15) {
-      setTestimonial(e.target.value);
+    const testimonialText = words.length <= 15 ? e.target.value : words.slice(0, 15).join(" ");
+    setFormData((prevData) => ({
+      ...prevData,
+      description: testimonialText,
+    }));
+  };
+
+  useEffect(() => {
+    const fetchTestimonial = async () => {
+      if (email) {
+        setFormData((prevData) => ({
+          ...prevData,
+          email: email
+        }));
+
+        const { data, error } = await supabase
+          .from("testimonial")
+          .select("*")
+          .eq("email", email)
+          .single();
+
+        if (data) {
+          setFormData(data);
+          setIsUpdating(true);
+        }
+      }
+    };
+
+    fetchTestimonial();
+  }, [email]);
+
+  const handleSubmit = async () => {
+     // Check if either company or role has input and enforce both fields to be required
+    if ((formData.company && !formData.role) || (!formData.company && formData.role)) {
+      toast.error("Please provide both Company and Role.");
+      return;
+    }
+
+    const { data, error } = isUpdating
+      ? await supabase.from("testimonial").update(formData).eq("email", email).select()
+      : await supabase.from("testimonial").insert([formData]).select();
+
+    if (!error) {
+      toast.success(isUpdating ? "Testimony updated successfully!" : "Testimony submitted successfully!");
+      updateTestimonies(formData);
+      setIsOpen(false);
+      setIsUpdating(true);
     } else {
-      setTestimonial(words.slice(0, 15).join(" "));
+      toast.error(isUpdating ? "Testimony update failed!" : "Testimony submission failed!");
     }
   };
 
-  const wordCount = testimonial.split(" ").filter(Boolean).length;
+  useEffect(() => {
+    setIsAnyFieldFilled(formData.company !== "" || formData.role !== "");
+  }, [formData]);
 
-  return (
-    <Dialog>
+  return (      
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>      
       <DialogTrigger asChild>
-        <Button className="w-fit">Add Testimonial</Button>
+        <Button className="w-fit" onClick={() => setIsOpen(true)}>
+          Add Testimonial
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
@@ -89,70 +149,43 @@ const TestimonialDialog = () => {
         </DialogHeader>
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
-            <Label htmlFor="name" variant="required">
-              Name
-            </Label>
-            <Input id="name" placeholder="John Doe" />
+            <Label htmlFor="name" variant="required">Name</Label>
+            <Input id="name" placeholder="John Doe" value={formData.name} onChange={handleInputChange} />
           </div>
           <div className="flex flex-col gap-2">
             <Label variant="required">Rating</Label>
-            <StarRatingInput rating={rating} onRatingChange={setRating} />
+            {formData.rating}
+            <StarRatingInput initialRating={formData.rating} onRatingChange={handleRatingChange} />
           </div>
           <div className="flex flex-col gap-2">
-            <Label
-              variant={!isAnyFieldFilled ? "optional" : "required"}
-              htmlFor="company"
-            >
-              Company
-            </Label>
-            <Input
-              id="company"
-              placeholder="ABC Companies"
-              value={company}
-              onChange={handleCompanyChange}
-              required={isCompanyRequired}
-            />
+            <Label htmlFor="company" variant={!isAnyFieldFilled ? "optional" : "required"} >Company</Label>
+            <Input id="company" placeholder="ABC Companies" value={formData.company} onChange={handleInputChange} />
           </div>
           <div className="flex flex-col gap-2">
-            <Label
-              variant={!isAnyFieldFilled ? "optional" : "required"}
-              htmlFor="role"
-            >
-              Role
-            </Label>
-            <Input
-              id="role"
-              placeholder="CEO"
-              value={role}
-              onChange={handleRoleChange}
-              required={isRoleRequired}
-            />
+            <Label htmlFor="role" variant={!isAnyFieldFilled ? "optional" : "required"} >Role</Label>
+            <Input id="role" placeholder="CEO" value={formData.role} onChange={handleInputChange} />
           </div>
           <div className="flex flex-col gap-2">
-            <div className="flex justify-between items-center">
-              <Label htmlFor="testimonial" variant="required">
-                Testimonial
-              </Label>
-              <p className="text-sm text-muted-foreground">
-                {wordCount}/15 words
-              </p>
-            </div>
+            <Label htmlFor="description" variant="required">Testimonial</Label>
             <Textarea
-              id="testimonial"
+              id="description"
               placeholder="Share your experience with us..."
-              onChange={handleTextChange}
-              value={testimonial}
+              value={formData.description}
+              onChange={handleTestimonialChange}
             />
+            <p className="text-sm text-muted-foreground">
+              {formData.description.split(" ").filter(Boolean).length}/15 words
+            </p>
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit" className="w-full">
-            Submit Testimonial
+          <Button type="submit" className="w-full" onClick={handleSubmit}>
+            {isUpdating ? "Update Testimonial" : "Submit Testimonial"}
           </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
   );
-};
+}
 
 export default TestimonialDialog;

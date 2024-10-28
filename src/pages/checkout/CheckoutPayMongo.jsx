@@ -27,7 +27,7 @@ const CheckoutPayMongo = () => {
         const filteredItems = cartItems.map((item) => {
           return {
             currency: 'PHP',
-            amount: item.price * 100, // Convert price to cents (or smallest currency unit)
+            amount: (item.price * location.state.discountFactor) * 100, // Convert price to cents (or smallest currency unit)
             name: item.name,
             quantity: item.cartQuantity,        
           }
@@ -36,7 +36,7 @@ const CheckoutPayMongo = () => {
         const metaDataItems = cartItems.map((item) => {
           return {
             currency: 'PHP',
-            amount: item.price,
+            amount: item.price * location.state.discountFactor,
             name: item.name,
             quantity: item.cartQuantity,        
           }
@@ -57,7 +57,7 @@ const CheckoutPayMongo = () => {
                   send_email_receipt: false,
                   show_description: true,
                   show_line_items: true,
-                  description: "This is the payment for Astera Farm.",
+                  description: `This is the payment for Astera Farm${location.state.discountFactor !== 1 ? ` with a ${100 - (location.state.discountFactor * 100)}% discount.` : '.'}`,
                   line_items: filteredItems,
                   payment_method_types: ["billease", "gcash", "card", "grab_pay", "paymaya"],
                   cancel_url: "https://astera-farm.vercel.app/",
