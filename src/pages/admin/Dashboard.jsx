@@ -20,12 +20,16 @@ import PercentageTotalOrderLocation from "./DashboardCharts/PercentageTotalOrder
 import TopProductPieChart from "./DashboardCharts/TopProductPieChart";
 import LeastFiveProducts from "./DashboardCharts/LeastFiveProducts";
 import TopCustomers from "./DashboardCharts/TopCustomers";
+import ProductOrderQuantity from "./DashboardCharts/ProductOrderQuantity";
+import ProductRevenue from "./DashboardCharts/ProductRevenue";
 
 const Dashboard = () => {
   const [sellingData, setSellingData] = useState([]);
+  const [productOrderQuantity, setProductOrderQuantity] = useState([]);
   const [leastProducts, setLeastProducts] = useState([]);
   const [chartData, setChartData] = useState([]);
   const [statusData, setStatusData] = useState([]);
+  const [productRevenue, setProductRevenue] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("week");
   const [topCitiesData, setTopCitiesData] = useState([]); // State for top cities data
   const [citiesData, setCitiesData] = useState([]); // State for top cities data
@@ -86,25 +90,26 @@ const Dashboard = () => {
   useEffect(() => {
     if (filteredOrders.length === 0) return;
 
-    const { productSales, statusCount, totalOrders } = filteredOrders.reduce(
-      (acc, order) => {
+    const { productSales, statusCount, totalOrders, revenue } = filteredOrders.reduce(
+      (acc, order) => {        
         order.products.forEach((product) => {
           acc.productSales[product.name] =
-            (acc.productSales[product.name] || 0) + product.quantity;
+            (acc.productSales[product.name] || 0) + product.quantity; 
+          acc.revenue[product.name] = (acc.revenue[product.name] || 0) + product.amount * product.quantity;          
         });
+        
         acc.statusCount[order.status] =
           (acc.statusCount[order.status] || 0) + 1;
-        acc.totalOrders += 1;
+        acc.totalOrders += 1;        
         return acc;
       },
-      { productSales: {}, statusCount: {}, totalOrders: 0 }
+      { productSales: {}, statusCount: {}, totalOrders: 0, revenue: {} }
     );
-
+    
     const sellingDataArray = Object.entries(productSales)
       .map(([name, purchases]) => ({ products: name, purchases }))
       .sort((a, b) => b.purchases - a.purchases)
-      
-
+    
     const statusDataArray = Object.entries(statusCount).map(
       ([status, count]) => ({ status, count })
     );
@@ -153,6 +158,13 @@ const Dashboard = () => {
       .map(([period, earnings]) => ({ timePeriod: period, earnings }))
       .sort((a, b) => new Date(a.timePeriod) - new Date(b.timePeriod));
 
+    const revenueArray = Object.entries(revenue).map(([key, value]) => ({
+      name: key,
+      revenue: value,
+    }));
+    
+    setProductRevenue(revenueArray);
+    setProductOrderQuantity(sellingDataArray);
     setSellingData(sellingDataArray.slice(0, 5));
     setLeastProducts(sellingDataArray.slice(-5));
     setChartData(chartDataArray);
@@ -248,7 +260,7 @@ const Dashboard = () => {
             </h1>      
             <div className="flex flex-col md:flex-row justify-between gap-4 w-full flex-grow">              
               <div className="flex-grow flex justify-center">
-                <BestSellingChart sellingData={sellingData} />
+                <TopCustomers topCustomers={topCustomers} />
               </div>
                <div className="flex flex-col max-w-xs gap-4 w-full justify-center flex-wrap">
                 <Card className="flex-grow text-center flex justify-center items-center">
@@ -324,7 +336,16 @@ const Dashboard = () => {
                 </div>
               </div>              
             </div>
-            <TopCustomers topCustomers={topCustomers} />
+            <div className="flex flex-col gap-4 w-full justify-center flex-wrap lg:flex-nowrap">
+              <div className="flex flex-col md:flex-row justify-between gap-4 w-full flex-grow">
+                <div className="flex-grow flex justify-center">
+                  <ProductRevenue productRevenue={productRevenue}/>
+                </div>              
+                <div className="flex-grow flex justify-center">
+                  <ProductOrderQuantity productOrderQuantity={productOrderQuantity}/>                  
+                </div>
+              </div>              
+            </div>
           </div>
         </LoggedInOnly>
       )
