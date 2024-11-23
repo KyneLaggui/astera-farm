@@ -167,7 +167,8 @@ const fetchAllOrders = () => {
           mergedOrders.push(mergedOrder);
         }                    
 
-        mergedOrders = [...mergedOrders, ...additionalOrders];
+        // mergedOrders = [...mergedOrders, ...additionalOrders];
+        mergedOrders = [...additionalOrders];
       
         // Set valid carts to state
         setAllOrders(mergedOrders);
