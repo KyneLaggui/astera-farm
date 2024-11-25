@@ -19,6 +19,8 @@ const authSlice = createSlice({
 
             if (email === "asterafarmsph@gmail.com" || email === "asterafarmshop@gmail.com") {
                 state.isAdmin = true
+            } else {
+                state.isAdmin = false
             }
         },
         REMOVE_ACTIVE_USER: (state) => {

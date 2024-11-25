@@ -67,7 +67,7 @@ const fetchAllOrders = () => {
             .select('*')
             .eq('order_id', order.id)
             .single();
-
+          
           const orderType = order.cart.some((product) => product.quantity >= 30) ? 'Bulk' : 'Retail';
           let mergedOrder = {
             ...order,
@@ -171,7 +171,8 @@ const fetchAllOrders = () => {
 
         // mergedOrders = [...mergedOrders, ...additionalOrders];
         mergedOrders = email === "asterafarmshop@gmail.com" ? [...additionalOrders] : [...additionalOrdersSecondary, ...mergedOrders];
-        
+        mergedOrders = mergedOrders.filter(order => order.status !== 'Cancelled');
+
         // Set valid carts to state
         setAllOrders(mergedOrders);
         dispatch(SET_ORDERS(mergedOrders)); // Dispatch to Redux
@@ -181,7 +182,7 @@ const fetchAllOrders = () => {
     if (email) {
       getAllOrders();
     }
-    
+
   }, [dispatch, email]);
 
   return { orders: allOrders };

@@ -55,6 +55,10 @@ const Tracking = () => {
     return matchesStatus && matchesSearch;
   });
 
+  const removeOrder = (orderId) => {
+    setOrderData(filteredOrders.filter(order => order.orderId !== orderId));
+  };
+
   useEffect(() => {
     if (orders) {
       const filteredOrders = orders
@@ -79,6 +83,7 @@ const Tracking = () => {
 
       setOrderData(filteredOrders);
     }
+
   }, [orders, userId]);
 
   return (
@@ -127,7 +132,7 @@ const Tracking = () => {
               <div className="flex flex-col gap-4 max-h-[500px]">
                 {filteredOrders.length > 0 ? (
                   filteredOrders.map((order, i) => (
-                    <OrderCard key={i} order={order} />
+                    <OrderCard key={i} order={order} removeOrder={removeOrder} />
                   ))
                 ) : (
                   <div className="flex flex-col justify-center items-center">

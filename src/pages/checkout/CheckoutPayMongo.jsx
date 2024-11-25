@@ -17,31 +17,49 @@ const CheckoutPayMongo = () => {
 
   const description = `Astera payment: Email: ${customerEmail}, Amount: ${totalAmount}`;
 
-  // useEffect(() => {
-  //   dispatch(CALCULATE_TOTAL_QUANTITY());
-  // }, [dispatch, cartItems]);
-
   useEffect(() => {    
     const getUrl = async () => {
+      let filteredItems;
+      let metaDataItems;
+      const { bulkOrder, isBulkOrder } = location.state;
+
       if (cartItems && description) {
-        const filteredItems = cartItems.map((item) => {
-          return {
-            currency: 'PHP',
-            amount: (item.price * location.state.discountFactor) * 100, // Convert price to cents (or smallest currency unit)
-            name: item.name,
-            quantity: item.cartQuantity,        
-          }
-        });
-
-        const metaDataItems = cartItems.map((item) => {
-          return {
-            currency: 'PHP',
-            amount: item.price * location.state.discountFactor,
-            name: item.name,
-            quantity: item.cartQuantity,        
-          }
-        });
-
+        if (isBulkOrder) {
+          filteredItems = bulkOrder.map((item) => {
+            return {
+              currency: 'PHP',
+              amount: (item.price * location.state.discountFactor) * 100, // Convert price to cents (or smallest currency unit)
+              name: item.name,
+              quantity: item.cartQuantity,        
+            }
+          });
+          metaDataItems = bulkOrder.map((item) => {
+            return {
+              currency: 'PHP',
+              amount: item.price * location.state.discountFactor,
+              name: item.name,
+              quantity: item.cartQuantity,        
+            }
+          });
+        } else {
+          filteredItems = cartItems.map((item) => {
+            return {
+              currency: 'PHP',
+              amount: (item.price * location.state.discountFactor) * 100, // Convert price to cents (or smallest currency unit)
+              name: item.name,
+              quantity: item.cartQuantity,        
+            }
+          });
+          metaDataItems = cartItems.map((item) => {
+            return {
+              currency: 'PHP',
+              amount: item.price * location.state.discountFactor,
+              name: item.name,
+              quantity: item.cartQuantity,        
+            }
+          });
+        }       
+        
         try {
           const checkoutSession = await fetch('https://api.paymongo.com/v1/checkout_sessions', {
             method: "POST",
@@ -73,14 +91,14 @@ const CheckoutPayMongo = () => {
               },
             }),
           });           
-  
+          
           const checkoutSessionJSON = await checkoutSession.json();                  
 
           window.location.href = checkoutSessionJSON.data.attributes.checkout_url
           
         } catch (error) {
           console.error("Error creating payment intent:", error);
-          navigate('/')
+          // navigate('/')
         }
       }      
     }

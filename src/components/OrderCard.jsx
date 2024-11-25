@@ -10,8 +10,22 @@ import {
   DialogDescription,
   DialogHeader,
 } from "@src/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@src/components/ui/alert-dialog"
+import { Button } from "@src/components/ui/button"
 import { MapPin, Navigation, Phone } from "lucide-react";
-import { ScrollArea } from "./ui/scroll-area";
+import { ScrollArea } from "@src/components/ui/scroll-area";
+import { supabase } from "@src/supabase/config";
+import { toast } from "react-toastify";
 
 const statusLabels = {
   "Order Placed": "Order Placed",
@@ -40,8 +54,28 @@ const formatCurrency = (value) =>
     maximumFractionDigits: 2,
   });
 
-const OrderCard = ({ order }) => {
+
+
+const OrderCard = ({ order, removeOrder }) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const cancelOrder = async (orderId) => {  
+    console.log(orderId)
+    const { error: updateOrderError, data: updateOrderData } = await supabase
+    .from('order')
+    .update({ status: 'Cancelled' })
+    .eq('order_id', orderId)    
+    .select() // This ensures the updated row is returned
+    .single();   
+
+    if (updateOrderError) {
+      toast.error("An error has occured.");
+    } else {
+      toast.success("Order cancelled successfully!");
+      setIsOpen(false)
+      removeOrder(orderId);
+    }
+  }
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
@@ -60,8 +94,9 @@ const OrderCard = ({ order }) => {
             <p className="font-light text-sm text-green-50 mt-1">
               {order.status === "Delivered"
                 ? `Delivered: ${formatDate(order.deliveryDate)}`
-                : `Updated: ${formatDate(order.statusUpdateDate)}`}
+                : `Updated: ${formatDate(order.statusUpdateDate)}`}                
             </p>
+         
           </div>
           <Badge className="max-h-[20px] text-nowrap">
             {statusLabels[order.status] || "Unknown Status"}
@@ -78,17 +113,42 @@ const OrderCard = ({ order }) => {
               {statusLabels[order.status] || "Unknown Status"}
             </Badge>
           </div>
-          <p className="font-md text-sm text-yellow">
-            Total: ₱{formatCurrency(calculateTotalAmount(order.products))}
-          </p>
-
-          <p className="text-sm font-light text-muted-foreground">
-            {order.status === "Delivered"
-              ? `Delivered: ${formatDate(order.deliveryDate)}`
-              : `Updated: ${formatDate(order.statusUpdateDate)}`}
-          </p>
+          <div className="flex justify-between items-center w-full">
+            <div>
+              <p className="font-md text-sm text-yellow">
+                Total: ₱{formatCurrency(calculateTotalAmount(order.products))}
+              </p>
+              <p className="text-sm font-light text-muted-foreground">
+                {order.status === "Delivered"
+                  ? `Delivered: ${formatDate(order.deliveryDate)}`
+                  : `Updated: ${formatDate(order.statusUpdateDate)}`}
+              </p>
+            </div>
+            {
+              order.status === "Order Placed" && (                
+                <AlertDialog>
+                 <AlertDialogTrigger asChild>
+                   <Button variant="outline">Cancel</Button>
+                 </AlertDialogTrigger>
+                 <AlertDialogContent>
+                   <AlertDialogHeader>
+                     <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                     <AlertDialogDescription>
+                       This action cannot be undone. This will permanently delete your
+                       order from the server.
+                     </AlertDialogDescription>
+                   </AlertDialogHeader>
+                   <AlertDialogFooter>
+                     <AlertDialogCancel>Cancel</AlertDialogCancel>
+                     <AlertDialogAction onClick={async() => await cancelOrder(order.orderId)}>Continue</AlertDialogAction>
+                   </AlertDialogFooter>
+                 </AlertDialogContent>
+               </AlertDialog>
+              )
+            }
+          
+          </div>
         </DialogHeader>
-
         <DialogDescription className="flex flex-col gap-4">
           <ScrollArea>
             <div className="flex flex-col gap-2 max-h-[250px]">

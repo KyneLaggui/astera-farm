@@ -143,10 +143,25 @@ export const columns = [
         }
       };
 
+      const getRowColor = (status) => {
+        switch (status) {
+          case "Order Placed":
+            return "";
+          case "Processing":
+            return "bg-yellow-100";
+          case "Shipped":
+            return "bg-yellow-500";
+          case "Delivered":
+            return "bg-green-300";
+          default:
+            break;
+        }
+      }
+
       return (
         <TableCell>
           <DropdownMenu>
-            <DropdownMenuTrigger className="px-4 py-2 border rounded-md cursor-pointer">
+            <DropdownMenuTrigger className={`px-4 py-2 border rounded-md cursor-pointer ${getRowColor(status)}`}>
               {status}
             </DropdownMenuTrigger>
             <DropdownMenuContent>

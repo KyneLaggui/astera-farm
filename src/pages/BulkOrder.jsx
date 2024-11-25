@@ -18,6 +18,7 @@ import { ScrollArea } from "@src/components/ui/scroll-area";
 import fetchAllProduct from "@src/custom-hooks/fetchAllProduct";
 import { toast } from "react-toastify";
 import { z } from "zod";
+import { useNavigate } from "react-router-dom";
 
 const BulkOrder = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -33,6 +34,7 @@ const BulkOrder = () => {
 
   const [products, setProducts] = useState([]);
   const { products: fetchedProducts } = fetchAllProduct();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (fetchedProducts) {
@@ -41,6 +43,7 @@ const BulkOrder = () => {
         name: product.name,
         isSelected: false,
         quantity: "",
+        amount: product.price,
       }));
       setProducts(productList);
     }
@@ -67,6 +70,7 @@ const BulkOrder = () => {
         product.id === productId ? { ...product, quantity } : product
       )
     );
+    
   };
 
   const handleCheckboxChange = (productId, isSelected) => {
@@ -104,17 +108,20 @@ const BulkOrder = () => {
         .array(
           z.object({
             name: z.string(),
-            quantity: z.string().min(1, "Quantity is required"),
+            cartQuantity: z.coerce.number().min(1, "Quantity is required"),
+            price: z.coerce.number().min(1, "Price is required"),
           })
         )
         .min(1, "Please select at least one product and provide quantities"),
     });
 
+
     // Extract selected products with quantity
     const selectedProducts = products
       .filter((product) => product.isSelected && product.quantity)
-      .map((product) => ({ name: product.name, quantity: product.quantity }));
+      .map((product) => ({ name: product.name, cartQuantity: Number(product.quantity), price: product.amount }));
 
+    
     // Validate the form data
     const validation = formSchema.safeParse({
       ...formData,
@@ -125,7 +132,7 @@ const BulkOrder = () => {
       // Show error messages using toast
       validation.error.errors.forEach((err) => toast.error(err.message));
       return;
-    }
+    } 
 
     // If validation is successful, proceed with email sending
     const emailData = {
@@ -165,7 +172,19 @@ const BulkOrder = () => {
             quantity: "",
           }))
         );
+
+        let percentage_discount = 20;
+
+        navigate("/checkout-paymongo", {
+          state: {
+            shippingAddress: formData.deliveryAddress,
+            discountFactor: ((100 - percentage_discount) / 100),
+            bulkOrder: selectedProducts,
+            isBulkOrder: true,
+          },
+        });
       },
+      
       (error) => {
         toast.error("Failed to send order, please try again");
       }
