@@ -25,15 +25,15 @@ import ProductRevenue from "./DashboardCharts/ProductRevenue";
 
 const Dashboard = () => {
   const [sellingData, setSellingData] = useState([]);
-  const [productOrderQuantity, setProductOrderQuantity] = useState([]);
   const [leastProducts, setLeastProducts] = useState([]);
   const [chartData, setChartData] = useState([]);
   const [statusData, setStatusData] = useState([]);
-  const [productRevenue, setProductRevenue] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("week");
   const [topCitiesData, setTopCitiesData] = useState([]); // State for top cities data
   const [citiesData, setCitiesData] = useState([]); // State for top cities data
   const [emailState, setEmailState] = useState(null);
+  const [productOrderQuantity, setProductOrderQuantity] = useState([]);
+  const [productRevenue, setProductRevenue] = useState([]);
 
   const orders = useSelector(selectOrders);
   const email = useSelector(selectEmail);  
@@ -343,8 +343,8 @@ const Dashboard = () => {
                 </div>              
                 <div className="flex-grow flex justify-center">
                   <ProductOrderQuantity productOrderQuantity={productOrderQuantity}/>                  
-                </div>
-              </div>              
+                </div>                               
+              </div>               
             </div>
           </div>
         </LoggedInOnly>
