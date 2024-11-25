@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { SET_ORDERS } from '@src/redux/slice/ordersSlice';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { supabase } from '@src/supabase/config';
 import { UPDATE_PRODUCT } from '@src/redux/slice/productsSlice';
-import additionalOrders from '@src/data/additionalOrders';
+import additionalOrders, { additionalOrdersSecondary} from '@src/data/additionalOrders';
+import { selectEmail } from '@src/redux/slice/authSlice';
 
 const fetchAllOrders = () => {
   const [allOrders, setAllOrders] = useState([]);
+  const email = useSelector(selectEmail);  
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -168,16 +170,19 @@ const fetchAllOrders = () => {
         }                    
 
         // mergedOrders = [...mergedOrders, ...additionalOrders];
-        mergedOrders = [...additionalOrders];
-      
+        mergedOrders = email === "asterafarmshop@gmail.com" ? [...additionalOrders] : [...additionalOrdersSecondary, ...mergedOrders];
+        
         // Set valid carts to state
         setAllOrders(mergedOrders);
         dispatch(SET_ORDERS(mergedOrders)); // Dispatch to Redux
       }
     };
 
-    getAllOrders();
-  }, [dispatch]);
+    if (email) {
+      getAllOrders();
+    }
+    
+  }, [dispatch, email]);
 
   return { orders: allOrders };
 };
