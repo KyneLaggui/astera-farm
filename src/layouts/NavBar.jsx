@@ -195,6 +195,11 @@ const Navbar = () => {
             </a>
           </LoggedInOnlyComponent>
           <LoggedInOnlyComponent forAdmin={true} forUser={false}>
+            <a href="/admin/testimonials" className="hover:text-white">
+              Testimonials
+            </a>
+          </LoggedInOnlyComponent>
+          <LoggedInOnlyComponent forAdmin={true} forUser={false}>
             <a href="/admin/slideshow" className="hover:text-white">
               Slideshow
             </a>
