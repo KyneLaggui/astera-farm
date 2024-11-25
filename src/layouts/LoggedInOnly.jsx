@@ -9,8 +9,9 @@ const LoggedInOnlyComponent = ({ children, forAdmin, forUser }) => {
   const navigate = useNavigate();
   const isLoggedInRedux = useSelector(selectIsLoggedIn);
   const isAdminRedux = useSelector(selectIsAdmin);  
-
+// 
   // console.log(forAdmin && !isAdminRedux)
+  console.log(isLoggedInRedux, isAdminRedux)
 
   useEffect(() => {
     const handleNavigation = () => {
