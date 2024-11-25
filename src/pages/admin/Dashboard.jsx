@@ -336,15 +336,15 @@ const Dashboard = () => {
                 </div>
               </div>              
             </div>
-            <div className="flex flex-col gap-4 w-full justify-center flex-wrap lg:flex-nowrap">
-              <div className="flex flex-col md:flex-row justify-between gap-4 w-full flex-grow">
-                <div className="flex-grow flex justify-center">
-                  <ProductRevenue productRevenue={productRevenue}/>
-                </div>              
-                <div className="flex-grow flex justify-center">
-                  <ProductOrderQuantity productOrderQuantity={productOrderQuantity}/>                  
-                </div>                               
-              </div>               
+            <div className="flex flex-col gap-4 w-full justify-center flex-wrap lg:flex-nowrap relative">
+              <div className="flex flex-col md:flex-row justify-between gap-4 w-full flex-grow relative">
+                <div className="flex-grow flex justify-center w-full max-w-full overflow-hidden">
+                  <ProductRevenue productRevenue={productRevenue} />
+                </div>
+                <div className="flex-grow flex justify-center w-full max-w-full overflow-hidden">
+                  <ProductOrderQuantity productOrderQuantity={productOrderQuantity} />
+                </div>
+              </div>             
             </div>
           </div>
         </LoggedInOnly>
