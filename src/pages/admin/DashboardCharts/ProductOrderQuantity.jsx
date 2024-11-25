@@ -80,7 +80,7 @@ const ProductOrderQuantity = ({ productOrderQuantity }) => {
         <ProductFilter values={filterOptions} onFilterChange={handleFilterChange} />
       </CardHeader>
       <CardContent>
-        <ChartContainer config={ordersConfig} className="max-w-[500px] h-[400px]">
+        <ChartContainer config={ordersConfig} className="max-w-full h-[400px]">
           <BarChart
             data={filteredData.length ? filteredData : productOrderQuantity}
             margin={{ top: 20, right: 0, left: 0, bottom: 80 }} // Added space at the bottom
