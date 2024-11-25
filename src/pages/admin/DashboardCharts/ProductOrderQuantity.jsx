@@ -12,6 +12,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@src/components/ui/chart";
+import ProductFilter from "@src/components/admin/ProductFilter";
 
 const ordersConfig = {
   value: {
@@ -21,6 +22,7 @@ const ordersConfig = {
 };
 
 const ProductOrderQuantity = ({ productOrderQuantity }) => {
+  const [filteredData, setFilteredData] = useState(productOrderQuantity);
   const [fontSize, setFontSize] = useState("14px");
   const [xFontSize, setXFontSize] = useState("12px");
 
@@ -43,6 +45,19 @@ const ProductOrderQuantity = ({ productOrderQuantity }) => {
     }
   };
 
+  const handleFilterChange = (selectedProducts) => {
+    if (selectedProducts.length > 0) {
+      setFilteredData(productOrderQuantity.filter((item) => selectedProducts.includes(item.products)));
+    } else {
+      setFilteredData(productOrderQuantity);
+    }
+  };
+
+  const filterOptions = productOrderQuantity.map((item) => {    
+      return {'key': item.products, 'value': item.products}
+    }
+  );
+
   useEffect(() => {
     // Set initial font size
     updateFontSize();
@@ -62,11 +77,12 @@ const ProductOrderQuantity = ({ productOrderQuantity }) => {
         <CardDescription>
           The bar chart shows the order quantity for each unique product.
         </CardDescription>
+        <ProductFilter values={filterOptions} onFilterChange={handleFilterChange} />
       </CardHeader>
       <CardContent>
         <ChartContainer config={ordersConfig} className="max-w-[500px] h-[400px]">
           <BarChart
-            data={productOrderQuantity}
+            data={filteredData.length ? filteredData : productOrderQuantity}
             margin={{ top: 20, right: 0, left: 0, bottom: 80 }} // Added space at the bottom
           >
             <CartesianGrid vertical={false} />

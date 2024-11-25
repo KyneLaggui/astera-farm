@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts";
 import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@src/components/ui/dropdown-menu"
+import {
   Card,
   CardContent,
   CardDescription,
@@ -12,6 +20,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@src/components/ui/chart";
+import ProductFilter from "@src/components/admin/ProductFilter";
 
 const ordersConfig = {
   value: {
@@ -20,36 +29,43 @@ const ordersConfig = {
   },
 };
 
-const ProductOrderQuantity = ({ productRevenue }) => {
+const ProductRevenue = ({ productRevenue }) => {
+  const [filteredData, setFilteredData] = useState(productRevenue);
   const [fontSize, setFontSize] = useState("14px");
   const [xFontSize, setXFontSize] = useState("12px");
 
-  const truncateLabel = (label) => {
-    return label.length > 10 ? `${label.substring(0, 11)}...` : label;
-  };
+  const truncateLabel = (label) => label.length > 10 ? `${label.substring(0, 11)}...` : label;
 
   const updateFontSize = () => {
     const width = window.innerWidth;
-    // Example font size logic based on screen width
     if (width < 400) {
-      setFontSize("8px"); // Small screens
-      setXFontSize("6px")
+      setFontSize("8px");
+      setXFontSize("6px");
     } else if (width < 900) {
-      setFontSize("10px"); // Medium screens
-      setXFontSize("8px")
+      setFontSize("10px");
+      setXFontSize("8px");
     } else {
-      setFontSize("14px"); // Large screens
-      setXFontSize("12px")
+      setFontSize("14px");
+      setXFontSize("12px");
     }
   };
 
+  const handleFilterChange = (selectedProducts) => {
+    if (selectedProducts.length > 0) {
+      setFilteredData(productRevenue.filter((item) => selectedProducts.includes(item.name)));
+    } else {
+      setFilteredData(productRevenue);
+    }
+  };
+
+  const filterOptions = productRevenue.map((item) => {    
+      return {'key': item.name, 'value': item.name}
+    }
+  );
+
   useEffect(() => {
-    // Set initial font size
     updateFontSize();
-    // Add resize event listener
     window.addEventListener("resize", updateFontSize);
-    
-    // Cleanup event listener on unmount
     return () => {
       window.removeEventListener("resize", updateFontSize);
     };
@@ -58,16 +74,17 @@ const ProductOrderQuantity = ({ productRevenue }) => {
   return (
     <Card className="w-full">
       <CardHeader>
-        <CardTitle>Product Revenue</CardTitle>
-        <CardDescription>
-          The bar chart shows the revenue from each unique product.
-        </CardDescription>
+        <div className="flex flex-col gap-[6px]">
+          <CardTitle>Product Revenue</CardTitle>
+          <CardDescription>The bar chart shows the revenue from each unique product.</CardDescription>
+        </div>
+        <ProductFilter values={filterOptions} onFilterChange={handleFilterChange} />
       </CardHeader>
       <CardContent>
         <ChartContainer config={ordersConfig} className="max-w-[500px] h-[400px]">
           <BarChart
-            data={productRevenue}
-            margin={{ top: 20, right: 0, left: 0, bottom: 80 }} // Added space at the bottom
+            data={filteredData.length ? filteredData : productRevenue}
+            margin={{ top: 20, right: 0, left: 0, bottom: 80 }}
           >
             <CartesianGrid vertical={false} />
             <XAxis
@@ -75,11 +92,11 @@ const ProductOrderQuantity = ({ productRevenue }) => {
               tickLine={false}
               tickMargin={10}
               axisLine={false}
-              style={{ xFontSize }} // Use dynamic font size
-              interval={0} // Show all labels
-              angle={-45} // Rotate labels for better visibility
-              textAnchor="end" // Align the rotated labels properly
-              tickFormatter={truncateLabel} // Truncate long labels
+              style={{ xFontSize }}
+              interval={0}
+              angle={-45}
+              textAnchor="end"
+              tickFormatter={truncateLabel}
             />
             <YAxis
               tickLine={false}
@@ -104,4 +121,5 @@ const ProductOrderQuantity = ({ productRevenue }) => {
   );
 };
 
-export default ProductOrderQuantity;
+
+export default ProductRevenue;
