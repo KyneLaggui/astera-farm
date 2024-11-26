@@ -5,14 +5,16 @@ import fetchProductUrl from "@src/custom-hooks/actions/fetchProductUrl";
 import { Sparkles } from "lucide-react";
 import { useSelector } from "react-redux";
 import { selectOrders, selectTopProducts } from "@src/redux/slice/ordersSlice";
+import ProductTypeFilter from "./ProductTypeFilter";
 
 const Product = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [productsState, setProductsState] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [filterOptions, setFilterOptions] = useState([]);
   const { products: fetchedProducts } = fetchAllProduct(); // Fetch products from Supabase
   const [isLoading, setIsLoading] = useState(true);
-  const allOrders = useSelector(selectOrders);
   const bestSellers = useSelector(selectTopProducts); // Get top 3 products from Redux
 
   const openDrawer = (product) => {
@@ -25,9 +27,18 @@ const Product = () => {
     setSelectedProduct(null);
   };
 
+  const handleFilterChange = (selectedProducts) => {
+    if (selectedProducts.length > 0) {
+      setFilteredProducts(productsState.filter((item) => selectedProducts.includes(item.type)));
+    } else {
+      setFilteredProducts(productsState);
+    }
+  };
+
   useEffect(() => {
     if (fetchedProducts) {
       const fetchAllProducts = async () => {
+        const uniqueTypes = {}
         const allProducts = await Promise.all(
           fetchedProducts.map(async (product) => {
             const imageUrl = await fetchProductUrl(product.id);
@@ -35,6 +46,7 @@ const Product = () => {
             return {
               id: product.id,
               name: product.name,
+              type: product.type,
               image: `${imageUrl}?t=${new Date().toISOString()}`,
               description: product.description,
               sellMethod: product.sell_method,
@@ -44,9 +56,20 @@ const Product = () => {
             };
           })
         );
+        
+         // Create an array of unique type objects
+        const uniqueTypeArray = allProducts.reduce((acc, product) => {
+          if (!uniqueTypes[product.type]) {
+            uniqueTypes[product.type] = true;
+            acc.push({ key: product.type, value: product.type });
+          }
+          return acc;
+        }, []);
 
+        setFilterOptions(uniqueTypeArray)
         setIsLoading(false);
         setProductsState(allProducts);
+        setFilteredProducts(allProducts);
       };
 
       fetchAllProducts();
@@ -60,8 +83,11 @@ const Product = () => {
 
   return (
     <div className="flex flex-col gap-10">
+       <div className="flex justify-center">
+        <ProductTypeFilter values={filterOptions} onFilterChange={handleFilterChange} />
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-20">
-        {productsState.map((product) => (
+        {filteredProducts.map((product) => (
           <div
             key={product.id}
             className="flex flex-col justify-center items-center gap-2"

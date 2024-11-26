@@ -57,6 +57,7 @@ function AddProduct({ isAddDialogOpen, onDialogClose }) {
 
   const productSchema = z.object({
     name: z.string().min(1, "Product name is required"),
+    type: z.string().min(1, "Product type is required"),
     price: z
       .number()
       .min(0, { message: "Price must be a non-negative number" }), // Ensures price is >= 0
@@ -89,11 +90,12 @@ function AddProduct({ isAddDialogOpen, onDialogClose }) {
       .from("product")
       .insert({
         name: newProduct.name,
+        type: newProduct.type,
         description: newProduct.description,
         price: newProduct.price,
         sell_method: newProduct.sellMethod,
         attributes: attributes,
-        stock: isNaN(newProduct.stock) ? 0 : Number(newProduct.stock),
+        stock: isNaN(newProduct.stock) ? 0 : Number(newProduct.stock),        
       })
       .select()
       .single();
@@ -197,6 +199,20 @@ function AddProduct({ isAddDialogOpen, onDialogClose }) {
                 />
                 {errors.name && (
                   <p className="text-red-500 text-sm mt-2">{errors.name}</p>
+                )}
+              </div>
+              <div className="mb-4">
+                <label className="block">Product Type</label>
+                <Input
+                  id="type"
+                  type="text"
+                  placeholder="e.g. LEAFY GREENS"
+                  name="type"
+                  className="mt-2"
+                  onChange={onInputHandleChange}
+                />
+                {errors.name && (
+                  <p className="text-red-500 text-sm mt-2">{errors.type}</p>
                 )}
               </div>
               <div className="mb-4">

@@ -78,6 +78,7 @@ function EditProductDialog({
 
   const productSchema = z.object({
     name: z.string().min(1, "Product name is required"),
+    type: z.string().min(1, "Product type is required"),
     price: z
       .number()
       .min(0, { message: "Price must be a non-negative number" }), // Ensures price is >= 0
@@ -101,6 +102,7 @@ function EditProductDialog({
 
     const updateData = {
       name: editProduct.name,
+      type: editProduct.type,
       description: editProduct.description,
       price: editProduct.price,
       sell_method: editProduct.sellMethod,
@@ -222,6 +224,21 @@ function EditProductDialog({
                 />
                 {errors.name && (
                   <p className="text-red-500 text-sm mt-2">{errors.name}</p>
+                )}
+              </div>
+              <div className="mb-4">
+                <label className="block">Product Type</label>
+                <Input
+                  id="type"
+                  type="text"
+                  placeholder="e.g. Leafy Greens"
+                  name="type"
+                  className="mt-2"
+                  value={editProduct.type || ""}
+                  onChange={onInputHandleChange}
+                />
+                {errors.name && (
+                  <p className="text-red-500 text-sm mt-2">{errors.type}</p>
                 )}
               </div>
               <div className="mb-4">
