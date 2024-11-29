@@ -13,6 +13,7 @@ import ConfirmDeleteDialog from "@src/components/admin/modal/ConfirmProductDelet
 import OrderModal from "@src/components/admin/modal/OrderCard";
 import { useState } from "react";
 import { supabase } from "@src/supabase/config";
+import OrderStatusDropdownMenu from "./OrderStatusDropdownMenu";
 
 // Helper function to capitalize the first letter
 const capitalizeFirstLetter = (str) => {
@@ -141,42 +142,11 @@ export const columns = [
         if (error) {
           console.error("Error updating order status:", error.message);
         }
-      };
-
-      const getRowColor = (status) => {
-        switch (status) {
-          case "Order Placed":
-            return "";
-          case "Processing":
-            return "bg-yellow-100";
-          case "Shipped":
-            return "bg-yellow-500";
-          case "Delivered":
-            return "bg-green-300";
-          default:
-            break;
-        }
-      }
-
+      };   
+      
       return (
         <TableCell>
-          <DropdownMenu>
-            <DropdownMenuTrigger className={`px-4 py-2 border rounded-md cursor-pointer ${getRowColor(status)}`}>
-              {status}
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              {["Order Placed", "Processing", "Shipped", "Delivered"].map(
-                (statusOption) => (
-                  <DropdownMenuItem
-                    key={statusOption}
-                    onClick={() => handleStatusChange(statusOption)}
-                  >
-                    {statusOption}
-                  </DropdownMenuItem>
-                )
-              )}
-            </DropdownMenuContent>
-          </DropdownMenu>
+          <OrderStatusDropdownMenu status={status} handleStatusChange={handleStatusChange} />
         </TableCell>
       );
     },
