@@ -36,6 +36,15 @@ const BulkOrder = () => {
   const { products: fetchedProducts } = fetchAllProduct();
   const navigate = useNavigate();
 
+  const calculateTotalAmount = () => {
+    return products.reduce((total, product) => {
+      if (product.isSelected && product.quantity) {
+        return total + product.amount * Number(product.quantity);
+      }
+      return total;
+    }, 0);
+  };
+
   useEffect(() => {
     if (fetchedProducts) {
       const productList = fetchedProducts.map((product) => ({
@@ -195,7 +204,7 @@ const BulkOrder = () => {
     <div className="flex justify-center navbar-spacing">
       <Card className="flex flex-col lg:flex-row gap-10 justify-between p-10  max-w-[1200px] w-full">
         <div className="flex flex-col gap-6 lg:max-w-[600px] w-full lg:p-4">
-          <h1 className="text-4xl sm:text-6xl text-yellow font-semibold font-spartan">
+          <h1 className="text-4xl sm:text-6xl   text-yellow font-semibold font-spartan">
             Bulk Order Form
           </h1>
           <div className="flex flex-col gap-6 text-sm sm:text-base ">
@@ -362,6 +371,14 @@ const BulkOrder = () => {
               </div>
             ))}
           </ScrollArea>
+
+          {/* Total Amount Display */}
+          <div className="flex justify-between mt-4 p-2 border-t">
+            <span className="font-semibold text-yellow">Total Amount:</span>
+            <span className="font-semibold">
+              ₱{calculateTotalAmount().toFixed(2)}
+            </span>
+          </div>
 
           <Button type="submit" className="mt-4 w-full">
             Submit Order

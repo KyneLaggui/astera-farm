@@ -2,9 +2,9 @@ import { useState } from "react";
 import PropTypes from "prop-types";
 import { Card } from "@src/components/ui/card";
 import { Badge } from "@src/components/ui/badge";
+import { Button } from "@src/components/ui/button";
 import {
   Dialog,
-  DialogTrigger,
   DialogContent,
   DialogTitle,
   DialogDescription,
@@ -17,25 +17,33 @@ import { supabase } from "@src/supabase/config";
 const statusLabels = {
   Pending: "Pending",
   Accepted: "Accepted",
+  Declined: "Declined",
 };
 
 const TestimonialModal = ({ isOpen, setIsOpen, testimonial }) => {
   const [status, setStatus] = useState(testimonial.status);
 
-  const handleStatusToggle = async() => {
-    const newStatus = status === "Pending" ? "Accepted" : "Pending";
+  const updateStatus = async (newStatus) => {
     const { data, error } = await supabase
-    .from("testimonial")
-    .update({ status: newStatus })
-    .eq("id", testimonial.id);
+      .from("testimonial")
+      .update({ status: newStatus })
+      .eq("id", testimonial.id);
     if (error) {
       toast.error("Error updating status");
     } else {
-      toast.success("Testimonial updated successfully");
-      console.log(newStatus)
+      toast.success(`Testimonial ${newStatus.toLowerCase()} successfully`);
       setStatus(newStatus);
     }
   };
+
+  const handleAccept = async () => {
+    await updateStatus("Accepted");
+  };
+
+  const handleDecline = async () => {
+    await updateStatus("Declined");
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="p-4 pt-10">
@@ -44,7 +52,11 @@ const TestimonialModal = ({ isOpen, setIsOpen, testimonial }) => {
             <DialogTitle className="text-xl">{testimonial.name}</DialogTitle>
             <Badge
               className={`max-h-[20px] text-nowrap ${
-                status === "Accepted" ? "bg-green" : "bg-yellow-500"
+                status === "Accepted"
+                  ? "bg-green"
+                  : status === "Declined"
+                  ? "bg-red-500"
+                  : "bg-yellow-500"
               }`}
             >
               {statusLabels[status]}
@@ -72,12 +84,24 @@ const TestimonialModal = ({ isOpen, setIsOpen, testimonial }) => {
             <h1 className="text-sm font-light text-muted-foreground">
               Email: {testimonial.email}
             </h1>
-            <button
-              onClick={async() => await handleStatusToggle()}
-              className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-            >
-              Toggle Status
-            </button>
+            <div className="flex gap-2">
+              <Button
+                onClick={handleAccept}
+                disabled={status === "Accepted"}
+                variant="default"
+                className="ml-2 bg-green hover:bg-green-950 disabled:opacity-50"
+              >
+                Accept
+              </Button>
+              <Button
+                onClick={handleDecline}
+                disabled={status === "Declined"}
+                variant="default"
+                className="ml-2 bg-red hover:bg-red-950 disabled:opacity-50"
+              >
+                Decline
+              </Button>
+            </div>
           </div>
         </DialogDescription>
       </DialogContent>
@@ -95,9 +119,8 @@ TestimonialModal.propTypes = {
     role: PropTypes.string.isRequired,
     rating: PropTypes.number.isRequired,
     description: PropTypes.string.isRequired,
-    status: PropTypes.oneOf(["Pending", "Accepted"]).isRequired,
+    status: PropTypes.oneOf(["Pending", "Accepted", "Declined"]).isRequired,
   }).isRequired,
-  handleStatusToggle: PropTypes.func.isRequired,
 };
 
 export default TestimonialModal;

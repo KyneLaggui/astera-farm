@@ -14,6 +14,7 @@ import OrderModal from "@src/components/admin/modal/OrderCard";
 import { useState } from "react";
 import { supabase } from "@src/supabase/config";
 import OrderStatusDropdownMenu from "./OrderStatusDropdownMenu";
+import { format } from "date-fns"; // A helpful library for date formatting
 
 // Helper function to capitalize the first letter
 const capitalizeFirstLetter = (str) => {
@@ -26,6 +27,13 @@ const formatPaymentMethod = (paymentMethod) => {
     .split(" ") // Split into words
     .map(capitalizeFirstLetter) // Capitalize first letter of each word
     .join(" "); // Join them back with a space
+};
+
+// Helper function to format epoch to human-readable date
+const formatEpochToDate = (epoch) => {
+  if (!epoch) return "N/A"; // Handle cases where epoch is not available
+  const date = new Date(epoch * 1000);
+  return format(date, "MMMM dd, yyyy hh:mm a"); // Customize format as needed
 };
 
 // Define the shape of data and columns
@@ -47,6 +55,27 @@ export const columns = [
     ),
     cell: ({ row }) => <TableCell>{row.original.id}</TableCell>,
   },
+  {
+    accessorKey: "createdAt",
+    header: ({ column }) => (
+      <p
+        className="flex items-center gap-1 cursor-pointer"
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+      >
+        Date
+        {column.getIsSorted() === "asc" ? (
+          <ArrowUp className="h-3 w-3" />
+        ) : (
+          <ArrowDown className="h-3 w-3" />
+        )}
+      </p>
+    ),
+
+    cell: ({ row }) => (
+      <TableCell>{formatEpochToDate(row.original.createdAt)} {row.original.createdAt}</TableCell>
+    ),
+  },
+
   {
     accessorKey: "total",
     header: ({ column }) => (
@@ -85,27 +114,7 @@ export const columns = [
       );
     },
   },  
-  // {
-  //   accessorKey: "type",
-  //   header: ({ column }) => (
-  //     <p className="flex items-center gap-1 cursor-pointer hover:text-red-500"
-  //     onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}>
-  //       Type
-  //       {column.getIsSorted() === "asc" ? (
-  //         <ArrowUp className="h-3 w-3" />
-  //       ) : (
-  //         <ArrowDown className="h-3 w-3" />
-  //       )}
-  //     </p>
-  //   ),
-  //   cell: ({ row }) => {  
-  //     return (
-  //       <TableCell>
-  //         {row.original.type}
-  //       </TableCell>
-  //     );
-  //   },
-  // },  
+
   {
     accessorKey: "status",
     header: ({ column }) => (
@@ -126,7 +135,7 @@ export const columns = [
 
       const handleStatusChange = async (newStatus) => {
         setStatus(newStatus);
-
+        
         // Get the current timestamp
         const currentTimestamp = new Date().toISOString();
 
