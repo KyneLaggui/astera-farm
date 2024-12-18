@@ -13,10 +13,11 @@ import LoggedInOnlyComponent from "@src/layouts/component-restriction/LoggedInOn
 import useFetchAllTestimonies from "@src/custom-hooks/fetchAllTestimonial";
 
 export function Testimonial() {
+  const [testimoniesState, setTestimoniesState] = useState([])
   const { testimonies, setTestimonies, loading, error } = useFetchAllTestimonies();
 
   const updateTestimonies = (updatedTestimony) => {
-    setTestimonies((prevTestimonies) => {
+    setTestimoniesState((prevTestimonies) => {
       const existingTestimonyIndex = prevTestimonies.findIndex(
         (t) => t.email === updatedTestimony.email
       );
@@ -29,6 +30,13 @@ export function Testimonial() {
       }
     });
   };
+
+  useEffect(() => {
+    if (testimonies) {
+      let filteredTestimonies = testimonies.filter((t) => t.status === 'Accepted');
+      setTestimoniesState(filteredTestimonies)
+    }
+  }, [testimonies])
 
   return (
     <div className="flex flex-col gap-2">
@@ -51,7 +59,7 @@ export function Testimonial() {
           ]}
         >
           <CarouselContent>
-            {testimonies.map((testimonial) => (
+            {testimoniesState.map((testimonial) => (
               <CarouselItem
                 key={testimonial.id}
                 className="md:basis-1/2 lg:basis-1/3"

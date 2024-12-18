@@ -14,6 +14,7 @@ export default function ProductTable() {
       const allProducts = fetchedProducts.map((product) => ({
         id: product.id,
         name: product.name,
+        type: product.type,
         description: product.description,
         sellMethod: product.sell_method,
         attributes: product.attributes,
