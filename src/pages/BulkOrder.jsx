@@ -382,15 +382,15 @@ const BulkOrder = () => {
           {/* Total Amount Display */}
           <div className="mt-4 p-2 border-t">
             <div className="flex justify-between items-center">
-              <span className="font-semibold text-yellow">Total Amount:</span>
+              <span className="font-semibold text-yellow">Produce Subtotal:</span>
               <span className="font-semibold">₱{total.toFixed(2)}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="font-semibold text-yellow">Deducted Amount:</span>
-              <span className="font-semibold">- ₱{deducted.toFixed(2)}</span>
+              <span className="font-semibold text-yellow">Discount Subtotal:</span>
+              <span className="font-semibold text-red">- ₱{deducted.toFixed(2)}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="font-semibold text-yellow">Discounted Amount:</span>
+              <span className="font-semibold text-yellow">Total Amount:</span>
               <span className="font-semibold">₱{discounted.toFixed(2)}</span>
             </div>
           </div>
