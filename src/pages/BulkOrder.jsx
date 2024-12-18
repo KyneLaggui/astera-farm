@@ -36,14 +36,18 @@ const BulkOrder = () => {
   const { products: fetchedProducts } = fetchAllProduct();
   const navigate = useNavigate();
 
-  const calculateTotalAmount = () => {
-    return products.reduce((total, product) => {
-      if (product.isSelected && product.quantity) {
-        return total + product.amount * Number(product.quantity);
-      }
-      return total;
-    }, 0);
-  };
+ const calculateTotalAmount = () => {
+  const total = products.reduce((total, product) => {
+    if (product.isSelected && product.quantity) {
+      return total + product.amount * Number(product.quantity);
+    }
+    return total;
+  }, 0);
+
+
+  const discountedTotal = total * 0.8; 
+  return discountedTotal;
+};
 
   useEffect(() => {
     if (fetchedProducts) {
