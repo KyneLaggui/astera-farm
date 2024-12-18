@@ -36,18 +36,21 @@ const BulkOrder = () => {
   const { products: fetchedProducts } = fetchAllProduct();
   const navigate = useNavigate();
 
- const calculateTotalAmount = () => {
-  const total = products.reduce((total, product) => {
-    if (product.isSelected && product.quantity) {
-      return total + product.amount * Number(product.quantity);
-    }
-    return total;
-  }, 0);
+  const calculateTotalAmounts = () => {
+    const total = products.reduce((total, product) => {
+      if (product.isSelected && product.quantity) {
+        return total + product.amount * Number(product.quantity);
+      }
+      return total;
+    }, 0);
+  
+    const deducted = total * 0.2; // 20% of the total
+    const discounted = total - deducted; // Total after discount
+  
+    return { total, deducted, discounted };
+  };
 
-
-  const discountedTotal = total * 0.8; 
-  return discountedTotal;
-};
+  const { total, deducted, discounted } = calculateTotalAmounts();
 
   useEffect(() => {
     if (fetchedProducts) {
@@ -377,11 +380,19 @@ const BulkOrder = () => {
           </ScrollArea>
 
           {/* Total Amount Display */}
-          <div className="flex justify-between mt-4 p-2 border-t">
-            <span className="font-semibold text-yellow">Total Amount:</span>
-            <span className="font-semibold">
-              ₱{calculateTotalAmount().toFixed(2)}
-            </span>
+          <div className="mt-4 p-2 border-t">
+            <div className="flex justify-between items-center">
+              <span className="font-semibold text-yellow">Total Amount:</span>
+              <span className="font-semibold">₱{total.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="font-semibold text-yellow">Deducted Amount:</span>
+              <span className="font-semibold">- ₱{deducted.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="font-semibold text-yellow">Discounted Amount:</span>
+              <span className="font-semibold">₱{discounted.toFixed(2)}</span>
+            </div>
           </div>
 
           <Button type="submit" className="mt-4 w-full">
