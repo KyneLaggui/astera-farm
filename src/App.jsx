@@ -34,6 +34,7 @@ function App() {
             <Route path="orders" element={<Pages.Orders />} />
             <Route path="slideshow" element={<Pages.SlideShowEdit />} />
             <Route path="vouchers" element={<Pages.Vouchers />} />
+            <Route path="testimonials" element={<Pages.Testimonials />} />
           </Route>
         </Routes>
       </div>

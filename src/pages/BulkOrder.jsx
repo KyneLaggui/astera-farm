@@ -18,6 +18,7 @@ import { ScrollArea } from "@src/components/ui/scroll-area";
 import fetchAllProduct from "@src/custom-hooks/fetchAllProduct";
 import { toast } from "react-toastify";
 import { z } from "zod";
+import { useNavigate } from "react-router-dom";
 
 const BulkOrder = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -33,6 +34,16 @@ const BulkOrder = () => {
 
   const [products, setProducts] = useState([]);
   const { products: fetchedProducts } = fetchAllProduct();
+  const navigate = useNavigate();
+
+  const calculateTotalAmount = () => {
+    return products.reduce((total, product) => {
+      if (product.isSelected && product.quantity) {
+        return total + product.amount * Number(product.quantity);
+      }
+      return total;
+    }, 0);
+  };
 
   useEffect(() => {
     if (fetchedProducts) {
@@ -41,6 +52,7 @@ const BulkOrder = () => {
         name: product.name,
         isSelected: false,
         quantity: "",
+        amount: product.price,
       }));
       setProducts(productList);
     }
@@ -67,6 +79,7 @@ const BulkOrder = () => {
         product.id === productId ? { ...product, quantity } : product
       )
     );
+    
   };
 
   const handleCheckboxChange = (productId, isSelected) => {
@@ -104,17 +117,20 @@ const BulkOrder = () => {
         .array(
           z.object({
             name: z.string(),
-            quantity: z.string().min(1, "Quantity is required"),
+            cartQuantity: z.coerce.number().min(1, "Quantity is required"),
+            price: z.coerce.number().min(1, "Price is required"),
           })
         )
         .min(1, "Please select at least one product and provide quantities"),
     });
 
+
     // Extract selected products with quantity
     const selectedProducts = products
       .filter((product) => product.isSelected && product.quantity)
-      .map((product) => ({ name: product.name, quantity: product.quantity }));
+      .map((product) => ({ name: product.name, cartQuantity: Number(product.quantity), price: product.amount }));
 
+    
     // Validate the form data
     const validation = formSchema.safeParse({
       ...formData,
@@ -125,7 +141,7 @@ const BulkOrder = () => {
       // Show error messages using toast
       validation.error.errors.forEach((err) => toast.error(err.message));
       return;
-    }
+    } 
 
     // If validation is successful, proceed with email sending
     const emailData = {
@@ -165,7 +181,19 @@ const BulkOrder = () => {
             quantity: "",
           }))
         );
+
+        let percentage_discount = 20;
+
+        navigate("/checkout-paymongo", {
+          state: {
+            shippingAddress: formData.deliveryAddress,
+            discountFactor: ((100 - percentage_discount) / 100),
+            bulkOrder: selectedProducts,
+            isBulkOrder: true,
+          },
+        });
       },
+      
       (error) => {
         toast.error("Failed to send order, please try again");
       }
@@ -176,7 +204,7 @@ const BulkOrder = () => {
     <div className="flex justify-center navbar-spacing">
       <Card className="flex flex-col lg:flex-row gap-10 justify-between p-10  max-w-[1200px] w-full">
         <div className="flex flex-col gap-6 lg:max-w-[600px] w-full lg:p-4">
-          <h1 className="text-4xl sm:text-6xl text-yellow font-semibold font-spartan">
+          <h1 className="text-4xl sm:text-6xl   text-yellow font-semibold font-spartan">
             Bulk Order Form
           </h1>
           <div className="flex flex-col gap-6 text-sm sm:text-base ">
@@ -343,6 +371,14 @@ const BulkOrder = () => {
               </div>
             ))}
           </ScrollArea>
+
+          {/* Total Amount Display */}
+          <div className="flex justify-between mt-4 p-2 border-t">
+            <span className="font-semibold text-yellow">Total Amount:</span>
+            <span className="font-semibold">
+              ₱{calculateTotalAmount().toFixed(2)}
+            </span>
+          </div>
 
           <Button type="submit" className="mt-4 w-full">
             Submit Order

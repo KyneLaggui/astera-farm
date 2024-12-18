@@ -10,8 +10,6 @@ const LoggedInOnlyComponent = ({ children, forAdmin, forUser }) => {
   const isLoggedInRedux = useSelector(selectIsLoggedIn);
   const isAdminRedux = useSelector(selectIsAdmin);  
 
-  // console.log(forAdmin && !isAdminRedux)
-
   useEffect(() => {
     const handleNavigation = () => {
       // Wait until loading finishes before navigating
